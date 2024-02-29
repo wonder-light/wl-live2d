@@ -9,10 +9,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "doc": "jsdoc -c doc.config.json -r lib -d doc"
+    "doc": "jsdoc -c doc.config.json"
   },
   "keywords": [
     "live2d"
   ],
   "author": "wonder-light",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdoc": "^4.0.2"
+  }
 }

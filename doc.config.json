@@ -1,0 +1,19 @@
+{
+  "source": {
+    "include": [
+      "./lib"
+    ],
+    "exclude": [
+      "./node_modules"
+    ],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./doc",
+    "recurse": true
+  },
+  "plugins": [
+    "plugins/markdown"
+  ]
+}
