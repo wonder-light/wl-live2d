@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "doc": "jsdoc -c doc.config.json"
+    "docs": "jsdoc -c doc.config.json"
   },
   "keywords": [
     "live2d"
@@ -17,6 +17,8 @@
   "author": "wonder-light",
   "license": "ISC",
   "devDependencies": {
+    "@pixi/jsdoc-template": "^2.6.0",
+    "ink-docstrap": "^1.3.2",
     "jsdoc": "^4.0.2"
   }
 }

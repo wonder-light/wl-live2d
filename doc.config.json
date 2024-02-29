@@ -1,7 +1,8 @@
 {
   "source": {
     "include": [
-      "./lib"
+      "./lib",
+      "README.md"
     ],
     "exclude": [
       "./node_modules"
@@ -10,8 +11,10 @@
     "excludePattern": "(^|\\/|\\\\)_"
   },
   "opts": {
-    "destination": "./doc",
-    "recurse": true
+    "destination": "./docs",
+    "recurse": true,
+    "template": "./node_modules/ink-docstrap/template",
+    "verbose": true
   },
   "plugins": [
     "plugins/markdown"
