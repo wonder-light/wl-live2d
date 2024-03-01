@@ -13,7 +13,7 @@
   "opts": {
     "destination": "./docs",
     "recurse": true,
-    "template": "./node_modules/ink-docstrap/template",
+    "template": "./node_modules/@pixi/jsdoc-template",
     "verbose": true
   },
   "plugins": [
