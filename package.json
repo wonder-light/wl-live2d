@@ -8,7 +8,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "pnpm -F ./test/vite-app run dev || npm --prefix ./test/vite-app run dev",
     "docs": "rimraf docs && jsdoc -c doc.config.json",
     "build": "rimraf dist && rollup -c rollup.config.js"
   },
@@ -37,6 +37,7 @@
     "jsdoc": "^4.0.2",
     "pixi-live2d-display": "^0.4.0",
     "pixi.js": "^7.4.0",
+    "postcss": "^8.4.35",
     "postcss-nested": "^6.0.1",
     "rimraf": "^5.0.5",
     "rollup": "^4.12.0",

@@ -40,7 +40,8 @@ export default [
       format: 'umd'
     },
     plugins,
-  }, {
+  },
+  {
     input: 'lib/index.js',
     output: {
       dir: 'dist/es',
