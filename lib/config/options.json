@@ -1,0 +1,12 @@
+{
+  "sayHello": true,
+  "transitionTime": 500,
+  "models": [
+    {
+      "path": "https://fastly.jsdelivr.net/gh/Eikanya/Live2d-model/%E5%B4%A9%E5%9D%8F%E5%AD%A6%E5%9B%AD2/yiselin/model.json"
+    }
+  ],
+  "tips": {},
+  "selector": "",
+  "fixed": true
+}

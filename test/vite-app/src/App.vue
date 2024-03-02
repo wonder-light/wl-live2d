@@ -14,8 +14,10 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
 import Live2d from '../../../lib/index.js'
+import defaultOptions from "../../../lib/config/options.json"
 const live2d = Live2d({
   selector: 'live2d-id',
+  ...defaultOptions
 });
 </script>
 
