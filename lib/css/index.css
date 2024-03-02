@@ -47,14 +47,28 @@
   transform: translateX(-50%);
 }
 
+.live2d-opacity-1 {
+  opacity: 1;
+  visibility: visible;
+}
+
+.live2d-opacity-0 {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .live2d-touch-none {
   touch-action: none;
 }
 
 .live2d-transition-all {
-  transition-duration: 0.5s;
+  transition-duration: 500ms;
   transition-property: all;
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+
+.live2d-duration-0 {
+  transition-duration: 0s;
 }
 
 .live2d-z-5 {
@@ -69,10 +83,23 @@
   cursor: pointer;
 }
 
+
 .live2d-wrapper {
 
 }
 
 .live2d-canvas {
+
+}
+
+.live2d-tips {
+
+}
+
+.live2d-menus {
+
+}
+
+.live2d-other {
 
 }
