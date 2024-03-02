@@ -22,6 +22,8 @@
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
     "@pixi/app": "^7.4.0",
+    "@pixi/core": "^7.4.0",
+    "@pixi/display": "^7.4.0",
     "@pixi/jsdoc-template": "^2.6.0",
     "@pixi/utils": "^7.4.0",
     "@rollup/plugin-babel": "^6.0.4",

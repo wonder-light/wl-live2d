@@ -8,17 +8,23 @@
 
 + `interface` 的前缀是 `I`
 + `enum` 的前缀是 `E`
-+ 功能类的 `class` 的前缀是 `U`
-+ 数据类的 `class` 的前缀是 `D`
++ control 类的 `class` 的前缀是 `U`
++ data 类的 `class` 的前缀是 `D`
++ util 类的 `class` 的前缀是 `F`
 + `type、template` 的前缀是 `T`
 + 绝大多数其它的类，类型名前会有前缀F, 一些类型可能会使用其它字母, 其它类型以此类推
 
 例如:
 
 ```ts
-// 功能类 class
+// data class
+class DBaseTool {
+  id: string = '';
+  name: string = '';
+}
+
+// control class
 class UTool {
-  event: string = '';
   data: DBaseTool = new DBaseTool();
 
   bind() {
@@ -28,12 +34,12 @@ class UTool {
   }
 }
 
-// 数据类 class
-class DBaseTool {
-  id: string = '';
-  name: string = '';
+// util class
+class FBaseTool {
+  static log() {
+  }
 
-  constructor() {
+  static printf() {
   }
 }
 

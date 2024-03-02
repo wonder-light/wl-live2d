@@ -1,3 +1,74 @@
-:root{
-  color: transparent;
+.live2d-fixed {
+  position: fixed;
+}
+
+.live2d-absolute {
+  position: absolute;
+}
+
+.live2d-relative {
+  position: relative;
+}
+
+.live2d-w-min {
+  width: min-content;
+}
+
+.live2d-h-min {
+  height: min-content;
+}
+
+.live2d-left-0 {
+  left: 0;
+}
+
+.live2d-right-0 {
+  right: 0;
+}
+
+.live2d-bottom-0 {
+  bottom: 0;
+}
+
+.live2d-bottom-10 {
+  bottom: 10%;
+}
+
+.-live2d-top-100 {
+  top: -100px;
+}
+
+.live2d-left-center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.live2d-touch-none {
+  touch-action: none;
+}
+
+.live2d-transition-all {
+  transition-duration: 0.5s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+
+.live2d-z-5 {
+  z-index: 5000;
+}
+
+.live2d-z-6 {
+  z-index: 6000;
+}
+
+.live2d-cursor-pointer {
+  cursor: pointer;
+}
+
+.live2d-wrapper {
+
+}
+
+.live2d-canvas {
+
 }
