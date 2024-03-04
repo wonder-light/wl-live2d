@@ -1,5 +1,4 @@
 :root {
-  --tips-shake-anim: live2d-shake;
   --tips-bg: #58b0fc;
   --tips-color: #ffffff;
   --tips-shadow: #999999;
@@ -11,6 +10,7 @@
   --toggle-bg: #ffaa00;
   --toggle-pos-start: -35px;
   --toggle-pos-end: -20px;
+  --tips-anim-shake: live2d-shake;
 }
 
 .live2d-hidden {
@@ -42,7 +42,8 @@
 }
 
 .live2d-shake {
-  animation-name: var(--tips-shake-anim);
+  --anim: var(--tips-anim-shake);
+  animation-name: var(--anim);
   animation-duration: var(--live2d-anim-duration);
   animation-fill-mode: none;
   animation-iteration-count: infinite;
