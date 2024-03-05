@@ -2,7 +2,7 @@
   "source": {
     "include": [
       "./lib",
-      "README.md"
+      "./README.md"
     ],
     "exclude": [
       "./node_modules"
@@ -10,13 +10,29 @@
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"
   },
-  "opts": {
-    "destination": "./docs",
-    "recurse": true,
-    "template": "./node_modules/@pixi/jsdoc-template",
-    "verbose": true
-  },
   "plugins": [
     "plugins/markdown"
-  ]
+  ],
+  "opts": {
+    "destination": "./docs",
+    "readme": "./README.md",
+    "recurse": true,
+    "verbose": true,
+    "template": "./node_modules/clean-jsdoc-theme",
+    "theme_opts": {
+      "default_theme": "dark",
+      "homepageTitle": "wlLive2d",
+      "title": "wlLive2d",
+      "meta": [
+        {
+          "name": "author",
+          "content": "wonder-light"
+        },
+        {
+          "name": "description",
+          "content": "Best Clean and minimal JSDoc 3 Template/Theme"
+        }
+      ]
+    }
+  }
 }
