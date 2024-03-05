@@ -8,7 +8,7 @@
 wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 model2 与 model4 版本的 Live2D 模型，开箱即用且可定制化。  
 如果你想为你的个人网站增加一个看板娘，那么请看看这个！🥳
 
-[查阅文档]() 以了解更多详细的使用教程 🎉。
+[查阅文档](https://wonder-light.github.io/wl-live2d/) 以了解更多详细的使用教程 🎉。
 
 ## ✨ 特点：
 
@@ -24,7 +24,7 @@ wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 mo
 
 通过 CDN 方式导入的示例如下。
 
-相关配置选项的详细内容请查看: [配置选项]()
+相关配置选项的详细内容请查看: [配置选项](https://wonder-light.github.io/wl-live2d/DBaseLive2dOptions.html)
 
 在 `<body>` 标签中加入以下内容:
 
@@ -76,7 +76,7 @@ wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 mo
 
 ### ESM 使用示例
 
-相关配置选项的详细内容请查看: [配置选项]()
+相关配置选项的详细内容请查看: [配置选项](https://wonder-light.github.io/wl-live2d/DBaseLive2dOptions.html)
 
 ```js
 import { WlLive2d } from 'wl-live2d';
@@ -103,7 +103,7 @@ WlLive2d({
 });
 ```
 
-如果您想更换自己的模型或对其进行自定义，请[查阅文档]()的相关内容
+如果您想更换自己的模型或对其进行自定义，请[查阅文档](https://wonder-light.github.io/wl-live2d/)的相关内容
 
 ## 💕 鸣谢
 
