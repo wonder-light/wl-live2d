@@ -41,6 +41,11 @@
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
 
+.live2d-drag {
+  transition-duration: var(--live2d-duration), 0ms, 0ms;
+  transition-property: all, left, top;
+}
+
 .live2d-shake {
   --anim: var(--tips-anim-shake);
   animation-name: var(--anim);
@@ -137,6 +142,13 @@
     --toggle-pos-start: 35px;
     --toggle-pos-end: 20px;
     writing-mode: vertical-lr;
+  }
+}
+
+.live2d-right{
+  .live2d-menus{
+    left: 0;
+    right: auto;
   }
 }
 
