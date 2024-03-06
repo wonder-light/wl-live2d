@@ -3,6 +3,8 @@
   --tips-color: #ffffff;
   --tips-shadow: #999999;
   --tips-border-color: #ffffff;
+  --tips-translate-x: -50%;
+  --tips-translate-y: -100%;
   --menu-item: #aaaaaa;
   --menu-item-hover: #43b1ee;
   --live2d-duration: 500ms;
@@ -145,8 +147,8 @@
   }
 }
 
-.live2d-right{
-  .live2d-menus{
+.live2d-right {
+  .live2d-menus {
     left: 0;
     right: auto;
   }
@@ -154,14 +156,14 @@
 
 @keyframes live2d-shake {
   0% {
-    transform: translate(-50%, -105%) scale(0.99);
+    transform: translate(var(--tips-translate-x), calc(var(--tips-translate-y) - 5%)) scale(0.99);
   }
 
   50% {
-    transform: translate(-50%, -100%) scale(1);
+    transform: translate(var(--tips-translate-x), var(--tips-translate-y)) scale(1);
   }
 
   100% {
-    transform: translate(-50%, -105%) scale(0.99);
+    transform: translate(var(--tips-translate-x), calc(var(--tips-translate-y) - 5%)) scale(0.99);
   }
 }
