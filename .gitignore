@@ -179,6 +179,7 @@ docs/_book
 test/*
 # 因为没有忽略掉test文件夹自身，所以才能对vite-app文件夹实施不忽略
 !test/vite-app/
+!test/jest/
 
 ### Example user template template
 ### Example user template
