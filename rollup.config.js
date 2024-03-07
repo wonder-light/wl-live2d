@@ -1,17 +1,21 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from "@rollup/plugin-commonjs";
-import json from '@rollup/plugin-json';
 import babel from '@rollup/plugin-babel';
-import terser from "@rollup/plugin-terser";
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
+import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
+import nested from 'postcss-nested';
+import polyfill from 'rollup-plugin-polyfill-node';
+import postcss from 'rollup-plugin-postcss';
 
-// css
-import postcss from "rollup-plugin-postcss";
-import autoprefixer from "autoprefixer";
-import nested from "postcss-nested";
-import cssnano from "cssnano";
-
-
+const input = [
+  'lib/index.js',
+  'lib/index.cubism2.js',
+  'lib/index.cubism4.js'
+];
 const plugins = [
+  polyfill(),
   resolve({
     browser: true,
     preferBuiltins: false
@@ -22,32 +26,31 @@ const plugins = [
     plugins: [
       autoprefixer(),
       nested(),
-      cssnano(),
-    ],
+      cssnano()
+    ]
   }),
   babel({
-    babelHelpers: 'bundled',
+    babelHelpers: 'bundled'
   }),
-  terser(),
+  terser()
 ];
 
 export default [
   {
-    input: 'lib/index.js',
-    output: {
-      dir: 'dist/umd',
-      name: 'index',
-      format: 'umd'
-    },
-    plugins,
-  },
-  {
-    input: 'lib/index.js',
+    input,
     output: {
       dir: 'dist/es',
-      name: 'index',
       format: 'es'
     },
-    plugins,
+    plugins
+  },
+  {
+    input,
+    output: {
+      dir: 'dist/cjs',
+      format: 'cjs'
+    },
+    exports: 'named',
+    plugins
   }
-]
+];
