@@ -26,10 +26,10 @@ class DBaseTool {
 // control class
 class UTool {
   data: DBaseTool = new DBaseTool();
-
+  
   bind() {
   }
-
+  
   unbind() {
   }
 }
@@ -38,7 +38,7 @@ class UTool {
 class FBaseTool {
   static log() {
   }
-
+  
   static printf() {
   }
 }
