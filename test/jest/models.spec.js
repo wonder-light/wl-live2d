@@ -1,5 +1,5 @@
-const models = require('../../lib/models');
-const { FHelp } = require('../../lib/utils/index.js');
+import * as models from '../../lib/models';
+import { FHelp } from '../../lib/utils/index.js';
 
 describe('models/** - 单元测试', () => {
   // 监听 mixinProperty

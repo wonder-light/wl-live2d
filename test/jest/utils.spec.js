@@ -1,5 +1,6 @@
-const { EEvent, FLogger, FHelp } = require('../../lib/utils/index.js');
-const Mock = require('mockjs');
+import Mock from 'mockjs';
+import { EEvent, FHelp, FLogger } from '../../lib/utils/index.js';
+
 const Random = Mock.Random;
 
 describe('utils/help.js - FHelp - 单元测试', () => {

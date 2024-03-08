@@ -177,7 +177,7 @@ const config = {
     '/build/',
     '/dist/',
     '/docs/'
-  ]
+  ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

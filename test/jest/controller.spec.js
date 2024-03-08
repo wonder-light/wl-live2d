@@ -1,8 +1,135 @@
-import { UBaseController } from '../../lib/controller/index.js';
+import { EventEmitter } from 'eventemitter3';
+import defaultOptions from '../../lib/config/options.json';
+import * as controller from '../../lib/controller/index.js';
+import { UBaseController, UBaseStageController, UBaseTipsController } from '../../lib/controller/index.js';
+import { EEvent, FHelp } from '../../lib/utils/index.js';
 
-describe('controller/base - 单元测试', () => {
-  test('UBaseController', () => {
-    expect(UBaseController).toBeFunction();
-    expect(() => new UBaseController(null)).toThrow();
+const wlLive2d = jest.mocked({
+  data: defaultOptions,
+  event: new EventEmitter(),
+  app: {
+    resize() {return true;}
+  },
+  model: {
+    backgroundColor: 'transparent'
+  },
+  ref: {}
+});
+
+describe('controller class type test', () => {
+  // 测试类型
+  test.each(Object.keys(controller))('test %s is class function', (key) => {
+    expect(controller[key]).toBeFunction();
+  });
+  test('UBaseController contains keys', () => {
+    expect(UBaseController.prototype).toContainKeys([
+      'live2d', 'live2dData', 'app', 'event', 'ref', 'init', 'destroy'
+    ]);
+  });
+});
+
+describe('UBaseStageController 单元测试', () => {
+  const event = jest.spyOn(UBaseController.prototype, 'event', 'get');
+  const live2d = jest.spyOn(UBaseController.prototype, 'live2d', 'get');
+  const live2dData = jest.spyOn(UBaseController.prototype, 'live2dData', 'get');
+  const app = jest.spyOn(UBaseController.prototype, 'app', 'get');
+  const ref = jest.spyOn(UBaseController.prototype, 'ref', 'get');
+  const initFun = jest.spyOn(UBaseStageController.prototype, 'init', null);
+  const loadFun = jest.spyOn(UBaseStageController.prototype, '_onModelLoad', null);
+  const destroyFun = jest.spyOn(UBaseStageController.prototype, 'destroy', null);
+  /** @type {UBaseStageController} */
+  let stage;
+
+  test('test constructor is not null', () => {
+    expect(() => new UBaseStageController(null)).toThrow();
+    // 加入数据
+    expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
+    expect(event).toHaveBeenCalledTimes(2);
+    // 检查有效性
+    expect(stage).toBeObject();
+  });
+  test('测试 init 函数', () => {
+    wlLive2d.event.emit(EEvent.init);
+    expect(initFun).toHaveBeenCalled();
+    expect(live2d).toHaveBeenCalledTimes(1);
+    expect(live2dData).toHaveBeenCalledTimes(5);
+    expect(ref).toHaveBeenCalledTimes(1);
+    wlLive2d.data.fixed = false;
+    wlLive2d.data.transitionTime = 0;
+    expect(() => stage.init()).not.toThrow();
+    expect((() => {
+      const { parent, wrapper, canvas, tips, other } = stage;
+      return FHelp.isValid(stage) && FHelp.isValid(parent) &&
+             FHelp.isValid(wrapper) && FHelp.isValid(canvas) &&
+             FHelp.isValid(tips) && FHelp.isValid(other) &&
+             parent.contains(wrapper) && wrapper.contains(canvas) &&
+             wrapper.contains(tips) && wrapper.contains(other);
+    })()).toBeTrue();
+    wlLive2d.data.fixed = true;
+    wlLive2d.data.transitionTime = 500;
+  });
+  test('测试 fadeIn 和 fadeOut', async () => {
+    // 淡入淡出 - 默认时间 500ms
+    document.querySelector(':root').style.setProperty('--live2d-duration', '50ms');
+    let fun = (res = true) => {
+      if (res) {
+        return Promise.all([stage.fadeOut(), stage.fadeIn()]).catch(() => undefined);
+      }
+      else {
+        return Promise.all([stage.fadeIn(), stage.fadeOut()]).catch(() => undefined);
+      }
+    };
+    // 使用假的定时器
+    //jest.useFakeTimers({ advanceTimers: true });
+    jest.useRealTimers();
+    await expect(stage['_fade']().catch(() => {})).resolves.pass('通过');
+    await expect(stage['_fade'](null).catch(() => {})).resolves.pass('通过');
+    await expect(stage['_fade'](stage.menus, 'fadeOut').catch(() => {})).resolves.pass('通过');
+    await expect(stage['_fade'](stage.menus, 'fadeOut', 'fadeOut').catch(() => {})).resolves.pass('通过');
+    await expect(stage.fadeOut()).resolves.pass('通过');
+    await expect(stage.fadeIn()).resolves.pass('通过');
+    await expect(stage.fadeOut(stage.menus)).resolves.pass('通过');
+    await expect(stage.fadeIn(stage.menus)).resolves.pass('通过');
+    await expect(fun(true)).resolves.pass('通过');
+    await expect(fun(false)).resolves.pass('通过');
+    // 使用真实的定时器
+    jest.useRealTimers();
+  });
+  test('测试 getParentFromSelector 返回值', () => {
+    expect(stage.getParentFromSelector()).toEqual(document.body);
+    expect(stage.getParentFromSelector('//body')).toEqual(document.body);
+    expect(stage.getParentFromSelector('.live2d-wrapper')).toEqual(stage.wrapper);
+  });
+  test('测试 _showAndHiddenMenus 函数', () => {
+    expect(() => stage['_showAndHiddenMenus'](new MouseEvent('mouseleave'))).not.toThrow();
+    expect(() => stage['_showAndHiddenMenus']({ type: 'touchstart', touches: [{ target: stage.menus }] })).not.toThrow();
+    expect(() => stage['_showAndHiddenMenus'](new MouseEvent(''))).not.toThrow();
+  });
+  test('测试 _getTransitionDuration', () => {
+    expect(stage['_getTransitionDuration'](null)).toEqual(0);
+    stage.wrapper.style.transitionDuration = '';
+    expect(stage['_getTransitionDuration'](stage.wrapper)).toEqual(0);
+    stage.wrapper.style.transitionDuration = '0.05';
+    expect(stage['_getTransitionDuration'](stage.wrapper)).toEqual(50);
+    stage.wrapper.style.transitionDuration = '0.05s';
+    expect(stage['_getTransitionDuration'](stage.wrapper)).toEqual(50);
+    stage.wrapper.style.transitionDuration = '50ms';
+    expect(stage['_getTransitionDuration'](stage.wrapper)).toEqual(50);
+  });
+  test('测试 addMenu 和 removeMenu 函数', () => {
+    let el = document.createElement('div');
+    expect(stage.addMenu(el).menuItems).toHaveLength(1);
+    expect(stage.removeMenu(el).menuItems).toHaveLength(0);
+    expect(stage.addMenu(el).menuItems).toHaveLength(1);
+    expect(stage.addMenu(null).menuItems).toHaveLength(1);
+    expect(stage.removeMenu(null).menuItems).toHaveLength(1);
+  });
+  test('测试 _onModelLoad 和 destroy', () => {
+    wlLive2d.event.emit(EEvent.modelLoad, { width: 350, height: 400 });
+    expect(app).toHaveBeenCalledTimes(1);
+    expect(loadFun).toHaveBeenCalledTimes(1);
+    wlLive2d.event.emit(EEvent.destroy);
+    expect(ref).toHaveBeenCalledTimes(1);
+    expect(destroyFun).toHaveBeenCalledTimes(1);
   });
 });
