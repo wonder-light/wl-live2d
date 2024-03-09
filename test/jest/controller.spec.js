@@ -1,70 +1,15 @@
-import { EventEmitter } from 'eventemitter3';
-import defaultOptions from '../../lib/config/options.json';
 import * as controller from '../../lib/controller/index.js';
 import { UBaseController, UBaseModelController, UBaseStageController, UBaseTipsController, ULive2dController } from '../../lib/controller/index.js';
 import { DBaseMessage, DBaseModel } from '../../lib/models/index.js';
 import { FSentenceMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
+import val from './const/variable.js';
 
-const wlLive2d = jest.mocked({
-  data: defaultOptions,
-  event: new EventEmitter(),
-  app: {
-    stage: {
-      children: {
-        length: 0
-      },
-      removeChildren(start, end) {},
-      addChild() {}
-    },
-    renderer: {
-      destroy() {}
-    },
-    resize() {return true;}
-  },
-  model: {
-    backgroundColor: 'transparent'
-  },
-  ref: {},
-  stage: {}
-});
+const wlLive2d = jest.mocked(val.wlLive2d);
 
-const ILive2DModel = jest.mocked({
-  fromSync(url, options) {
-    const { onError } = options;
-    setTimeout(onError, 50);
-    return {
-      width: 100,
-      height: 100,
-      x: 100,
-      y: 100,
-      scale: {
-        set() {}
-      },
-      once(event, callback) {
-        setTimeout(callback, 50);
-      },
-      destroy() {},
-      on(event, callback) {
-        setTimeout(callback, 50, ['test']);
-      },
-      motion() {return false;},
-      internalModel: {
-        motionManager: {
-          on(event, callback) {
-            setTimeout(callback, 50, 'group', 0, document.createElement('audio'));
-          }
-        }
-      }
-    };
-  }
-});
+const ILive2DModel = jest.mocked(val.ILive2DModel);
 
-const PIXI = jest.mocked({
-  Application(options) {
-    return wlLive2d.app;
-  }
-});
+const PIXI = jest.mocked(val.PIXI);
 
 describe('测试控制器类型', () => {
   // 测试类型
