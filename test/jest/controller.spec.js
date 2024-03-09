@@ -1,8 +1,9 @@
 import { EventEmitter } from 'eventemitter3';
 import defaultOptions from '../../lib/config/options.json';
 import * as controller from '../../lib/controller/index.js';
-import { UBaseController, UBaseModelController, UBaseStageController, UBaseTipsController } from '../../lib/controller/index.js';
+import { UBaseController, UBaseModelController, UBaseStageController, UBaseTipsController, ULive2dController } from '../../lib/controller/index.js';
 import { DBaseMessage, DBaseModel } from '../../lib/models/index.js';
+import { FSentenceMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 
 const wlLive2d = jest.mocked({
@@ -15,6 +16,9 @@ const wlLive2d = jest.mocked({
       },
       removeChildren(start, end) {},
       addChild() {}
+    },
+    renderer: {
+      destroy() {}
     },
     resize() {return true;}
   },
@@ -53,6 +57,12 @@ const ILive2DModel = jest.mocked({
         }
       }
     };
+  }
+});
+
+const PIXI = jest.mocked({
+  Application(options) {
+    return wlLive2d.app;
   }
 });
 
@@ -338,5 +348,65 @@ describe('UBaseModelController 单元测试', () => {
   });
   test('测试 destroy', () => {
     expect(() => model.destroy()).not.toThrow();
+  });
+});
+
+describe('ULive2dController 单元测试', () => {
+  /** @type {ULive2dController} */
+  let live2d = null;
+  const initFun = jest.spyOn(ULive2dController.prototype, 'init', null);
+  test('测试 constructor', () => {
+    wlLive2d.event.removeAllListeners();
+    jest.useFakeTimers({ advanceTimers: true });
+    window.PIXI = null;
+    window.ILive2DModel = ILive2DModel;
+    expect(() => ULive2dController.create(null)).toThrow();
+    window.PIXI = { Application: null };
+    expect(() => ULive2dController.create(null)).toThrow();
+    window.PIXI = PIXI;
+    const options = {
+      plugins: [
+        null,
+        {},
+        { install() {} }
+      ]
+    };
+    const clearLoop = () => {
+      // 清除循环
+      live2d.tips._stopTips();
+      for (const plugin of live2d.plugins) {
+        // clearInterval
+        if (FHelp.is(FSentenceMessagePlugin, plugin)) {
+          expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+          break;
+        }
+      }
+    };
+    jest.runAllTimers();
+    expect(() => live2d = new ULive2dController(null)).not.toThrow();
+    clearLoop();
+    expect(initFun).toBeCalledTimes(1);
+    jest.runAllTimers();
+    expect(() => live2d = new ULive2dController(options)).not.toThrow();
+    clearLoop();
+    expect(initFun).toBeCalledTimes(2);
+    jest.runAllTimers();
+  });
+  test('测试 get 方法', () => {
+    expect(live2d.app).not.toBeNull();
+    expect(live2d.data).not.toBeNull();
+    expect(live2d.event).not.toBeNull();
+    expect(live2d.stage).not.toBeNull();
+    expect(live2d.model).not.toBeNull();
+    expect(live2d.tips).not.toBeNull();
+    expect(live2d.plugins).toBeArray();
+    expect(live2d.ref).toBeObject();
+  });
+  test('测试 uninstallPlugin', () => {
+    expect(() => live2d.uninstallPlugin(live2d.plugins[0])).not.toThrow();
+    expect(() => live2d.uninstallPlugin(null)).not.toThrow();
+  });
+  test('测试 destroy', () => {
+    expect(() => live2d.destroy()).not.toThrow();
   });
 });
