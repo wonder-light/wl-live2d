@@ -2,6 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import defaultOptions from '../../lib/config/options.json';
 import * as controller from '../../lib/controller/index.js';
 import { UBaseController, UBaseStageController, UBaseTipsController } from '../../lib/controller/index.js';
+import { DBaseMessage } from '../../lib/models/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 
 const wlLive2d = jest.mocked({
@@ -13,7 +14,8 @@ const wlLive2d = jest.mocked({
   model: {
     backgroundColor: 'transparent'
   },
-  ref: {}
+  ref: {},
+  stage: {}
 });
 
 describe('controller class type test', () => {
@@ -131,5 +133,72 @@ describe('UBaseStageController 单元测试', () => {
     wlLive2d.event.emit(EEvent.destroy);
     expect(ref).toHaveBeenCalledTimes(1);
     expect(destroyFun).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('UBaseTipsController 单元测试', () => {
+  const fadeIn = jest.spyOn(UBaseTipsController.prototype, 'fadeIn', null);
+  const destroy = jest.spyOn(UBaseTipsController.prototype, 'destroy', null);
+
+  /** @type {UBaseTipsController} */
+  let tips;
+  /** @type {UBaseStageController} */
+  let stage;
+  test('test constructor is not null', () => {
+    // 使用假的定时器
+    jest.useFakeTimers({ advanceTimers: true });
+    expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
+    wlLive2d.stage = stage;
+    stage.init();
+    expect(() => new UBaseTipsController(null)).toThrow();
+    // 加入数据
+    expect(() => tips = new UBaseTipsController(wlLive2d)).not.toThrow();
+    expect(fadeIn).toHaveBeenCalledTimes(0);
+    wlLive2d.event.emit(EEvent.fadeEnd);
+    expect(() => tips._stopTips()).not.toThrow();
+    jest.runAllTimers();
+    expect(fadeIn).toHaveBeenCalledTimes(1);
+    // 检查有效性
+    expect(tips).toBeObject();
+  });
+  test('测试 get 方法', () => {
+    expect(tips.duration).toBeNumber();
+    expect(tips.interval).toBeNumber();
+    expect(tips.messages).toBeArray();
+    expect(tips.text).toBeString();
+  });
+  test('测试 fadeIn 和 fadeOut', () => {
+    expect(() => tips._startTips()).not.toThrow();
+    expect(() => tips.fadeIn(true)).not.toThrow();
+    expect(() => tips.fadeOut(true)).not.toThrow();
+    expect(() => tips.fadeIn()).not.toThrow();
+    expect(() => tips.fadeOut()).not.toThrow();
+    expect(() => tips._stopTips()).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 notify', () => {
+    expect(() => tips.notify('123456789')).not.toThrow();
+    expect(() => tips._stopTips()).not.toThrow();
+    jest.runAllTimers();
+    jest.useRealTimers();
+  });
+  test('测试 addMessage 和 removeMessage', () => {
+    expect(tips.addMessage(null)).toEqual(tips);
+    expect(tips.removeMessage(null)).toEqual(tips);
+    let mes = new DBaseMessage();
+    expect(tips.addMessage(mes)).toEqual(tips);
+    expect(tips.removeMessage(mes)).toEqual(tips);
+  });
+  test('测试 getRandomMessage', () => {
+    expect(tips.getRandomMessage()).toBeString();
+    let mes = Array.from({ length: 20 }).map(t => new DBaseMessage({priority: -2}));
+    expect(tips.addMessage(...mes));
+    expect(tips.getRandomMessage()).toBeString();
+    mes.forEach(m => m.text = ['1', '2', '3']);
+    expect(tips.getRandomMessage()).toBeString();
+  });
+  test('测试 destroy', () => {
+    wlLive2d.event.emit(EEvent.destroy);
+    expect(destroy).toHaveBeenCalledTimes(1);
   });
 });
