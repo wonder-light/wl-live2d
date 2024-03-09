@@ -1,6 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
-import { FBasePlugin, FCapturePlugin, FDragPlugin } from '../../lib/plugins/index.js';
-import { FHelp } from '../../lib/utils/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FInfoPlugin, FQuitPlugin, FSwitchModulePlugin, FSwitchTexturePlugin } from '../../lib/plugins/index.js';
+import { EEvent, FHelp } from '../../lib/utils/index.js';
 import { ILive2DModel, PIXI as PIXIJS } from './const/variable.js';
 
 
@@ -17,15 +17,13 @@ window.visualViewport = {
   width: 20,
   height: 20
 };
+window.open = () => {};
 
 describe('plugins 测试', () => {
   /** @type {ULive2dController} */
   let live2d;
   let enable = true;
-  const enableFun = jest.spyOn(FBasePlugin.prototype, 'isEnable', null).mockImplementation(() => {
-    return enable;
-  });
-  const screen = jest.spyOn(window, 'screen', 'get').mockImplementation(() => {
+  jest.spyOn(window, 'screen', 'get').mockImplementation(() => {
     return {
       width: 20,
       height: 20
@@ -46,13 +44,15 @@ describe('plugins 测试', () => {
     expect(FBasePlugin.prototype['install']).toBeFunction();
     expect(FBasePlugin.prototype['uninstall']).toBeFunction();
   });
+
   test('测试 capture', async () => {
+    const captureEnableFun = jest.spyOn(FCapturePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
     // enable = false;
-    enableFun.mockClear();
+    captureEnableFun.mockClear();
     enable = false;
     let plugin = new FCapturePlugin;
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(enableFun).toBeCalledTimes(1);
+    expect(captureEnableFun).toBeCalledTimes(1);
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
     // enable = true;
     enable = true;
@@ -61,24 +61,21 @@ describe('plugins 测试', () => {
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     await expect(plugin.downloadImage()).resolves.not.toThrow();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(enableFun).toBeCalledTimes(2);
+    expect(captureEnableFun).toBeCalledTimes(2);
     // 测试 base isEnable
-    // 恢复原始（非模拟）实现
-    enableFun.mockRestore();
+    captureEnableFun.mockRestore();
     expect(plugin.isEnable()).toBeTrue();
     live2d.data.menus = [];
     expect(plugin.isEnable()).toBeFalse();
     live2d.data.menus = ['capture'];
     expect(plugin.isEnable()).toBeTrue();
     live2d.data.menus = null;
-    // 回复模拟操作
-    enableFun.mockImplementation(enableFun.getMockImplementation());
   });
 
-  const dragEnable = jest.spyOn(FDragPlugin.prototype, 'isEnable', null).mockImplementation(() => {
-    return enable;
-  });
   test('测试 FDragPlugin', () => {
+    const dragEnable = jest.spyOn(FDragPlugin.prototype, 'isEnable', null).mockImplementation(() => {
+      return enable;
+    });
     let plugin = new FDragPlugin;
     enable = false;
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
@@ -103,5 +100,77 @@ describe('plugins 测试', () => {
     expect(plugin['_getWidthHeight']()).toBeObject();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
     expect(dragEnable).toBeCalledTimes(2);
+  });
+
+  test('测试 FInfoPlugin', () => {
+    const infoEnable = jest.spyOn(FInfoPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new FInfoPlugin;
+    enable = false;
+    infoEnable.mockClear();
+    enable = false;
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(infoEnable).toBeCalledTimes(1);
+    enable = true;
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(infoEnable).toBeCalledTimes(2);
+    expect(() => plugin.openDocs()).not.toThrow();
+  });
+
+  test('测试 FQuitPlugin', async () => {
+    let quitLeftValue = 20;
+    jest.spyOn(live2d.stage.wrapper, 'offsetLeft', 'get').mockImplementation(() => quitLeftValue);
+    const quitEnable = jest.spyOn(FQuitPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+
+    let plugin = new FQuitPlugin;
+    enable = false;
+    quitEnable.mockClear();
+    enable = false;
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(quitEnable).toBeCalledTimes(1);
+    enable = true;
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(quitEnable).toBeCalledTimes(2);
+    // 安装
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    quitLeftValue = 20;
+    expect(plugin.isRight()).toBeTrue();
+    plugin._show.classList.remove('live2d-right');
+    expect(() => plugin.hiddenLive2d()).not.toThrow();
+    jest.runAllTimers();
+    quitLeftValue = 10;
+    expect(plugin.isRight()).toBeFalse();
+    expect(() => plugin.showLive2d()).not.toThrow();
+    live2d.event.emit(EEvent.modelLoad, { width: 300, height: 400 });
+    jest.runAllTimers();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(quitEnable).toBeCalledTimes(3);
+  });
+
+  test('测试 FBaseSwitchPlugin', async () => {
+    const baseEnable = jest.spyOn(FBaseSwitchPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    const swi = (plugin) => {
+      baseEnable.mockClear();
+      enable = false;
+      expect(() => live2d.installPlugin(plugin)).not.toThrow();
+      expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+      expect(baseEnable).toBeCalledTimes(1);
+      enable = true;
+      expect(() => live2d.installPlugin(plugin)).not.toThrow();
+      expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+      expect(baseEnable).toBeCalledTimes(2);
+      expect(() => plugin.switch()).not.toThrow();
+      jest.runAllTimers();
+    };
+    // 模型切换
+    let plugin = new FSwitchModulePlugin;
+    expect(() => swi(plugin)).not.toThrow();
+
+    // 服装
+    plugin = new FSwitchTexturePlugin;
+    expect(() => swi(plugin)).not.toThrow();
   });
 });
