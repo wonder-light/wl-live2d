@@ -1,14 +1,21 @@
 import { EventEmitter } from 'eventemitter3';
 import defaultOptions from '../../lib/config/options.json';
 import * as controller from '../../lib/controller/index.js';
-import { UBaseController, UBaseStageController, UBaseTipsController } from '../../lib/controller/index.js';
-import { DBaseMessage } from '../../lib/models/index.js';
+import { UBaseController, UBaseModelController, UBaseStageController, UBaseTipsController } from '../../lib/controller/index.js';
+import { DBaseMessage, DBaseModel } from '../../lib/models/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 
 const wlLive2d = jest.mocked({
   data: defaultOptions,
   event: new EventEmitter(),
   app: {
+    stage: {
+      children: {
+        length: 0
+      },
+      removeChildren(start, end) {},
+      addChild() {}
+    },
     resize() {return true;}
   },
   model: {
@@ -18,7 +25,38 @@ const wlLive2d = jest.mocked({
   stage: {}
 });
 
-describe('controller class type test', () => {
+const ILive2DModel = jest.mocked({
+  fromSync(url, options) {
+    const { onError } = options;
+    setTimeout(onError, 50);
+    return {
+      width: 100,
+      height: 100,
+      x: 100,
+      y: 100,
+      scale: {
+        set() {}
+      },
+      once(event, callback) {
+        setTimeout(callback, 50);
+      },
+      destroy() {},
+      on(event, callback) {
+        setTimeout(callback, 50, ['test']);
+      },
+      motion() {return false;},
+      internalModel: {
+        motionManager: {
+          on(event, callback) {
+            setTimeout(callback, 50, 'group', 0, document.createElement('audio'));
+          }
+        }
+      }
+    };
+  }
+});
+
+describe('测试控制器类型', () => {
   // 测试类型
   test.each(Object.keys(controller))('test %s is class function', (key) => {
     expect(controller[key]).toBeFunction();
@@ -42,7 +80,8 @@ describe('UBaseStageController 单元测试', () => {
   /** @type {UBaseStageController} */
   let stage;
 
-  test('test constructor is not null', () => {
+  test('测试 constructor', () => {
+    wlLive2d.event.removeAllListeners();
     expect(() => new UBaseStageController(null)).toThrow();
     // 加入数据
     expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
@@ -144,9 +183,10 @@ describe('UBaseTipsController 单元测试', () => {
   let tips;
   /** @type {UBaseStageController} */
   let stage;
-  test('test constructor is not null', () => {
+  test('测试 constructor', () => {
     // 使用假的定时器
     jest.useFakeTimers({ advanceTimers: true });
+    wlLive2d.event.removeAllListeners();
     expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
     wlLive2d.stage = stage;
     stage.init();
@@ -191,7 +231,7 @@ describe('UBaseTipsController 单元测试', () => {
   });
   test('测试 getRandomMessage', () => {
     expect(tips.getRandomMessage()).toBeString();
-    let mes = Array.from({ length: 20 }).map(t => new DBaseMessage({priority: -2}));
+    let mes = Array.from({ length: 20 }).map(t => new DBaseMessage({ priority: -2 }));
     expect(tips.addMessage(...mes));
     expect(tips.getRandomMessage()).toBeString();
     mes.forEach(m => m.text = ['1', '2', '3']);
@@ -200,5 +240,103 @@ describe('UBaseTipsController 单元测试', () => {
   test('测试 destroy', () => {
     wlLive2d.event.emit(EEvent.destroy);
     expect(destroy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('UBaseModelController 单元测试', () => {
+  /** @type {UBaseModelController} */
+  let model;
+  /** @type {UBaseStageController} */
+  let stage;
+  /** @type {UBaseTipsController} */
+  let tips;
+  test('测试 constructor', () => {
+    // 使用假的定时器
+    jest.useFakeTimers({ advanceTimers: true });
+    wlLive2d.event.removeAllListeners();
+    expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
+    expect(() => stage.init()).not.toThrow();
+    wlLive2d.stage = stage;
+    expect(() => tips = new UBaseTipsController(wlLive2d)).not.toThrow();
+    wlLive2d.tips = tips;
+    expect(() => new UBaseModelController(null)).toThrow();
+    expect(() => new UBaseModelController(wlLive2d, null)).not.toThrow();
+    let models = [
+      [
+        new DBaseModel({ path: 'http', width: 100, height: 100, position: {} }),
+        new DBaseModel({ path: 'http', width: null, height: null, position: null })
+      ],
+      [new DBaseModel()],
+      new DBaseModel()
+    ];
+    expect(() => model = new UBaseModelController(wlLive2d, models)).not.toThrow();
+    model._data[0][0].scale = null;
+    model._data[0][1].scale = 1;
+  });
+  test('测试 init', () => {
+    window.ILive2DModel = ILive2DModel;
+    expect(() => model.init()).not.toThrow();
+    let data = model._data;
+    model._data = [];
+    expect(model.backgroundColor).toBeString();
+    model._data = [[]];
+    expect(model.backgroundColor).toBeString();
+    model._data = data;
+    expect(model.backgroundColor).toBeString();
+  });
+  test('测试 motion', () => {
+    expect(model.currentMotion).toBeNull();
+    expect(() => model.motion()).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 loadModel', () => {
+    let data = model._data;
+    model._data = [];
+    expect(() => model.loadModel(0)).not.toThrow();
+    model._data = data;
+    expect(() => model.loadModel(0)).not.toThrow();
+    expect(() => model.loadModel(0, 1)).not.toThrow();
+    expect(() => model.loadModel(1, 0)).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 switchModel', () => {
+    expect(() => model.switchModel(0)).not.toThrow();
+    expect(() => model.switchModel(0, 1)).not.toThrow();
+    expect(() => model.switchModel(1, 0)).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 nextModel', () => {
+    let data = model._data;
+    model._data = [];
+    expect(() => model.nextModel()).not.toThrow();
+    model._data = data;
+    model._modelId = 1;
+    expect(() => model.nextModel()).not.toThrow();
+    expect(() => model.nextModel()).not.toThrow();
+    expect(model._modelId).toEqual(0);
+    expect(() => wlLive2d.tips._stopTips()).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 nextTexture', () => {
+    model._modelId = 1;
+    model._textureId = 0;
+    expect(() => model.nextTexture()).not.toThrow();
+    model._modelId = 0;
+    expect(() => model.nextTexture()).not.toThrow();
+    expect(() => wlLive2d.tips._stopTips()).not.toThrow();
+    jest.runAllTimers();
+    expect(() => model.nextTexture()).not.toThrow();
+    expect(() => wlLive2d.tips._stopTips()).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 resetModel', () => {
+    expect(() => model.resetModel()).not.toThrow();
+    jest.runAllTimers();
+  });
+  test('测试 hasOutfit', () => {
+    expect(() => model.hasOutfit()).not.toThrow();
+  });
+  test('测试 destroy', () => {
+    expect(() => model.destroy()).not.toThrow();
   });
 });
