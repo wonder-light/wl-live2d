@@ -14,6 +14,15 @@ export const wlLive2d = {
       addChild() {}
     },
     renderer: {
+      plugins:{
+        extract:{
+          image(){
+            let img = document.createElement('img');
+            img.setAttribute('src', 'https://jest-extended.jestcommunity.dev/img/logo.png');
+            return img;
+          }
+        }
+      },
       destroy() {}
     },
     resize() {return true;}
