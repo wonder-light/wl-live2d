@@ -43,6 +43,10 @@
   "bugs": {
     "url": "https://github.com/wonder-light/wl-live2d/issues"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "test": "jest",
     "dev": "pnpm -F ./test/vite-app run dev || npm --prefix ./test/vite-app run dev",
