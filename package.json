@@ -2,14 +2,46 @@
   "name": "wl-live2d",
   "version": "1.0.0",
   "description": "Live2D for web, 这是一个运行在浏览器环境的 Live2D 看板组件",
-  "main": "lib/index.ts",
+  "author": "wonder-light",
+  "license": "MIT",
+  "keywords": [
+    "live2d",
+    "wl-live2d",
+    "cubism2",
+    "cubism4",
+    "web",
+    "component"
+  ],
+  "homepage": "https://wonder-light.github.io/wl-live2d/",
   "type": "module",
-  "directories": {
-    "lib": "lib"
+  "main": "./dist/es/index.js",
+  "module": "./dist/es/index.js",
+  "unpkg": "./dist/es/index.js",
+  "jsdelivr": "./dist/es/index.js",
+  "exports": {
+    ".":{
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/es/index.js",
+      "default": "./dist/es/index.js"
+    },
+    "./es/*":"./dist/es/index.js",
+    "./cjs/*":"./dist/cjs/index.js",
+    "./umd/*":"./dist/umd/index.js",
+    "./dist/*":"./dist/*.js",
+    "./es/": "./es/",
+    "./cjs/": "./cjs/",
+    "./umd/": "./umd/",
+    "./dist/": "./dist/"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/wonder-light/wl-live2d.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wonder-light/wl-live2d/issues"
   },
   "scripts": {
     "test:jest": "jest",
@@ -17,12 +49,6 @@
     "docs": "rimraf docs && jsdoc -c doc.config.json",
     "build": "rimraf dist && rollup -c rollup.config.js"
   },
-  "keywords": [
-    "live2d",
-    "wl-live2d"
-  ],
-  "author": "wonder-light",
-  "license": "ISC",
   "dependencies": {
     "eventemitter3": "^5.0.1",
     "pixi-live2d-display": "^0.4.0",
