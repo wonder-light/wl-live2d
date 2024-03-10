@@ -1,5 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FInfoPlugin, FQuitPlugin, FSwitchModulePlugin, FSwitchTexturePlugin } from '../../lib/plugins/index.js';
+import { DBaseMessage } from '../../lib/models/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import { ILive2DModel, PIXI as PIXIJS } from './const/variable.js';
 
@@ -7,6 +8,15 @@ import { ILive2DModel, PIXI as PIXIJS } from './const/variable.js';
 const PIXI = jest.mocked(PIXIJS);
 global.fetch = jest.fn(async (input, init) => {
   return {
+    json() {
+      return Promise.reject({ hitokoto: {} });
+    },
+    text() {
+      if (/tenapi/.test(input)) {
+        return input;
+      }
+      return Promise.reject({});
+    },
     blob() {
       return input;
     }
@@ -29,6 +39,18 @@ describe('plugins 测试', () => {
       height: 20
     };
   });
+  const testPlugin = (plugin, baseEnable) => {
+    baseEnable.mockClear();
+    enable = false;
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(baseEnable).toBeCalledTimes(1);
+    enable = true;
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    expect(baseEnable).toBeCalledTimes(2);
+    jest.runAllTimers();
+  };
 
   test('测试 base', () => {
     jest.useFakeTimers();
@@ -103,37 +125,19 @@ describe('plugins 测试', () => {
   });
 
   test('测试 FInfoPlugin', () => {
-    const infoEnable = jest.spyOn(FInfoPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    const baseEnable = jest.spyOn(FInfoPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
     let plugin = new FInfoPlugin;
-    enable = false;
-    infoEnable.mockClear();
-    enable = false;
-    expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(infoEnable).toBeCalledTimes(1);
-    enable = true;
-    expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(infoEnable).toBeCalledTimes(2);
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
     expect(() => plugin.openDocs()).not.toThrow();
   });
 
   test('测试 FQuitPlugin', async () => {
     let quitLeftValue = 20;
     jest.spyOn(live2d.stage.wrapper, 'offsetLeft', 'get').mockImplementation(() => quitLeftValue);
-    const quitEnable = jest.spyOn(FQuitPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    const baseEnable = jest.spyOn(FQuitPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
 
     let plugin = new FQuitPlugin;
-    enable = false;
-    quitEnable.mockClear();
-    enable = false;
-    expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(quitEnable).toBeCalledTimes(1);
-    enable = true;
-    expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(quitEnable).toBeCalledTimes(2);
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
     // 安装
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     quitLeftValue = 20;
@@ -147,30 +151,68 @@ describe('plugins 测试', () => {
     live2d.event.emit(EEvent.modelLoad, { width: 300, height: 400 });
     jest.runAllTimers();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(quitEnable).toBeCalledTimes(3);
+    expect(baseEnable).toBeCalledTimes(3);
   });
 
   test('测试 FBaseSwitchPlugin', async () => {
     const baseEnable = jest.spyOn(FBaseSwitchPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new FSwitchModulePlugin;
     const swi = (plugin) => {
-      baseEnable.mockClear();
-      enable = false;
-      expect(() => live2d.installPlugin(plugin)).not.toThrow();
-      expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-      expect(baseEnable).toBeCalledTimes(1);
-      enable = true;
-      expect(() => live2d.installPlugin(plugin)).not.toThrow();
-      expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-      expect(baseEnable).toBeCalledTimes(2);
+      expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
       expect(() => plugin.switch()).not.toThrow();
       jest.runAllTimers();
     };
     // 模型切换
-    let plugin = new FSwitchModulePlugin;
     expect(() => swi(plugin)).not.toThrow();
-
     // 服装
     plugin = new FSwitchTexturePlugin;
     expect(() => swi(plugin)).not.toThrow();
+  });
+
+  test.each([
+    { classes: FNullMessagePlugin, name: 'FNullMessagePlugin' },
+    { classes: FHourMessagePlugin, name: 'FHourMessagePlugin' },
+    { classes: FSeasonsMessagePlugin, name: 'FSeasonsMessagePlugin' },
+    { classes: FSentenceMessagePlugin, name: 'FSentenceMessagePlugin' }
+  ])('测试 $name', async ({ classes }) => {
+    const baseEnable = jest.spyOn(classes.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new classes;
+    let messages = Array.from({ length: 10 }, () => new DBaseMessage({ type: plugin['_type'] }));
+    let message = messages[0];
+    live2d.tips.messages.splice(0, live2d.tips.messages.length);
+    live2d.tips.messages.push(...messages);
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    if (classes === FNullMessagePlugin) {
+      expect(message.condition()).toBeTrue();
+    }
+    else if (classes === FSentenceMessagePlugin) {
+      let message = plugin._message;
+      // 去掉定时器
+      clearInterval(plugin._handler);
+      expect(message.condition()).toBeFalse();
+      jest.runAllTimers();
+      await expect(plugin.getSentence()).resolves.pass('通过');
+      expect(message.condition()).toBeTrue();
+      expect(message.condition()).toBeFalse();
+    }
+    else {
+      const now = new Date();
+      const hour = now.getHours();
+      const day = now.getDate();
+      const mon = now.getMonth() + 1;
+      messages.forEach(m => (m.once = false));
+      expect(message.type).toEqual(plugin['_type']);
+      messages.forEach(m => (m.hour = null) || (m.date = null));
+      expect(message.condition()).toBeFalse();
+      messages.forEach(m => (m.hour = `${ hour }`) && (m.date = `${ mon }/${ day }`));
+      expect(message.condition()).toBeTrue();
+      messages.forEach(m => (m.hour = `${ hour }-${ hour }`) && (m.date = `${ mon }/${ day }`));
+      expect(message.condition()).toBeTrue();
+      messages.forEach(m => (m.once = true));
+      expect(message.condition()).toBeTrue();
+      expect(message.condition()).toBeFalse();
+    }
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
   });
 });
