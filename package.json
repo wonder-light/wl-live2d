@@ -44,8 +44,8 @@
     "url": "https://github.com/wonder-light/wl-live2d/issues"
   },
   "scripts": {
-    "test:jest": "jest",
-    "test:app": "pnpm -F ./test/vite-app run dev || npm --prefix ./test/vite-app run dev",
+    "test": "jest",
+    "dev": "pnpm -F ./test/vite-app run dev || npm --prefix ./test/vite-app run dev",
     "docs": "rimraf docs && jsdoc -c doc.config.json",
     "build": "rimraf dist && rollup -c rollup.config.js"
   },
