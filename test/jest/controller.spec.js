@@ -67,27 +67,33 @@ describe('UBaseStageController 单元测试', () => {
   test('测试 fadeIn 和 fadeOut', async () => {
     // 淡入淡出 - 默认时间 500ms
     document.querySelector(':root').style.setProperty('--live2d-duration', '50ms');
+    /**
+     * @template T
+     * @param {Promise<T>} pro
+     * @return {Promise<T>}
+     */
+    const cat = (pro) => pro.then(() => {}).catch(() => {});
     let fun = (res = true) => {
       if (res) {
-        return Promise.all([stage.fadeOut(), stage.fadeIn()]).catch(() => undefined);
+        return Promise.all([cat(stage.fadeOut()), cat(stage.fadeIn())]);
       }
       else {
-        return Promise.all([stage.fadeIn(), stage.fadeOut()]).catch(() => undefined);
+        return Promise.all([cat(stage.fadeIn()), cat(stage.fadeOut())]);
       }
     };
     // 使用假的定时器
     //jest.useFakeTimers({ advanceTimers: true });
     jest.useRealTimers();
-    await expect(stage['_fade']().catch(() => {})).resolves.pass('通过');
-    await expect(stage['_fade'](null).catch(() => {})).resolves.pass('通过');
-    await expect(stage['_fade'](stage.menus, 'fadeOut').catch(() => {})).resolves.pass('通过');
-    await expect(stage['_fade'](stage.menus, 'fadeOut', 'fadeOut').catch(() => {})).resolves.pass('通过');
-    await expect(stage.fadeOut()).resolves.pass('通过');
-    await expect(stage.fadeIn()).resolves.pass('通过');
-    await expect(stage.fadeOut(stage.menus)).resolves.pass('通过');
-    await expect(stage.fadeIn(stage.menus)).resolves.pass('通过');
-    await expect(fun(true)).resolves.pass('通过');
-    await expect(fun(false)).resolves.pass('通过');
+    await expect(cat(stage['_fade']())).resolves.pass('通过');
+    await expect(cat(stage['_fade'](null))).resolves.pass('通过');
+    await expect(cat(stage['_fade'](stage.menus, 'fadeOut'))).resolves.pass('通过');
+    await expect(cat(stage['_fade'](stage.menus, 'fadeOut', 'fadeOut'))).resolves.pass('通过');
+    await expect(cat(stage.fadeOut())).resolves.pass('通过');
+    await expect(cat(stage.fadeIn())).resolves.pass('通过');
+    await expect(cat(stage.fadeOut(stage.menus))).resolves.pass('通过');
+    await expect(cat(stage.fadeIn(stage.menus))).resolves.pass('通过');
+    await expect(cat(fun(true))).resolves.pass('通过');
+    await expect(cat(fun(false))).resolves.pass('通过');
     // 使用真实的定时器
     jest.useRealTimers();
   });
@@ -150,7 +156,10 @@ describe('UBaseTipsController 单元测试', () => {
     expect(() => tips = new UBaseTipsController(wlLive2d)).not.toThrow();
     expect(fadeIn).toHaveBeenCalledTimes(0);
     wlLive2d.event.emit(EEvent.fadeEnd);
-    expect(() => tips._stopTips()).not.toThrow();
+    // 将所有计时器按msToRun毫秒推进。所有被setTimeout()、setInterval()和 setImmediate() 排队的宏任务将在这个时间范围内执行
+    jest.advanceTimersByTime(1000);
+    expect(() => tips._stopFade()).not.toThrow();
+    expect(tips['_stop']).toBeTrue();
     jest.runAllTimers();
     expect(fadeIn).toHaveBeenCalledTimes(1);
     // 检查有效性
@@ -163,17 +172,28 @@ describe('UBaseTipsController 单元测试', () => {
     expect(tips.text).toBeString();
   });
   test('测试 fadeIn 和 fadeOut', () => {
-    expect(() => tips._startTips()).not.toThrow();
-    expect(() => tips.fadeIn(true)).not.toThrow();
-    expect(() => tips.fadeOut(true)).not.toThrow();
-    expect(() => tips.fadeIn()).not.toThrow();
-    expect(() => tips.fadeOut()).not.toThrow();
-    expect(() => tips._stopTips()).not.toThrow();
+    expect(() => tips._startFade()).not.toThrow();
+    expect(() => tips.fadeIn(true).catch(FHelp.F)).not.toThrow();
+    expect(() => tips.fadeOut(true).catch(FHelp.F)).not.toThrow();
+    expect(() => tips.fadeIn().catch(FHelp.F)).not.toThrow();
+    expect(() => tips.fadeOut().catch(FHelp.F)).not.toThrow();
+    tips['_showId'] = tips['_hiddenId'] = 10;
+    expect(() => tips.fadeIn(true).catch(FHelp.F)).not.toThrow();
+    expect(() => tips.fadeOut(true).catch(FHelp.F)).not.toThrow();
+    expect(() => tips._stopFade()).not.toThrow();
+    jest.runAllTimers();
+    // 测试无消息时的调用
+    tips.messages.splice(0, tips.messages.length);
+    expect(() => tips._startFade()).not.toThrow();
+    jest.advanceTimersByTime(10000);
+    tips.messages.push(...wlLive2d.data.tips.message);
+    jest.advanceTimersByTime(10000);
+    expect(() => tips._stopFade()).not.toThrow();
     jest.runAllTimers();
   });
   test('测试 notify', () => {
     expect(() => tips.notify('123456789')).not.toThrow();
-    expect(() => tips._stopTips()).not.toThrow();
+    expect(() => tips._stopFade()).not.toThrow();
     jest.runAllTimers();
     jest.useRealTimers();
   });
@@ -185,6 +205,7 @@ describe('UBaseTipsController 单元测试', () => {
     expect(tips.removeMessage(mes)).toEqual(tips);
   });
   test('测试 getRandomMessage', () => {
+    tips.messages.splice(0, tips.messages.length);
     expect(tips.getRandomMessage()).toBeString();
     let mes = Array.from({ length: 20 }).map(t => new DBaseMessage({ priority: -2 }));
     expect(tips.addMessage(...mes));
@@ -212,7 +233,7 @@ describe('UBaseModelController 单元测试', () => {
     expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
     expect(() => stage.init()).not.toThrow();
     wlLive2d.stage = stage;
-    expect(() => tips = new UBaseTipsController(wlLive2d)).not.toThrow();
+    expect(() => tips = new UBaseTipsController(wlLive2d, wlLive2d.data.tips)).not.toThrow();
     wlLive2d.tips = tips;
     expect(() => new UBaseModelController(null)).toThrow();
     expect(() => new UBaseModelController(wlLive2d, null)).not.toThrow();
@@ -261,27 +282,32 @@ describe('UBaseModelController 单元测试', () => {
     jest.runAllTimers();
   });
   test('测试 nextModel', () => {
+    jest.runAllTimers();
     let data = model._data;
     model._data = [];
     expect(() => model.nextModel()).not.toThrow();
     model._data = data;
-    model._modelId = 1;
+    model._modelId = 0;
     expect(() => model.nextModel()).not.toThrow();
+    expect(model._modelId).toEqual(1);
+    expect(() => model.nextModel()).not.toThrow();
+    expect(model._modelId).toEqual(2);
     expect(() => model.nextModel()).not.toThrow();
     expect(model._modelId).toEqual(0);
-    expect(() => wlLive2d.tips._stopTips()).not.toThrow();
+    expect(() => wlLive2d.tips._stopFade()).not.toThrow();
     jest.runAllTimers();
   });
   test('测试 nextTexture', () => {
+    jest.useFakeTimers();
     model._modelId = 1;
     model._textureId = 0;
     expect(() => model.nextTexture()).not.toThrow();
     model._modelId = 0;
+    model._textureId = 0;
     expect(() => model.nextTexture()).not.toThrow();
-    expect(() => wlLive2d.tips._stopTips()).not.toThrow();
-    jest.runAllTimers();
+    model._textureId = 1;
     expect(() => model.nextTexture()).not.toThrow();
-    expect(() => wlLive2d.tips._stopTips()).not.toThrow();
+    expect(() => wlLive2d.tips._stopFade()).not.toThrow();
     jest.runAllTimers();
   });
   test('测试 resetModel', () => {
@@ -318,7 +344,7 @@ describe('ULive2dController 单元测试', () => {
     };
     const clearLoop = () => {
       // 清除循环
-      live2d.tips._stopTips();
+      live2d.tips._stopFade();
       for (const plugin of live2d.plugins) {
         // clearInterval
         if (FHelp.is(FSentenceMessagePlugin, plugin)) {
@@ -348,6 +374,9 @@ describe('ULive2dController 单元测试', () => {
     expect(live2d.ref).toBeObject();
   });
   test('测试 uninstallPlugin', () => {
+    let length = live2d.plugins.length;
+    expect(()=>live2d.installPlugin({})).not.toThrow();
+    expect(live2d.plugins.length).toEqual(length)
     expect(() => live2d.uninstallPlugin(live2d.plugins[0])).not.toThrow();
     expect(() => live2d.uninstallPlugin(null)).not.toThrow();
   });

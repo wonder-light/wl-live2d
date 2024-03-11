@@ -32,7 +32,146 @@
       "path": "https://fastly.jsdelivr.net/gh/Eikanya/Live2d-model/%E5%B4%A9%E5%9D%8F%E5%AD%A6%E5%9B%AD2/yiselin/model.json"
     }
   ],
-  "tips": {},
+  "tips": {
+    "message": [
+      {
+        "text": "欢迎光临"
+      },
+      {
+        "text": "好久不见，日子过得好快呢……"
+      },
+      {
+        "text": "大坏蛋！你都多久没理人家了呀，嘤嘤嘤～"
+      },
+      {
+        "text": "嗨～快来逗我玩吧！"
+      },
+      {
+        "text": "拿小拳拳锤你胸口！"
+      },
+      {
+        "text": "记得把小家加入收藏夹哦！"
+      },
+      {
+        "type": "seasons",
+        "date": "01/01",
+        "text": "<span>元旦</span>了呢，新的一年又开始了，今年是{year}年～"
+      },
+      {
+        "type": "seasons",
+        "date": "02/14",
+        "text": "又是一年<span>情人节</span>，{year}年找到对象了嘛～"
+      },
+      {
+        "type": "seasons",
+        "date": "03/08",
+        "text": "今天是<span>国际妇女节</span>！"
+      },
+      {
+        "type": "seasons",
+        "date": "03/12",
+        "text": "今天是<span>植树节</span>，要保护环境呀！"
+      },
+      {
+        "type": "seasons",
+        "date": "04/01",
+        "text": "悄悄告诉你一个秘密～<span>今天是愚人节，不要被骗了哦～</span>"
+      },
+      {
+        "type": "seasons",
+        "date": "05/01",
+        "text": "今天是<span>五一劳动节</span>，计划好假期去哪里了吗～"
+      },
+      {
+        "type": "seasons",
+        "date": "06/01",
+        "text": "<span>儿童节</span>了呢，快活的时光总是短暂，要是永远长不大该多好啊…"
+      },
+      {
+        "type": "seasons",
+        "date": "09/03",
+        "text": "<span>中国人民抗日战争胜利纪念日</span>，铭记历史、缅怀先烈、珍爱和平、开创未来。"
+      },
+      {
+        "type": "seasons",
+        "date": "09/10",
+        "text": "<span>教师节</span>，在学校要给老师问声好呀～"
+      },
+      {
+        "type": "seasons",
+        "date": "10/01",
+        "text": "<span>国庆节</span>到了，为祖国母亲庆生！"
+      },
+      {
+        "type": "seasons",
+        "date": "11/05-11/12",
+        "text": "今年的<span>双十一</span>是和谁一起过的呢～"
+      },
+      {
+        "type": "seasons",
+        "date": "12/20-12/31",
+        "text": "这几天是<span>圣诞节</span>，主人肯定又去剁手买买买了～"
+      },
+      {
+        "type": "hour",
+        "hour": "6-7",
+        "text": "早上好！一日之计在于晨，美好的一天就要开始了～"
+      },
+      {
+        "type": "hour",
+        "hour": "8-11",
+        "text": "上午好！工作顺利嘛，不要久坐，多起来走动走动哦！"
+      },
+      {
+        "type": "hour",
+        "hour": "12-13",
+        "text": "中午了，工作了一个上午，现在是午餐时间！"
+      },
+      {
+        "type": "hour",
+        "hour": "14-17",
+        "text": "午后很容易犯困呢，今天的运动目标完成了吗？"
+      },
+      {
+        "type": "hour",
+        "hour": "18-19",
+        "text": "傍晚了！窗外夕阳的景色很美丽呢，最美不过夕阳红～"
+      },
+      {
+        "type": "hour",
+        "hour": "20-21",
+        "text": "晚上好，今天过得怎么样？"
+      },
+      {
+        "type": "hour",
+        "hour": "22-23",
+        "text": [
+          "已经这么晚了呀，早点休息吧，晚安～",
+          "深夜时要爱护眼睛呀！"
+        ]
+      },
+      {
+        "type": "hour",
+        "hour": "0-5",
+        "text": "你是夜猫子呀？这么晚还不睡觉，明天起的来嘛？"
+      },
+      {
+        "type": "event",
+        "event": "console",
+        "text": "哈哈，你打开了控制台，是想要看看我的小秘密吗？"
+      },
+      {
+        "type": "event",
+        "event": "copy",
+        "text": "你都复制了些什么呀，转载要记得加上出处哦！"
+      },
+      {
+        "type": "event",
+        "event": "visibilitychange",
+        "text": "哇，你终于回来了～"
+      }
+    ]
+  },
   "selector": "",
   "fixed": true
 }

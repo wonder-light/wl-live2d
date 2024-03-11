@@ -58,7 +58,7 @@ describe('plugins 测试', () => {
     window.ILive2DModel = ILive2DModel;
     expect(() => live2d = ULive2dController.create()).not.toThrow();
     // 停止循环
-    live2d.tips._stopTips();
+    live2d.tips._stopFade();
     // 卸载插件
     live2d.uninstallPlugin(...live2d.plugins);
     jest.runAllTimers();
