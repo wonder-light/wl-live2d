@@ -1,40 +1,29 @@
-// 变量
-import { EventEmitter } from 'eventemitter3';
-import defaultOptions from '../../../lib/config/options.json';
-
-export const wlLive2d = {
-  data: defaultOptions,
-  event: new EventEmitter(),
-  app: {
-    stage: {
-      children: {
-        length: 0
-      },
-      removeChildren(start, end) {},
-      addChild() {}
+// app 变量
+const app = {
+  stage: {
+    children: {
+      length: 0
     },
-    renderer: {
-      plugins:{
-        extract:{
-          image(){
-            let img = document.createElement('img');
-            img.setAttribute('src', 'https://jest-extended.jestcommunity.dev/img/logo.png');
-            return img;
-          }
+    removeChildren(start, end) {},
+    addChild() {}
+  },
+  renderer: {
+    plugins: {
+      extract: {
+        image() {
+          let img = document.createElement('img');
+          img.setAttribute('src', 'https://jest-extended.jestcommunity.dev/img/logo.png');
+          return img;
         }
-      },
-      destroy() {}
+      }
     },
-    resize() {return true;}
+    destroy() {}
   },
-  model: {
-    backgroundColor: 'transparent'
-  },
-  ref: {},
-  stage: {}
+  resize() {return true;}
 };
+
 export const ILive2DModel = {
-  fromSync(url, options) {
+  from(url, options) {
     const { onError } = options;
     setTimeout(onError, 50);
     return {
@@ -63,17 +52,19 @@ export const ILive2DModel = {
     };
   }
 };
+
 export const PIXI = {
   utils: {
     skipHello() {}
   },
   Application(options) {
-    return val.wlLive2d.app;
+    return app;
   }
 };
+
 export const val = {
-  wlLive2d,
   ILive2DModel,
   PIXI
 };
+
 export default val;
