@@ -357,20 +357,21 @@ describe('UBaseModelController 单元测试', () => {
     jest.runAllTimers();
   });
   test('测试 switchModel', async () => {
-    jest.runAllTimers();
+    jest.useFakeTimers({ advanceTimers: true });
+    // 缩短时间
+    wlLive2d.stage.canvas.style.transitionDuration = '10ms';
     await expect(model.switchModel(0)).resolves.pass('通过');
-    jest.runAllTimers();
     expect([model.modelId, model.textureId]).toEqual([0, 0]);
     await expect(model.switchModel(0, 1)).resolves.pass('通过');
-    jest.runAllTimers();
     expect([model.modelId, model.textureId]).toEqual([0, 1]);
     await expect(model.switchModel(1, 0)).resolves.pass('通过');
-    jest.runAllTimers();
     expect([model.modelId, model.textureId]).toEqual([1, 0]);
     jest.runAllTimers();
-  }, 10000);
+  });
   test('测试 nextModel', async () => {
     jest.runAllTimers();
+    // 缩短时间
+    wlLive2d.stage.canvas.style.transitionDuration = '10ms';
     const data = model._data;
     model._data = [];
     model._modelId = 1;
@@ -390,10 +391,12 @@ describe('UBaseModelController 单元测试', () => {
     jest.runAllTimers();
     expect([model.modelId, model.textureId]).toEqual([0, 0]);
     jest.runAllTimers();
-  }, 10000);
+  });
   test('测试 nextTexture', async () => {
     // [[T , T], [T], T]
     jest.runAllTimers();
+    // 缩短时间
+    wlLive2d.stage.canvas.style.transitionDuration = '10ms';
     model._modelId = 1;
     model._textureId = 0;
     await expect(model.nextTexture()).resolves.pass('通过');
@@ -408,9 +411,9 @@ describe('UBaseModelController 单元测试', () => {
     jest.runAllTimers();
     expect([model.modelId, model.textureId]).toEqual([0, 0]);
     jest.runAllTimers();
-  }, 10000);
-  test('测试 resetModel', () => {
-    expect(() => model.resetModel()).not.toThrow();
+  });
+  test('测试 resetModel', async () => {
+    await expect(model.resetModel()).resolves.not.toThrow();
     jest.runAllTimers();
   });
   test('测试 hasOutfit', () => {

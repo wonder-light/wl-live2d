@@ -23,9 +23,10 @@ const app = {
 };
 
 export const ILive2DModel = {
-  from(url, options) {
+  async from(url, options) {
     const { onError } = options;
-    setTimeout(onError, 50);
+    const times = 10;
+    setTimeout(onError, times);
     return {
       width: 100,
       height: 100,
@@ -35,17 +36,17 @@ export const ILive2DModel = {
         set() {}
       },
       once(event, callback) {
-        setTimeout(callback, 50);
+        setTimeout(callback, times);
       },
       destroy() {},
       on(event, callback) {
-        setTimeout(callback, 50, ['test']);
+        setTimeout(callback, times, ['test']);
       },
       motion() {return false;},
       internalModel: {
         motionManager: {
           on(event, callback) {
-            setTimeout(callback, 50, 'group', 0, document.createElement('audio'));
+            setTimeout(callback, times, 'group', 0, document.createElement('audio'));
           }
         }
       }
