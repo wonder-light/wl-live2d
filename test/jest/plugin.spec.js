@@ -1,6 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
 import { DBaseMessage } from '../../lib/models/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin } from '../../lib/plugins/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import { ILive2DModel, PIXI as PIXIJS } from './const/variable.js';
 
@@ -94,16 +94,13 @@ describe('plugins 测试', () => {
     live2d.data.menus = null;
   });
 
-  test('测试 FDragPlugin', () => {
-    const dragEnable = jest.spyOn(FDragPlugin.prototype, 'isEnable', null).mockImplementation(() => {
-      return enable;
-    });
-    let plugin = new FDragPlugin;
-    enable = false;
-    expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(dragEnable).toBeCalledTimes(1);
-    enable = true;
+  test.each([
+    { classes: FDragPlugin, name: 'FDragPlugin' },
+    { classes: FTipsDragPlugin, name: 'FTipsDragPlugin' }
+  ])('测试 $name', ({ classes }) => {
+    const baseEnable = jest.spyOn(classes.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new classes;
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     // 测试拖拽
     plugin._element.dispatchEvent(new MouseEvent('mousedown'));
@@ -121,7 +118,6 @@ describe('plugins 测试', () => {
     // 获取宽高
     expect(plugin['getWidthHeight']()).toBeObject();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(dragEnable).toBeCalledTimes(2);
   });
 
   test('测试 FInfoPlugin', () => {

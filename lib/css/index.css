@@ -37,10 +37,24 @@
   visibility: hidden;
 }
 
+.live2d-cursor-default {
+  cursor: default;
+}
+
+.live2d-cursor-pointer {
+  cursor: pointer;
+}
+
 .live2d-transition-all {
   transition-duration: var(--live2d-duration);
   transition-property: all;
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+}
+
+.live2d-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .live2d-drag {
@@ -54,12 +68,6 @@
   animation-duration: var(--live2d-anim-duration);
   animation-fill-mode: none;
   animation-iteration-count: infinite;
-}
-
-.live2d-flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .live2d-wrapper {
