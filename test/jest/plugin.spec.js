@@ -106,20 +106,20 @@ describe('plugins 测试', () => {
     enable = true;
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     // 测试拖拽
-    plugin._wrapper.dispatchEvent(new MouseEvent('mousedown'));
+    plugin._element.dispatchEvent(new MouseEvent('mousedown'));
     let mouse = new MouseEvent('mousemove');
     mouse.movementX = mouse.movementY = 12;
-    plugin._wrapper.dispatchEvent(mouse);
+    plugin._element.dispatchEvent(mouse);
     mouse.movementX = mouse.movementY = -12;
-    plugin._wrapper.dispatchEvent(mouse);
+    plugin._element.dispatchEvent(mouse);
     mouse.movementX = mouse.movementY = 0;
-    plugin._wrapper.dispatchEvent(mouse);
-    plugin._wrapper.dispatchEvent(new MouseEvent('mouseup'));
-    plugin._wrapper.dispatchEvent(new TouchEvent('touchstart', { targetTouches: [plugin._wrapper] }));
-    plugin._wrapper.dispatchEvent(new TouchEvent('touchmove', { targetTouches: [plugin._wrapper] }));
-    plugin._wrapper.dispatchEvent(new TouchEvent('touchend'));
+    plugin._element.dispatchEvent(mouse);
+    plugin._element.dispatchEvent(new MouseEvent('mouseup'));
+    plugin._element.dispatchEvent(new TouchEvent('touchstart', { targetTouches: [plugin._element] }));
+    plugin._element.dispatchEvent(new TouchEvent('touchmove', { targetTouches: [plugin._element] }));
+    plugin._element.dispatchEvent(new TouchEvent('touchend'));
     // 获取宽高
-    expect(plugin['_getWidthHeight']()).toBeObject();
+    expect(plugin['getWidthHeight']()).toBeObject();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
     expect(dragEnable).toBeCalledTimes(2);
   });

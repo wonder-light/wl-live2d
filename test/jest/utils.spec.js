@@ -120,13 +120,85 @@ describe('utils/help.js - FHelp - 单元测试', () => {
   });
 
   test('测试 FHelp.mergeAll', () => {
-    const a = { a: 'foo', b: 'bar' };
-    const b = { a: 'too', b: 'bar', c: 'baz' };
-    expect(FHelp.mergeAll(a, b)).toContainAllEntries([
-      ['a', 'too'],
-      ['b', 'bar'],
-      ['c', 'baz']
-    ]);
+    const a = {
+      a: ['foo'],
+      b: { a: 'bar' },
+      c: null,
+      d: [
+        [1, 2, 3],
+        { a: 1, b: 2 },
+        null,
+        '123'
+      ],
+      e: '000'
+    };
+    const b = {
+      a: 'too',
+      b: 'bar',
+      c: 'baz',
+      d: [
+        [4, 5, 6],
+        { c: 1, d: 2 },
+        undefined,
+        '123'
+      ]
+    };
+    expect(FHelp.mergeAll(a, b)).toEqual({
+      a: 'too',
+      b: 'bar',
+      c: 'baz',
+      d: [
+        [4, 5, 6],
+        { c: 1, d: 2 },
+        undefined,
+        '123'
+      ],
+      e: '000'
+    });
+  });
+
+  test('测试 FHelp.mergeDeepWith', () => {
+    const a = {
+      a: ['foo'],
+      b: { a: 'bar' },
+      c: null,
+      d: [
+        [1, 2, 3],
+        { a: 1, b: 2 },
+        null,
+        '123'
+      ],
+      e: '000'
+    };
+    const b = {
+      a: 'too',
+      b: 'bar',
+      c: 'baz',
+      d: [
+        [4, 5, 6],
+        { c: 1, d: 2 },
+        undefined,
+        '123'
+      ],
+      f: '000'
+    };
+    expect(FHelp.mergeDeepWith(a, b)).toEqual({
+      a: 'too',
+      b: 'bar',
+      c: 'baz',
+      d: [
+        [1, 2, 3],
+        { a: 1, b: 2 },
+        null,
+        '123',
+        [4, 5, 6],
+        { c: 1, d: 2 },
+        undefined,
+        '123'
+      ],
+      e: '000',
+      f: '000'
+    });
   });
 
   test('测试 FHelp.T 和 FHelp.F', () => {
