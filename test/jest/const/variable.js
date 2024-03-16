@@ -22,7 +22,7 @@ const app = {
   resize() {return true;}
 };
 
-export const ILive2DModel = {
+export const live2DModelVal = {
   async from(url, options) {
     const { onError } = options;
     const times = 10;
@@ -54,7 +54,7 @@ export const ILive2DModel = {
   }
 };
 
-export const PIXI = {
+export const pixiVal = {
   utils: {
     skipHello() {}
   },
@@ -64,8 +64,8 @@ export const PIXI = {
 };
 
 export const val = {
-  ILive2DModel,
-  PIXI
+  live2DModelVal,
+  pixiVal
 };
 
 export default val;

@@ -2,10 +2,11 @@ import { ULive2dController } from '../../lib/controller/index.js';
 import { DBaseMessage } from '../../lib/models/index.js';
 import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
-import { ILive2DModel, PIXI as PIXIJS } from './const/variable.js';
+import val from './const/variable.js';
 
 
-const PIXI = jest.mocked(PIXIJS);
+global.PIXI = jest.mocked(val.pixiVal);
+global.ILive2DModel = jest.mocked(val.live2DModelVal);
 global.fetch = jest.fn(async (input, init) => {
   return {
     json() {
@@ -54,8 +55,6 @@ describe('plugins 测试', () => {
 
   test('测试 base', () => {
     jest.useFakeTimers();
-    window.PIXI = PIXI;
-    window.ILive2DModel = ILive2DModel;
     expect(() => live2d = ULive2dController.create()).not.toThrow();
     // 停止循环
     live2d.tips.stopFade();
@@ -115,8 +114,10 @@ describe('plugins 测试', () => {
     plugin._element.dispatchEvent(new TouchEvent('touchstart', { targetTouches: [plugin._element] }));
     plugin._element.dispatchEvent(new TouchEvent('touchmove', { targetTouches: [plugin._element] }));
     plugin._element.dispatchEvent(new TouchEvent('touchend'));
+    baseEnable.mockRestore();
+    expect(plugin.isEnable()).toBeTrue();
     // 获取宽高
-    expect(plugin['getWidthHeight']()).toBeObject();
+    expect(plugin.getWidthHeight()).toBeObject();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
   });
 
@@ -209,6 +210,8 @@ describe('plugins 测试', () => {
       expect(message.condition()).toBeTrue();
       expect(message.condition()).toBeFalse();
     }
+    baseEnable.mockRestore();
+    expect(plugin.isEnable()).toBeTrue();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
   });
 });

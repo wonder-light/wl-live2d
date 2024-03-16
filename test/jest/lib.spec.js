@@ -1,30 +1,29 @@
 jest.mock('pixi.js', () => {
-  const { PIXI } = require('./const/variable.js');
-  return jest.mocked(PIXI);
+  const val = require('./const/variable.js');
+  return jest.mocked(val.pixiVal);
 });
 jest.mock('pixi-live2d-display', () => {
-  const { ILive2DModel } = require('./const/variable.js');
+  const val = require('./const/variable.js');
   return {
-    Live2DModel: jest.mocked(ILive2DModel)
+    Live2DModel: jest.mocked(val.live2DModelVal)
   };
 });
 jest.mock('pixi-live2d-display/cubism2', () => {
-  const { ILive2DModel } = require('./const/variable.js');
+  const val = require('./const/variable.js');
   return {
-    Live2DModel: jest.mocked(ILive2DModel)
+    Live2DModel: jest.mocked(val.live2DModelVal)
   };
 });
 jest.mock('pixi-live2d-display/cubism4', () => {
-  const { ILive2DModel } = require('./const/variable.js');
+  const val = require('./const/variable.js');
   return {
-    Live2DModel: jest.mocked(ILive2DModel)
+    Live2DModel: jest.mocked(val.live2DModelVal)
   };
 });
 
 import wlLive2d2 from '../../lib/index.cubism2.js';
 import wlLive2d4 from '../../lib/index.cubism4.js';
 import wlLive2d from '../../lib/index.js';
-import { PIXI } from './const/variable.js';
 
 
 describe('lib/index 测试', () => {

@@ -6,9 +6,9 @@ import { EEvent, FHelp } from '../../lib/utils/index.js';
 import val from './const/variable.js';
 
 
-const ILive2DModel = jest.mocked(val.ILive2DModel);
+const ILive2DModel = jest.mocked(val.live2DModelVal);
 
-const PIXI = jest.mocked(val.PIXI);
+const PIXI = jest.mocked(val.pixiVal);
 // 创建 live2d 控制器
 const createLive2d = (options = null) => {
   /** @type {ULive2dController} */
@@ -327,7 +327,6 @@ describe('UBaseModelController 单元测试', () => {
     model._data[0][1].scale = 1;
   });
   test('测试 init', () => {
-    window.ILive2DModel = ILive2DModel;
     expect(() => model.init()).not.toThrow();
     let data = model._data;
     model._data = [];
