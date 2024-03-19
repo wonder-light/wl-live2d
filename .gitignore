@@ -22,7 +22,7 @@ _book
 *.orig
 
 # docs
-docs/
+docs/src
 
 # Created by git when using merge tools for conflicts
 *.BACKUP.*

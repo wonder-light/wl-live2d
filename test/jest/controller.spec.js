@@ -231,6 +231,7 @@ describe('UBaseTipsController 单元测试', () => {
     fadeIn.mockClear();
     // 加入数据
     expect(() => tips = new UBaseTipsController(wlLive2d)).not.toThrow();
+    expect(() => wlLive2d.event.emit(EEvent.init)).not.toThrow();
     expect(fadeIn).toHaveBeenCalledTimes(0);
     // 替换 tips
     wlLive2d.tips.destroy();

@@ -14,13 +14,18 @@
     "plugins/markdown"
   ],
   "opts": {
-    "destination": "./docs",
+    "destination": "./docs/src",
     "readme": "./README.md",
     "recurse": true,
     "verbose": true,
+    "tutorials": "./docs/tutorials",
     "template": "./node_modules/clean-jsdoc-theme",
     "theme_opts": {
+      "static_dir": [
+        "./assets"
+      ],
       "default_theme": "dark",
+      "favicon": "/assets/favicon.png",
       "homepageTitle": "wlLive2d",
       "title": "wlLive2d",
       "meta": [
@@ -29,10 +34,60 @@
           "content": "wonder-light"
         },
         {
+          "name": "keywords",
+          "content": "wonder-light,wl-live2d,live2d,web,live2d component,cubism"
+        },
+        {
           "name": "description",
-          "content": "Best Clean and minimal JSDoc 3 Template/Theme"
+          "content": "wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 model2 与 model4 版本的 Live2D 模型，开箱即用且可定制化。  \n"
         }
-      ]
+      ],
+      "menu": [
+        {
+          "title": "指南",
+          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
+          "target": "_blank",
+          "class": "some-class",
+          "id": "some-id"
+        },
+        {
+          "title": "选项",
+          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
+          "target": "_blank",
+          "class": "some-class",
+          "id": "some-id"
+        },
+        {
+          "title": "示例",
+          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
+          "target": "_blank",
+          "class": "some-class",
+          "id": "some-id"
+        },
+        {
+          "title": "日志",
+          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
+          "target": "_blank",
+          "class": "some-class",
+          "id": "some-id"
+        }
+      ],
+      "search": true,
+      "codepen": {
+        "enable_for": [
+          "examples"
+        ],
+        "options": {
+          "js_external": "https://code.jquery.com/jquery-3.6.0.min.js",
+          "js_pre_processor": "babel"
+        }
+      },
+      "exclude_inherited": false,
+      "displayModuleHeader": false
     }
+  },
+  "markdown": {
+    "hardwrap": false,
+    "idInHeadings": true
   }
 }
