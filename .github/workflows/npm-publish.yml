@@ -28,6 +28,7 @@ jobs:
       # 执行多条脚本
       - run: npm ci
       - run: npm test
+      - run: npm run build
 
   publish-npm:
     needs: build
