@@ -11,7 +11,8 @@
     "excludePattern": "(^|\\/|\\\\)_"
   },
   "plugins": [
-    "plugins/markdown"
+    "plugins/markdown",
+    "plugins/summarize"
   ],
   "opts": {
     "destination": "./docs/src",
@@ -25,7 +26,7 @@
         "./assets"
       ],
       "default_theme": "dark",
-      "favicon": "/assets/favicon.png",
+      "favicon": "assets/favicon.png",
       "homepageTitle": "wlLive2d",
       "title": "wlLive2d",
       "meta": [
@@ -45,31 +46,23 @@
       "menu": [
         {
           "title": "指南",
-          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
-          "target": "_blank",
-          "class": "some-class",
-          "id": "some-id"
+          "link": "./tutorial-quick-start.html",
+          "id": "tutorial-quick-start"
         },
         {
           "title": "选项",
-          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
-          "target": "_blank",
-          "class": "some-class",
-          "id": "some-id"
+          "link": "./DBaseLive2dOptions.html",
+          "id": "tutorial-options"
         },
         {
-          "title": "示例",
-          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
-          "target": "_blank",
-          "class": "some-class",
-          "id": "some-id"
+          "title": "模型资源",
+          "link": "./tutorial-model-assets.html",
+          "id": "model-assets"
         },
         {
-          "title": "日志",
-          "link": "https://ankdev.me/clean-jsdoc-theme/dark/",
-          "target": "_blank",
-          "class": "some-class",
-          "id": "some-id"
+          "title": "更新日志",
+          "link": "./tutorial-update-log.html",
+          "id": "update-log"
         }
       ],
       "search": true,
@@ -83,7 +76,13 @@
         }
       },
       "exclude_inherited": false,
-      "displayModuleHeader": false
+      "displayModuleHeader": false,
+      "add_style_path": [
+        {
+          "rel": "stylesheet",
+          "href": "assets/css/index.css"
+        }
+      ]
     }
   },
   "markdown": {

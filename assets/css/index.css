@@ -1,0 +1,7 @@
+.navbar-left-items {
+  align-items: center;
+}
+
+.navbar .navbar-item a {
+  padding: 0.5rem 2rem;
+}
