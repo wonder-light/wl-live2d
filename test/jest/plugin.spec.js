@@ -1,6 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
 import { DBaseMessage } from '../../lib/models/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin } from '../../lib/plugins/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import val from './const/variable.js';
 
@@ -210,6 +210,21 @@ describe('plugins 测试', () => {
       expect(message.condition()).toBeTrue();
       expect(message.condition()).toBeFalse();
     }
+    baseEnable.mockRestore();
+    expect(plugin.isEnable()).toBeTrue();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+  });
+
+  test('测试 FMotionMessagePlugin', async () => {
+    const baseEnable = jest.spyOn(FMotionMessagePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new FMotionMessagePlugin;
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    await expect(plugin.motion('idle', 0, null)).resolves.not.toThrow();
+    await expect(plugin.motion('tap', 0, null)).resolves.not.toThrow();
+    await expect(plugin.motion('tap', 1, null)).resolves.not.toThrow();
+    await expect(plugin.motion('tap', 1, { duration: 13 })).resolves.not.toThrow();
+    jest.runAllTimers();
     baseEnable.mockRestore();
     expect(plugin.isEnable()).toBeTrue();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();

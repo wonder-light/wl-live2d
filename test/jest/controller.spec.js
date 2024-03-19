@@ -271,8 +271,8 @@ describe('UBaseTipsController 单元测试', () => {
     expect(() => tips.stopFade()).not.toThrow();
     jest.runAllTimers();
   });
-  test('测试 notify', () => {
-    expect(() => tips.notify('123456789')).not.toThrow();
+  test('测试 notify', async () => {
+    await expect(tips.notify('123456789')).resolves.not.toThrow();
     expect(() => tips.stopFade()).not.toThrow();
     jest.runAllTimers();
     jest.useRealTimers();

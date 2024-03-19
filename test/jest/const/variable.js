@@ -46,7 +46,19 @@ export const live2DModelVal = {
       internalModel: {
         motionManager: {
           on(event, callback) {
-            setTimeout(callback, times, 'group', 0, document.createElement('audio'));
+            setTimeout(callback, times, 'tap', 0, document.createElement('audio'));
+          }
+        },
+        settings: {
+          json: {
+            FileReferences: {
+              Motions: {
+                'tap': [
+                  { file: '' },
+                  { file: '', text: 'test' }
+                ]
+              }
+            },
           }
         }
       }
