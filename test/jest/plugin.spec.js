@@ -23,7 +23,6 @@ global.fetch = jest.fn(async (input, init) => {
     }
   };
 });
-global.URL.createObjectURL = jest.fn((blob) => blob);
 window.visualViewport = {
   width: 20,
   height: 20
@@ -56,8 +55,12 @@ describe('plugins 测试', () => {
   test('测试 base', () => {
     jest.useFakeTimers();
     expect(() => live2d = ULive2dController.create()).not.toThrow();
+    jest.advanceTimersByTime(10000);
     // 停止循环
     live2d.tips.stopFade();
+    // 设置储持续时间
+    live2d.stage.wrapper.style.setProperty('--live2d-duration', '1ms');
+    live2d.stage.canvas.style.removeProperty('--live2d-duration');
     // 卸载插件
     live2d.uninstallPlugin(...live2d.plugins);
     jest.runAllTimers();
@@ -67,7 +70,12 @@ describe('plugins 测试', () => {
   });
 
   test('测试 capture', async () => {
+    // Jest 错误 - 未实现 : navigation (except hash changes) when click event is triggered on an anchor element
+    // https://www.coder.work/article/7760377
+    global.URL.createObjectURL = jest.fn();
+    HTMLAnchorElement.prototype.click = jest.fn();
     const captureEnableFun = jest.spyOn(FCapturePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    jest.useFakeTimers();
     // enable = false;
     captureEnableFun.mockClear();
     enable = false;
@@ -91,6 +99,7 @@ describe('plugins 测试', () => {
     live2d.data.menus = ['capture'];
     expect(plugin.isEnable()).toBeTrue();
     live2d.data.menus = null;
+    jest.runAllTimers();
   });
 
   test.each([
@@ -153,17 +162,26 @@ describe('plugins 测试', () => {
 
   test('测试 FBaseSwitchPlugin', async () => {
     const baseEnable = jest.spyOn(FBaseSwitchPlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
-    let plugin = new FSwitchModulePlugin;
-    const swi = (plugin) => {
+    let quitLeftValue = 20;
+    jest.spyOn(live2d.stage.wrapper, 'offsetLeft', 'get').mockImplementation(() => quitLeftValue);
+    jest.useFakeTimers({ advanceTimers: true });
+    jest.runAllTimers();
+    const swi = async (plugin) => {
       expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
-      expect(() => plugin.switch()).not.toThrow();
+      expect(() => live2d.installPlugin(plugin)).not.toThrow();
+      quitLeftValue = 20;
+      await expect(plugin.startSwitch()).resolves.not.toThrow();
+      quitLeftValue = 10;
+      await expect(plugin.startSwitch()).resolves.not.toThrow();
+      expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
       jest.runAllTimers();
     };
+    let plugin = new FSwitchModulePlugin;
     // 模型切换
-    expect(() => swi(plugin)).not.toThrow();
+    await expect(swi(plugin)).resolves.not.toThrow();
     // 服装
     plugin = new FSwitchTexturePlugin;
-    expect(() => swi(plugin)).not.toThrow();
+    await expect(swi(plugin)).resolves.not.toThrow();
   });
 
   test.each([
