@@ -29,7 +29,6 @@ jobs:
       # 执行多条脚本
       - run: npm ci
       - run: npm test
-      - run: npm run build
 
   publish-npm:
     needs: build
@@ -41,6 +40,7 @@ jobs:
           node-version: 18
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      - run: npm run build
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
