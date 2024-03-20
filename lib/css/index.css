@@ -59,8 +59,8 @@
 }
 
 .live2d-drag {
-  transition-duration: var(--live2d-duration), 0ms, 0ms;
-  transition-property: all, left, top;
+  transition-duration: var(--live2d-duration), 0ms;
+  transition-property: all, inset;
 }
 
 .live2d-shake {
@@ -89,7 +89,7 @@
   z-index: 6000;
   left: 50%;
   top: 0;
-  transform: translate(-50%, -100%);
+  transform: translate(var(--tips-translate-x), var(--tips-translate-y));
   padding: 0.625em;
   color: var(--tips-color);
   background-color: var(--tips-bg);
@@ -164,15 +164,11 @@
 }
 
 @keyframes live2d-shake {
-  0% {
+  0%, 100% {
     transform: translate(var(--tips-translate-x), calc(var(--tips-translate-y) - 5%)) scale(0.99);
   }
 
   50% {
     transform: translate(var(--tips-translate-x), var(--tips-translate-y)) scale(1);
-  }
-
-  100% {
-    transform: translate(var(--tips-translate-x), calc(var(--tips-translate-y) - 5%)) scale(0.99);
   }
 }
