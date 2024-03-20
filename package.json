@@ -1,6 +1,6 @@
 {
   "name": "wl-live2d",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Live2D for web, 这是一个运行在浏览器环境的 Live2D 看板组件",
   "author": "wonder-light",
   "license": "MIT",
