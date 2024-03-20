@@ -1,6 +1,5 @@
 {
   "sayHello": true,
-  "transitionTime": 500,
   "models": [
     [
       {

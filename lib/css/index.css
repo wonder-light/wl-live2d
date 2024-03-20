@@ -9,6 +9,7 @@
   --menu-item-hover: #43b1ee;
   --live2d-duration: 500ms;
   --live2d-anim-duration: 1000ms;
+  --live2d-tips-duration: calc(2 * var(--live2d-duration));
   --toggle-bg: #ffaa00;
   --toggle-pos-start: -35px;
   --toggle-pos-end: -20px;
@@ -83,7 +84,7 @@
 }
 
 .live2d-tips {
-  --live2d-duration: 1000ms;
+  --live2d-duration: var(--live2d-tips-duration);
   position: absolute;
   z-index: 6000;
   left: 50%;
