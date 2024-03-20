@@ -1,6 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
 import { DBaseMessage } from '../../lib/models/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin } from '../../lib/plugins/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import val from './const/variable.js';
 
@@ -59,8 +59,9 @@ describe('plugins 测试', () => {
     // 停止循环
     live2d.tips.stopFade();
     // 设置储持续时间
+    live2d.stage.canvas.style.setProperty('--live2d-duration', '1ms');
     live2d.stage.wrapper.style.setProperty('--live2d-duration', '1ms');
-    live2d.stage.canvas.style.removeProperty('--live2d-duration');
+    live2d.stage.wrapper.style.setProperty('--live2d-tips-duration', '1ms');
     // 卸载插件
     live2d.uninstallPlugin(...live2d.plugins);
     jest.runAllTimers();
@@ -111,13 +112,13 @@ describe('plugins 测试', () => {
     expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     // 测试拖拽
-    plugin._element.dispatchEvent(new MouseEvent('mousedown'));
-    let mouse = new MouseEvent('mousemove');
-    mouse.movementX = mouse.movementY = 12;
+    let mouse = new MouseEvent('mousedown', { screenX: 0, screenY: 0 });
     plugin._element.dispatchEvent(mouse);
-    mouse.movementX = mouse.movementY = -12;
+    mouse = new MouseEvent('mousemove', { screenX: 12, screenY: 12 });
     plugin._element.dispatchEvent(mouse);
-    mouse.movementX = mouse.movementY = 0;
+    mouse = new MouseEvent('mousemove', { screenX: -12, screenY: -12 });
+    plugin._element.dispatchEvent(mouse);
+    mouse = new MouseEvent('mousemove', { screenX: 0, screenY: 0 });
     plugin._element.dispatchEvent(mouse);
     plugin._element.dispatchEvent(new MouseEvent('mouseup'));
     plugin._element.dispatchEvent(new TouchEvent('touchstart', { targetTouches: [plugin._element] }));
@@ -192,7 +193,7 @@ describe('plugins 测试', () => {
   ])('测试 $name', async ({ classes }) => {
     const baseEnable = jest.spyOn(classes.prototype, 'isEnable', null).mockImplementation(() => enable);
     let plugin = new classes;
-    let messages = Array.from({ length: 10 }, () => new DBaseMessage({ type: plugin['_type'] }));
+    let messages = Array.from({ length: 10 }, (v, k) => new DBaseMessage({ type: plugin['_type'], priority: k % 2 === 0 ? 2 : 10 }));
     let message = messages[0];
     live2d.tips.messages.splice(0, live2d.tips.messages.length);
     live2d.tips.messages.push(...messages);
@@ -245,6 +246,61 @@ describe('plugins 测试', () => {
     jest.runAllTimers();
     baseEnable.mockRestore();
     expect(plugin.isEnable()).toBeTrue();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+  });
+
+  test('测试 FCopyMessagePlugin', () => {
+    const baseEnable = jest.spyOn(FCopyMessagePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new FCopyMessagePlugin;
+    let messages = Array.from({ length: 1 }).map((v, k) => new DBaseMessage({
+      type: 'event',
+      event: 'copy',
+      text: '你都复制了些什么呀，转载要记得加上出处哦！'
+    }));
+    live2d.tips.addMessage(...messages);
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    window.dispatchEvent(new Event('copy'));
+    jest.runAllTimers();
+    messages[0].text = ['你都复制了些什么呀，转载要记得加上出处哦！'];
+    window.dispatchEvent(new Event('copy'));
+    jest.runAllTimers();
+    let message = new DBaseMessage({
+      type: 'event'
+    });
+    expect(plugin.isType(message)).toBeFalse();
+    message.event = 'copy';
+    expect(plugin.isType(message)).toBeTrue();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+    live2d.tips.removeMessage(...messages);
+  });
+
+  test('测试 FConsoleMessagePlugin', () => {
+    const baseEnable = jest.spyOn(FConsoleMessagePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new FConsoleMessagePlugin;
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    window.innerHeight = window.outerHeight / 2;
+    window.dispatchEvent(new Event('resize'));
+    jest.runAllTimers();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+  });
+
+  test('测试 FVisibilityMessagePlugin', () => {
+    let plugin = new FVisibilityMessagePlugin;
+    const call = () => {
+      // 淡出然后淡入
+      live2d.stage.wrapper.classList.remove('live2d-opacity-1');
+      live2d.stage.wrapper.classList.add('live2d-opacity-0');
+      jest.runAllTimers();
+      live2d.stage.wrapper.classList.remove('live2d-opacity-0');
+      live2d.stage.wrapper.classList.add('live2d-opacity-1');
+      jest.runAllTimers();
+    };
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    // 首次
+    call();
+    // 隐藏再显示
+    call();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
   });
 });

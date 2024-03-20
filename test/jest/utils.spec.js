@@ -78,9 +78,9 @@ describe('utils/help.js - FHelp - 单元测试', () => {
     }*/
     for (const str of ['none', 'floor', 'ceil']) {
       expect(FHelp.random()).toBeWithin(0, 1.1);
-      expect(FHelp.random(10, 0, str)).toBeWithin(0, 11);
+      expect(FHelp.random(10, 0, str)).toBeWithin(10, 11);
       expect(FHelp.random(0.56, 0.56, str)).toBeWithin(0, 1.1);
-      expect(FHelp.random(0, 10, str)).toBeWithin(10, 11);
+      expect(FHelp.random(0, 10, str)).toBeWithin(0, 11);
     }
   });
 

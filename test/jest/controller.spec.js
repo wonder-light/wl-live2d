@@ -16,6 +16,9 @@ const createLive2d = (options = null) => {
   global.PIXI = PIXI;
   global.ILive2DModel = ILive2DModel;
   expect(() => live2d = new ULive2dController(options)).not.toThrow();
+  live2d.stage.canvas.style.setProperty('--live2d-duration', '1ms')
+  live2d.stage.wrapper.style.setProperty('--live2d-duration', '1ms')
+  live2d.stage.wrapper.style.setProperty('--live2d-tips-duration', '1ms')
   // 先推进 10s 触发 startFade, 然后再调用 stopFade
   jest.advanceTimersByTime(10000);
   expect(() => live2d.tips.stopFade()).not.toThrow();
@@ -125,7 +128,7 @@ describe('UBaseStageController 单元测试', () => {
     wlLive2d.event.emit(EEvent.init);
     expect(initFun).toHaveBeenCalled();
     expect(live2d).toHaveBeenCalledTimes(1);
-    expect(live2dData).toHaveBeenCalledTimes(5);
+    expect(live2dData).toHaveBeenCalledTimes(4);
     expect(ref).toHaveBeenCalledTimes(1);
     wlLive2d.data.fixed = false;
     wlLive2d.data.transitionTime = 0;
