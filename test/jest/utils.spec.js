@@ -1,5 +1,6 @@
 import Mock from 'mockjs';
-import { EEvent, FHelp, FLogger } from '../../lib/utils/index.js';
+import { FBasePlugin } from '../../lib/plugins/index.js';
+import { EEvent, FHelp } from '../../lib/utils/index.js';
 
 const Random = Mock.Random;
 
@@ -112,7 +113,8 @@ describe('utils/help.js - FHelp - 单元测试', () => {
       [Object, {}, true],
       [Number, 1, true],
       [Object, 1, false],
-      [Object, FHelp, true]
+      [Object, FHelp, true],
+      [FBasePlugin, { install() {} }, false]
     ];
     for (const map of maps) {
       expect(FHelp.is(map[0], map[1])).toEqual(map[2]);
@@ -248,23 +250,6 @@ describe('utils/event.js - EEvent - 单元测试', () => {
   test('测试 EEvent, EEvent[key]=symbol', () => {
     for (const key in EEvent) {
       expect(EEvent[key]).toBeSymbol();
-    }
-  });
-});
-
-describe('utils/logger.js - FLogger - 单元测试', () => {
-  test('测试 FLogger[key]', () => {
-    const args = [
-      null, undefined, true, 10, '123', BigInt(1000000000),
-      {}, [], function () {}, Symbol('test')
-    ];
-    for (const key of Object.getOwnPropertyNames(FLogger)) {
-      if (key === 'length' || key === 'name' || key === 'prototype') {
-        continue;
-      }
-      console[key] = jest.fn();
-      expect(FLogger[key]).toBeFunction();
-      expect(() => FLogger[key](...args)).not.toThrow();
     }
   });
 });

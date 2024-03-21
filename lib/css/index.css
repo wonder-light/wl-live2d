@@ -3,8 +3,10 @@
   --tips-color: #ffffff;
   --tips-shadow: #999999;
   --tips-border-color: #ffffff;
-  --tips-translate-x: -50%;
-  --tips-translate-y: -100%;
+  --tips-offset-x: 0px;
+  --tips-offset-y: 0px;
+  --tips-translate: translate(-50%, -100%);
+  --tips-translate-to: translate(-50%, -105%);
   --menu-item: #aaaaaa;
   --menu-item-hover: #43b1ee;
   --live2d-duration: 500ms;
@@ -87,9 +89,9 @@
   --live2d-duration: var(--live2d-tips-duration);
   position: absolute;
   z-index: 6000;
-  left: 50%;
-  top: 0;
-  transform: translate(var(--tips-translate-x), var(--tips-translate-y));
+  left: calc(50% + var(--tips-offset-x));
+  top: calc(0% + var(--tips-offset-y));
+  transform: var(--tips-translate);
   padding: 0.625em;
   color: var(--tips-color);
   background-color: var(--tips-bg);
@@ -165,10 +167,10 @@
 
 @keyframes live2d-shake {
   0%, 100% {
-    transform: translate(var(--tips-translate-x), calc(var(--tips-translate-y) - 5%)) scale(0.99);
+    transform: var(--tips-translate-to) scale(0.99);
   }
 
   50% {
-    transform: translate(var(--tips-translate-x), var(--tips-translate-y)) scale(1);
+    transform: var(--tips-translate) scale(1);
   }
 }

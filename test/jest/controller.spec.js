@@ -1,7 +1,7 @@
 import * as controller from '../../lib/controller/index.js';
-import { UBaseController, UBaseModelController, UBaseStageController, UBaseTipsController, ULive2dController } from '../../lib/controller/index.js';
-import { DBaseMessage, DBaseModel } from '../../lib/models/index.js';
-import { FSentenceMessagePlugin } from '../../lib/plugins/index.js';
+import { UBaseController, UModelController, UStageController, UTipsController, ULive2dController } from '../../lib/controller/index.js';
+import { DMessage, DModel } from '../../lib/models/index.js';
+import { FTalkMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import val from './const/variable.js';
 
@@ -25,7 +25,7 @@ const createLive2d = (options = null) => {
   expect(live2d.tips.stop).toBeTrue();
   for (const plugin of live2d.plugins) {
     // clearInterval
-    if (FHelp.is(FSentenceMessagePlugin, plugin)) {
+    if (FHelp.is(FTalkMessagePlugin, plugin)) {
       expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
       break;
     }
@@ -95,16 +95,16 @@ describe('ULive2dController 单元测试', () => {
   });
 });
 
-describe('UBaseStageController 单元测试', () => {
+describe('UStageController 单元测试', () => {
   const event = jest.spyOn(UBaseController.prototype, 'event', 'get');
-  const initFun = jest.spyOn(UBaseStageController.prototype, 'init', null);
+  const initFun = jest.spyOn(UStageController.prototype, 'init', null);
   const live2d = jest.spyOn(UBaseController.prototype, 'live2d', 'get');
   const live2dData = jest.spyOn(UBaseController.prototype, 'live2dData', 'get');
   const app = jest.spyOn(UBaseController.prototype, 'app', 'get');
   const ref = jest.spyOn(UBaseController.prototype, 'ref', 'get');
-  const loadFun = jest.spyOn(UBaseStageController.prototype, '_onModelLoad', null);
-  const destroyFun = jest.spyOn(UBaseStageController.prototype, 'destroy', null);
-  /** @type {UBaseStageController} */
+  const loadFun = jest.spyOn(UStageController.prototype, '_onModelLoad', null);
+  const destroyFun = jest.spyOn(UStageController.prototype, 'destroy', null);
+  /** @type {UStageController} */
   let stage;
   /** @type {ULive2dController} */
   let wlLive2d = null;
@@ -112,10 +112,10 @@ describe('UBaseStageController 单元测试', () => {
   test('测试 constructor', () => {
     jest.useFakeTimers();
     expect(() => wlLive2d = createLive2d()).not.toThrow();
-    expect(() => new UBaseStageController(null)).toThrow();
+    expect(() => new UStageController(null)).toThrow();
     event.mockClear();
     // 加入数据
-    expect(() => stage = new UBaseStageController(wlLive2d)).not.toThrow();
+    expect(() => stage = new UStageController(wlLive2d)).not.toThrow();
     expect(event).toHaveBeenCalledTimes(1);
     // 替换 stage
     wlLive2d.stage.destroy();
@@ -184,9 +184,9 @@ describe('UBaseStageController 单元测试', () => {
     expect(stage.getParentFromSelector('.wl-live2d-body')).toEqual(document.body);
   });
   test('测试 _showAndHiddenMenus 函数', () => {
-    expect(() => stage['showAndHiddenMenus'](new MouseEvent('mouseleave'))).not.toThrow();
-    expect(() => stage['showAndHiddenMenus']({ type: 'touchstart', touches: [{ target: stage.menus }] })).not.toThrow();
-    expect(() => stage['showAndHiddenMenus'](new MouseEvent(''))).not.toThrow();
+    expect(() => stage.showAndHiddenMenus(new MouseEvent('mouseleave'))).not.toThrow();
+    expect(() => stage.showAndHiddenMenus({ type: 'touchstart', touches: [{ target: stage.menus }] })).not.toThrow();
+    expect(() => stage.showAndHiddenMenus(new MouseEvent(''))).not.toThrow();
   });
   test('测试 _getTransitionDuration', () => {
     expect(stage['getTransitionDuration'](null)).toEqual(0);
@@ -217,11 +217,11 @@ describe('UBaseStageController 单元测试', () => {
   });
 });
 
-describe('UBaseTipsController 单元测试', () => {
-  const fadeIn = jest.spyOn(UBaseTipsController.prototype, 'fadeIn', null);
-  const destroy = jest.spyOn(UBaseTipsController.prototype, 'destroy', null);
+describe('UTipsController 单元测试', () => {
+  const fadeIn = jest.spyOn(UTipsController.prototype, 'fadeIn', null);
+  const destroy = jest.spyOn(UTipsController.prototype, 'destroy', null);
 
-  /** @type {UBaseTipsController} */
+  /** @type {UTipsController} */
   let tips;
   /** @type {ULive2dController} */
   let wlLive2d = null;
@@ -230,10 +230,10 @@ describe('UBaseTipsController 单元测试', () => {
     // 使用假的定时器
     jest.useFakeTimers({ advanceTimers: true });
     expect(() => wlLive2d = createLive2d()).not.toThrow();
-    expect(() => new UBaseTipsController(null)).toThrow();
+    expect(() => new UTipsController(null)).toThrow();
     fadeIn.mockClear();
     // 加入数据
-    expect(() => tips = new UBaseTipsController(wlLive2d)).not.toThrow();
+    expect(() => tips = new UTipsController(wlLive2d)).not.toThrow();
     expect(() => wlLive2d.event.emit(EEvent.init)).not.toThrow();
     expect(fadeIn).toHaveBeenCalledTimes(0);
     // 替换 tips
@@ -284,14 +284,14 @@ describe('UBaseTipsController 单元测试', () => {
   test('测试 addMessage 和 removeMessage', () => {
     expect(tips.addMessage(null)).toEqual(tips);
     expect(tips.removeMessage(null)).toEqual(tips);
-    let mes = new DBaseMessage();
+    let mes = new DMessage();
     expect(tips.addMessage(mes)).toEqual(tips);
     expect(tips.removeMessage(mes)).toEqual(tips);
   });
   test('测试 getRandomMessage', () => {
     tips.messages.splice(0, tips.messages.length);
     expect(tips.getRandomMessage()).toBeString();
-    let mes = Array.from({ length: 20 }).map(t => new DBaseMessage({ priority: -2 }));
+    let mes = Array.from({ length: 20 }).map(t => new DMessage({ priority: -2 }));
     expect(tips.addMessage(...mes));
     expect(tips.getRandomMessage()).toBeString();
     mes.forEach(m => m.text = ['1', '2', '3']);
@@ -303,8 +303,8 @@ describe('UBaseTipsController 单元测试', () => {
   });
 });
 
-describe('UBaseModelController 单元测试', () => {
-  /** @type {UBaseModelController} */
+describe('UModelController 单元测试', () => {
+  /** @type {UModelController} */
   let model;
   /** @type {ULive2dController} */
   let wlLive2d = null;
@@ -313,17 +313,17 @@ describe('UBaseModelController 单元测试', () => {
     // 使用假的定时器
     jest.useFakeTimers({ advanceTimers: true });
     expect(() => wlLive2d = createLive2d()).not.toThrow();
-    expect(() => new UBaseModelController(null)).toThrow();
-    expect(() => new UBaseModelController(wlLive2d, null)).not.toThrow();
+    expect(() => new UModelController(null)).toThrow();
+    expect(() => new UModelController(wlLive2d, null)).not.toThrow();
     let models = [
       [
-        new DBaseModel({ path: 'http', width: 100, height: 100, position: {} }),
-        new DBaseModel({ path: 'http', width: null, height: null, position: null })
+        new DModel({ path: 'http', width: 100, height: 100, position: {} }),
+        new DModel({ path: 'http', width: null, height: null, position: null })
       ],
-      [new DBaseModel()],
-      new DBaseModel()
+      [new DModel()],
+      new DModel()
     ];
-    expect(() => model = new UBaseModelController(wlLive2d, models)).not.toThrow();
+    expect(() => model = new UModelController(wlLive2d, models)).not.toThrow();
     // 替换 model
     wlLive2d.model.destroy();
     wlLive2d._model = model;

@@ -1,6 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
-import { DBaseMessage } from '../../lib/models/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSentenceMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
+import { DMessage } from '../../lib/models/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FTalkMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import val from './const/variable.js';
 
@@ -189,11 +189,11 @@ describe('plugins 测试', () => {
     { classes: FNullMessagePlugin, name: 'FNullMessagePlugin' },
     { classes: FHourMessagePlugin, name: 'FHourMessagePlugin' },
     { classes: FSeasonsMessagePlugin, name: 'FSeasonsMessagePlugin' },
-    { classes: FSentenceMessagePlugin, name: 'FSentenceMessagePlugin' }
+    { classes: FTalkMessagePlugin, name: 'FSentenceMessagePlugin' }
   ])('测试 $name', async ({ classes }) => {
     const baseEnable = jest.spyOn(classes.prototype, 'isEnable', null).mockImplementation(() => enable);
     let plugin = new classes;
-    let messages = Array.from({ length: 10 }, (v, k) => new DBaseMessage({ type: plugin['_type'], priority: k % 2 === 0 ? 2 : 10 }));
+    let messages = Array.from({ length: 10 }, (v, k) => new DMessage({ type: plugin['_type'], priority: k % 2 === 0 ? 2 : 10 }));
     let message = messages[0];
     live2d.tips.messages.splice(0, live2d.tips.messages.length);
     live2d.tips.messages.push(...messages);
@@ -202,13 +202,13 @@ describe('plugins 测试', () => {
     if (classes === FNullMessagePlugin) {
       expect(message.condition()).toBeTrue();
     }
-    else if (classes === FSentenceMessagePlugin) {
+    else if (classes === FTalkMessagePlugin) {
       let message = plugin._message;
       // 去掉定时器
       clearInterval(plugin._handler);
       expect(message.condition()).toBeFalse();
       jest.runAllTimers();
-      await expect(plugin.getSentence()).resolves.pass('通过');
+      await expect(plugin.getTalkValue()).resolves.pass('通过');
       expect(message.condition()).toBeTrue();
       expect(message.condition()).toBeFalse();
     }
@@ -252,7 +252,7 @@ describe('plugins 测试', () => {
   test('测试 FCopyMessagePlugin', () => {
     const baseEnable = jest.spyOn(FCopyMessagePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
     let plugin = new FCopyMessagePlugin;
-    let messages = Array.from({ length: 1 }).map((v, k) => new DBaseMessage({
+    let messages = Array.from({ length: 1 }).map((v, k) => new DMessage({
       type: 'event',
       event: 'copy',
       text: '你都复制了些什么呀，转载要记得加上出处哦！'
@@ -264,7 +264,7 @@ describe('plugins 测试', () => {
     messages[0].text = ['你都复制了些什么呀，转载要记得加上出处哦！'];
     window.dispatchEvent(new Event('copy'));
     jest.runAllTimers();
-    let message = new DBaseMessage({
+    let message = new DMessage({
       type: 'event'
     });
     expect(plugin.isType(message)).toBeFalse();
