@@ -21,6 +21,9 @@ wlLive2d({
 ### kp31
 
 + 效果图
+
+  ![kp31.png](assets/img/kp31.gif)
+
 + 配置
 
   ```js
@@ -32,6 +35,9 @@ wlLive2d({
 ### yiselin
 
 + 效果图
+
+  ![yiselin.png](assets/img/yiselin.gif)
+
 + 配置
 
   ```js

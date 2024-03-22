@@ -45,7 +45,7 @@ yarn add wl-live2d@latest
   <title>wlLive2D</title>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/wl-live2d/dist/es/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wl-live2d/dist/es/index.js"></script>
   <script>
     wlLive2d({
       models: [
