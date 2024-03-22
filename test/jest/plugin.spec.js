@@ -8,22 +8,7 @@ import val from './__mocks__/variable.js';
 
 global.PIXI = jest.mocked(val.pixiVal);
 global.ILive2DModel = jest.mocked(val.live2DModelVal);
-global.fetch = jest.fn(async (input, init) => {
-  return {
-    json() {
-      return Promise.reject({ hitokoto: {} });
-    },
-    text() {
-      if (/tenapi/.test(input)) {
-        return input;
-      }
-      return Promise.reject({});
-    },
-    blob() {
-      return input;
-    }
-  };
-});
+
 window.open = jest.fn();
 window.visualViewport = Object.assign({ width: 20, height: 20 });
 jest.spyOn(window, 'screen', 'get').mockImplementation(() => window.visualViewport);
@@ -63,6 +48,11 @@ describe('plugins 测试', () => {
     // https://www.coder.work/article/7760377
     global.URL.createObjectURL = jest.fn();
     HTMLAnchorElement.prototype.click = jest.fn();
+    global.fetch = jest.fn().mockImplementation(async (input) => {
+      return {
+        blob: () => input
+      };
+    });
     const baseEnable = jest.spyOn(FCapturePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
     jest.useFakeTimers();
     let plugin = new FCapturePlugin;
@@ -168,8 +158,7 @@ describe('plugins 测试', () => {
   test.each([
     { classes: FNullMessagePlugin, name: 'FNullMessagePlugin' },
     { classes: FHourMessagePlugin, name: 'FHourMessagePlugin' },
-    { classes: FSeasonsMessagePlugin, name: 'FSeasonsMessagePlugin' },
-    { classes: FTalkMessagePlugin, name: 'FSentenceMessagePlugin' }
+    { classes: FSeasonsMessagePlugin, name: 'FSeasonsMessagePlugin' }
   ])('测试 $name', async ({ classes }) => {
     const baseEnable = jest.spyOn(classes.prototype, 'isEnable', null).mockImplementation(() => enable);
     let plugin = new classes;
@@ -181,16 +170,6 @@ describe('plugins 测试', () => {
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     if (classes === FNullMessagePlugin) {
       expect(message.condition()).toBeTrue();
-    }
-    else if (classes === FTalkMessagePlugin) {
-      let message = plugin._message;
-      // 去掉定时器
-      clearInterval(plugin._handler);
-      expect(message.condition()).toBeFalse();
-      jest.runAllTimers();
-      await expect(plugin.getTalkValue()).resolves.pass('通过');
-      expect(message.condition()).toBeTrue();
-      expect(message.condition()).toBeFalse();
     }
     else {
       const now = new Date();
@@ -209,6 +188,49 @@ describe('plugins 测试', () => {
       expect(message.condition()).toBeTrue();
       expect(message.condition()).toBeFalse();
     }
+    baseEnable.mockRestore();
+    expect(plugin.isEnable()).toBeTrue();
+    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
+  });
+
+  test('测试 FTalkMessagePlugin', async () => {
+    let okStr = 'v1.hitokoto.cn';
+    const baseEnable = jest.spyOn(FTalkMessagePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    global.fetch = jest.fn().mockImplementation(/**@param{string} input*/async (input) => {
+      return {
+        ok: input.search(okStr) >= 0,
+        json() {
+          return Promise.reject({ hitokoto: {} });
+        },
+        text() {
+          if (/tenapi/.test(input)) {
+            return input;
+          }
+          return Promise.reject({});
+        },
+        blob() {
+          return input;
+        }
+      };
+    });
+    let plugin = new FTalkMessagePlugin;
+    live2d.tips.data.talkApis = [{ url: '', handle: async () => '' }];
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
+    live2d.tips.data.talkApis = [];
+    expect(() => live2d.installPlugin(plugin)).not.toThrow();
+    let message = plugin._message;
+    // 去掉定时器
+    clearInterval(plugin._handler);
+    expect(message.condition()).toBeFalse();
+    jest.runAllTimers();
+    okStr = 'v1.hitokoto.cn';
+    await expect(plugin.getTalkValue()).resolves.pass('通过');
+    okStr = 'v.api.aa1.cn';
+    await expect(plugin.getTalkValue()).resolves.pass('通过');
+    okStr = 'tenapi.cn';
+    await expect(plugin.getTalkValue()).resolves.pass('通过');
+    expect(message.condition()).toBeTrue();
+    expect(message.condition()).toBeFalse();
     baseEnable.mockRestore();
     expect(plugin.isEnable()).toBeTrue();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();

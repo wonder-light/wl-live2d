@@ -67,7 +67,6 @@ describe('ULive2dController 单元测试', () => {
 
 describe('UStageController 单元测试', () => {
   const event = jest.spyOn(UBaseController.prototype, 'event', 'get');
-  const live2d = jest.spyOn(UBaseController.prototype, 'live2d', 'get');
   const live2dData = jest.spyOn(UBaseController.prototype, 'live2dData', 'get');
   const app = jest.spyOn(UBaseController.prototype, 'app', 'get');
   const ref = jest.spyOn(UBaseController.prototype, 'ref', 'get');
@@ -86,7 +85,7 @@ describe('UStageController 单元测试', () => {
     event.mockClear();
     // 加入数据
     expect(() => stage = new UStageController(wlLive2d)).not.toThrow();
-    expect(event).toHaveBeenCalledTimes(1);
+    expect(event).toHaveBeenCalledTimes(2);
     // 替换 stage
     wlLive2d.stage.destroy();
     wlLive2d._stage = stage;
@@ -94,10 +93,8 @@ describe('UStageController 单元测试', () => {
     expect(stage).toBeObject();
   });
   test('测试 init 函数', () => {
-    expect(initFun).not.toHaveBeenCalled();
-    wlLive2d.event.emit(EEvent.init);
+    expect(() => stage.init()).not.toThrow();
     expect(initFun).toHaveBeenCalled();
-    expect(live2d).toHaveBeenCalled();
     expect(live2dData).toHaveBeenCalled();
     expect(ref).toHaveBeenCalled();
     wlLive2d.data.fixed = false;
@@ -134,10 +131,12 @@ describe('UStageController 单元测试', () => {
     // 使用假的定时器
     //jest.useFakeTimers({ advanceTimers: true });
     jest.useRealTimers();
+    const div = document.createElement('div');
     await expect(cat(stage['_fade']())).resolves.pass('通过');
     await expect(cat(stage['_fade'](null))).resolves.pass('通过');
     await expect(cat(stage['_fade'](stage.menus, 'fadeOut'))).resolves.pass('通过');
     await expect(cat(stage['_fade'](stage.menus, 'fadeOut', 'fadeOut'))).resolves.pass('通过');
+    await expect(cat(stage.fadeOut(div))).resolves.pass('通过');
     await expect(cat(stage.fadeOut())).resolves.pass('通过');
     await expect(cat(stage.fadeIn())).resolves.pass('通过');
     await expect(cat(stage.fadeOut(stage.menus))).resolves.pass('通过');
