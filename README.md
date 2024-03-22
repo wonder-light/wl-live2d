@@ -115,6 +115,9 @@ WlLive2d({
 
 ## 其它
 
-Live2D 官方网站：  
+Live2D 官方网站:  
 [https://www.live2d.com/en/](https://www.live2d.com/en/)  
 [https://live2d.github.io](https://live2d.github.io)
+
+emoji:  
+[emoji 中文网](https://www.emojiall.com/zh-hans)
