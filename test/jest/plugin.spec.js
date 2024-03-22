@@ -1,8 +1,9 @@
 import { ULive2dController } from '../../lib/controller/index.js';
 import { DMessage } from '../../lib/models/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FTalkMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTalkMessagePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
-import val from './const/variable.js';
+import { createLive2d } from './__mocks__/live2d.js';
+import val from './__mocks__/variable.js';
 
 
 global.PIXI = jest.mocked(val.pixiVal);
@@ -23,22 +24,15 @@ global.fetch = jest.fn(async (input, init) => {
     }
   };
 });
-window.visualViewport = {
-  width: 20,
-  height: 20
-};
-window.open = () => {};
+window.open = jest.fn();
+window.visualViewport = Object.assign({ width: 20, height: 20 });
+jest.spyOn(window, 'screen', 'get').mockImplementation(() => window.visualViewport);
 
 describe('plugins 测试', () => {
   /** @type {ULive2dController} */
   let live2d;
   let enable = true;
-  jest.spyOn(window, 'screen', 'get').mockImplementation(() => {
-    return {
-      width: 20,
-      height: 20
-    };
-  });
+
   const testPlugin = (plugin, baseEnable) => {
     baseEnable.mockClear();
     enable = false;
@@ -54,20 +48,14 @@ describe('plugins 测试', () => {
 
   test('测试 base', () => {
     jest.useFakeTimers();
-    expect(() => live2d = ULive2dController.create()).not.toThrow();
-    jest.advanceTimersByTime(10000);
-    // 停止循环
-    live2d.tips.stopFade();
-    // 设置储持续时间
-    live2d.stage.canvas.style.setProperty('--live2d-duration', '1ms');
-    live2d.stage.wrapper.style.setProperty('--live2d-duration', '1ms');
-    live2d.stage.wrapper.style.setProperty('--live2d-tips-duration', '1ms');
+    expect(() => live2d = createLive2d()).not.toThrow();
     // 卸载插件
     live2d.uninstallPlugin(...live2d.plugins);
     jest.runAllTimers();
     expect(FBasePlugin).toBeFunction();
-    expect(FBasePlugin.prototype['install']).toBeFunction();
-    expect(FBasePlugin.prototype['uninstall']).toBeFunction();
+    expect(FBasePlugin.prototype.install).toBeFunction();
+    expect(FBasePlugin.prototype.uninstall).toBeFunction();
+    expect(FBasePlugin.prototype.isEnable).toBeFunction();
   });
 
   test('测试 capture', async () => {
@@ -75,25 +63,17 @@ describe('plugins 测试', () => {
     // https://www.coder.work/article/7760377
     global.URL.createObjectURL = jest.fn();
     HTMLAnchorElement.prototype.click = jest.fn();
-    const captureEnableFun = jest.spyOn(FCapturePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    const baseEnable = jest.spyOn(FCapturePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
     jest.useFakeTimers();
-    // enable = false;
-    captureEnableFun.mockClear();
-    enable = false;
     let plugin = new FCapturePlugin;
-    expect(() => live2d.installPlugin(plugin)).not.toThrow();
-    expect(captureEnableFun).toBeCalledTimes(1);
-    expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    // enable = true;
-    enable = true;
-    plugin = new FCapturePlugin;
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
     expect(FHelp.is(FBasePlugin, plugin)).toBeTrue();
     expect(() => live2d.installPlugin(plugin)).not.toThrow();
     await expect(plugin.downloadImage()).resolves.not.toThrow();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-    expect(captureEnableFun).toBeCalledTimes(2);
+    expect(baseEnable).toBeCalledTimes(3);
     // 测试 base isEnable
-    captureEnableFun.mockRestore();
+    baseEnable.mockRestore();
     expect(plugin.isEnable()).toBeTrue();
     live2d.data.menus = [];
     expect(plugin.isEnable()).toBeFalse();
@@ -250,7 +230,6 @@ describe('plugins 测试', () => {
   });
 
   test('测试 FCopyMessagePlugin', () => {
-    const baseEnable = jest.spyOn(FCopyMessagePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
     let plugin = new FCopyMessagePlugin;
     let messages = Array.from({ length: 1 }).map((v, k) => new DMessage({
       type: 'event',

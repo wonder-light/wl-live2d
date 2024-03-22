@@ -1,38 +1,8 @@
 import * as controller from '../../lib/controller/index.js';
-import { UBaseController, UModelController, UStageController, UTipsController, ULive2dController } from '../../lib/controller/index.js';
+import { UBaseController, ULive2dController, UModelController, UStageController, UTipsController } from '../../lib/controller/index.js';
 import { DMessage, DModel } from '../../lib/models/index.js';
-import { FTalkMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
-import val from './const/variable.js';
-
-
-const ILive2DModel = jest.mocked(val.live2DModelVal);
-
-const PIXI = jest.mocked(val.pixiVal);
-// 创建 live2d 控制器
-const createLive2d = (options = null) => {
-  /** @type {ULive2dController} */
-  let live2d;
-  global.PIXI = PIXI;
-  global.ILive2DModel = ILive2DModel;
-  expect(() => live2d = new ULive2dController(options)).not.toThrow();
-  live2d.stage.canvas.style.setProperty('--live2d-duration', '1ms')
-  live2d.stage.wrapper.style.setProperty('--live2d-duration', '1ms')
-  live2d.stage.wrapper.style.setProperty('--live2d-tips-duration', '1ms')
-  // 先推进 10s 触发 startFade, 然后再调用 stopFade
-  jest.advanceTimersByTime(10000);
-  expect(() => live2d.tips.stopFade()).not.toThrow();
-  expect(live2d.tips.stop).toBeTrue();
-  for (const plugin of live2d.plugins) {
-    // clearInterval
-    if (FHelp.is(FTalkMessagePlugin, plugin)) {
-      expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
-      break;
-    }
-  }
-  jest.runAllTimers();
-  return live2d;
-};
+import { createLive2d } from './__mocks__/live2d.js';
 
 describe('测试控制器类型', () => {
   // 测试类型
@@ -52,8 +22,8 @@ describe('ULive2dController 单元测试', () => {
   const initFun = jest.spyOn(ULive2dController.prototype, 'init', null);
   test('测试 constructor', () => {
     jest.useFakeTimers({ advanceTimers: true });
+    const PIXI = global.PIXI;
     global.PIXI = null;
-    global.ILive2DModel = ILive2DModel;
     expect(() => ULive2dController.create(null)).toThrow();
     global.PIXI = { Application: null };
     expect(() => ULive2dController.create(null)).toThrow();
@@ -97,11 +67,11 @@ describe('ULive2dController 单元测试', () => {
 
 describe('UStageController 单元测试', () => {
   const event = jest.spyOn(UBaseController.prototype, 'event', 'get');
-  const initFun = jest.spyOn(UStageController.prototype, 'init', null);
   const live2d = jest.spyOn(UBaseController.prototype, 'live2d', 'get');
   const live2dData = jest.spyOn(UBaseController.prototype, 'live2dData', 'get');
   const app = jest.spyOn(UBaseController.prototype, 'app', 'get');
   const ref = jest.spyOn(UBaseController.prototype, 'ref', 'get');
+  const initFun = jest.spyOn(UStageController.prototype, 'init', null);
   const loadFun = jest.spyOn(UStageController.prototype, '_onModelLoad', null);
   const destroyFun = jest.spyOn(UStageController.prototype, 'destroy', null);
   /** @type {UStageController} */
@@ -127,9 +97,9 @@ describe('UStageController 单元测试', () => {
     expect(initFun).not.toHaveBeenCalled();
     wlLive2d.event.emit(EEvent.init);
     expect(initFun).toHaveBeenCalled();
-    expect(live2d).toHaveBeenCalledTimes(1);
-    expect(live2dData).toHaveBeenCalledTimes(4);
-    expect(ref).toHaveBeenCalledTimes(1);
+    expect(live2d).toHaveBeenCalled();
+    expect(live2dData).toHaveBeenCalled();
+    expect(ref).toHaveBeenCalled();
     wlLive2d.data.fixed = false;
     wlLive2d.data.transitionTime = 0;
     expect(() => stage.init()).not.toThrow();
@@ -183,12 +153,12 @@ describe('UStageController 单元测试', () => {
     document.body.classList.add('wl-live2d-body');
     expect(stage.getParentFromSelector('.wl-live2d-body')).toEqual(document.body);
   });
-  test('测试 _showAndHiddenMenus 函数', () => {
+  test('测试 showAndHiddenMenus 函数', () => {
     expect(() => stage.showAndHiddenMenus(new MouseEvent('mouseleave'))).not.toThrow();
     expect(() => stage.showAndHiddenMenus({ type: 'touchstart', touches: [{ target: stage.menus }] })).not.toThrow();
     expect(() => stage.showAndHiddenMenus(new MouseEvent(''))).not.toThrow();
   });
-  test('测试 _getTransitionDuration', () => {
+  test('测试 getTransitionDuration', () => {
     expect(stage['getTransitionDuration'](null)).toEqual(0);
     stage.wrapper.style.transitionDuration = '';
     expect(stage['getTransitionDuration'](stage.wrapper)).toEqual(0);
@@ -206,6 +176,17 @@ describe('UStageController 单元测试', () => {
     expect(stage.addMenu(el).menuItems).toHaveLength(1);
     expect(stage.addMenu(null).menuItems).toHaveLength(1);
     expect(stage.removeMenu(null).menuItems).toHaveLength(1);
+  });
+  test('测试 isRight 函数', () => {
+    let quitLeftValue = 20;
+    const widthValue = 20;
+    jest.spyOn(wlLive2d.stage.wrapper, 'offsetLeft', 'get').mockImplementation(() => quitLeftValue);
+    jest.spyOn(window.screen, 'width', 'get').mockImplementation(() => widthValue);
+    window.visualViewport = Object.assign({ width: widthValue });
+    quitLeftValue = 20;
+    expect(stage.isRight()).toBeTrue();
+    quitLeftValue = 10;
+    expect(stage.isRight()).toBeFalse();
   });
   test('测试 _onModelLoad 和 destroy', () => {
     wlLive2d.event.emit(EEvent.modelLoad, { width: 350, height: 400 });

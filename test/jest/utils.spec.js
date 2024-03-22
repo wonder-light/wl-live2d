@@ -244,6 +244,13 @@ describe('utils/help.js - FHelp - 单元测试', () => {
       expect(FHelp.defaultTo(map[0], map[1])).toEqual(map[2]);
     }
   });
+
+  test('测试 FHelp.sayHello', () => {
+    const log = global.console.log;
+    global.console.log = jest.fn(() => null);
+    expect(() => FHelp.sayHello()).not.toThrow();
+    global.console.log = log;
+  });
 });
 
 describe('utils/event.js - EEvent - 单元测试', () => {
@@ -257,6 +264,7 @@ describe('utils/event.js - EEvent - 单元测试', () => {
 describe('utils/index.js - FLogger - 单元测试', () => {
   test('测试 index.js 的导出', () => {
     const modules = require('../../lib/utils/index.js');
+    expect(modules).toBeObject();
     for (const key in modules) {
       expect(modules[key]).toBeFunction();
     }

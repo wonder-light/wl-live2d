@@ -1,21 +1,21 @@
 jest.mock('pixi.js', () => {
-  const val = require('./const/variable.js');
+  const val = require('./__mocks__/variable.js');
   return jest.mocked(val.pixiVal);
 });
 jest.mock('pixi-live2d-display', () => {
-  const val = require('./const/variable.js');
+  const val = require('./__mocks__/variable.js');
   return {
     Live2DModel: jest.mocked(val.live2DModelVal)
   };
 });
 jest.mock('pixi-live2d-display/cubism2', () => {
-  const val = require('./const/variable.js');
+  const val = require('./__mocks__/variable.js');
   return {
     Live2DModel: jest.mocked(val.live2DModelVal)
   };
 });
 jest.mock('pixi-live2d-display/cubism4', () => {
-  const val = require('./const/variable.js');
+  const val = require('./__mocks__/variable.js');
   return {
     Live2DModel: jest.mocked(val.live2DModelVal)
   };
@@ -29,6 +29,17 @@ import wlLive2d from '../../lib/index.js';
 describe('lib/index 测试', () => {
   /** @type {ULive2dController} */
   let live2d;
+  let globalLog;
+
+  beforeAll(() => {
+    globalLog = global.console.log;
+    global.console.log = jest.fn();
+  });
+
+  afterAll(() => {
+    global.console.log = globalLog;
+  });
+
   test('测试 index.js', () => {
     expect(() => live2d = wlLive2d()).not.toThrow();
     expect(() => live2d.destroy()).not.toThrow();
