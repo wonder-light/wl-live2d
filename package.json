@@ -1,6 +1,6 @@
 {
   "name": "wl-live2d",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Live2D for web, 这是一个运行在浏览器环境的 Live2D 看板组件",
   "author": "wonder-light",
   "license": "MIT",
@@ -49,7 +49,7 @@
   },
   "scripts": {
     "test": "jest",
-    "dev": "pnpm -F ./test/vite-app run dev || npm --prefix ./test/vite-app run dev",
+    "dev": "npm --prefix test/app run dev || pnpm -F test/app run dev",
     "docs": "rimraf docs/src && jsdoc -c doc.config.json",
     "build": "rimraf dist && rollup -c rollup.config.js"
   },

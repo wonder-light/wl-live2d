@@ -13,6 +13,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
-    "vite": "^5.1.4"
+    "pixi-live2d-display": "^0.4.0",
+    "pixi.js": "^6.5.10",
+    "vite": "^5.2.0"
   }
 }
