@@ -1,6 +1,6 @@
 import { ULive2dController } from '../../lib/controller/index.js';
 import { DMessage } from '../../lib/models/index.js';
-import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTalkMessagePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
+import { FBasePlugin, FBaseSwitchPlugin, FCapturePlugin, FConsoleMessagePlugin, FCopyMessagePlugin, FDragPlugin, FHomePlugin, FHourMessagePlugin, FInfoPlugin, FMotionMessagePlugin, FNullMessagePlugin, FQuitPlugin, FSeasonsMessagePlugin, FSwitchModulePlugin, FSwitchTexturePlugin, FTalkMessagePlugin, FTipsDragPlugin, FVisibilityMessagePlugin } from '../../lib/plugins/index.js';
 import { EEvent, FHelp } from '../../lib/utils/index.js';
 import { createLive2d } from './__mocks__/live2d.js';
 import val from './__mocks__/variable.js';
@@ -71,6 +71,13 @@ describe('plugins 测试', () => {
     expect(plugin.isEnable()).toBeTrue();
     live2d.data.menus = null;
     jest.runAllTimers();
+  });
+
+  test('测试 FHomePlugin', () => {
+    const baseEnable = jest.spyOn(FHomePlugin.prototype, 'isEnable', null).mockImplementation(() => enable);
+    let plugin = new FHomePlugin;
+    expect(() => testPlugin(plugin, baseEnable)).not.toThrow();
+    expect(() => plugin.backToHome()).not.toThrow();
   });
 
   test.each([
@@ -152,6 +159,9 @@ describe('plugins 测试', () => {
     await expect(swi(plugin)).resolves.not.toThrow();
     // 服装
     plugin = new FSwitchTexturePlugin;
+    await expect(swi(plugin)).resolves.not.toThrow();
+    // 基础
+    plugin = new FBaseSwitchPlugin;
     await expect(swi(plugin)).resolves.not.toThrow();
   });
 
