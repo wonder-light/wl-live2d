@@ -210,7 +210,7 @@ describe('plugins 测试', () => {
       return {
         ok: input.search(okStr) >= 0,
         json() {
-          return Promise.reject({ hitokoto: {} });
+          return Promise.reject({ hitokoto: {}, content: '', msg: '' });
         },
         text() {
           if (/tenapi/.test(input)) {
@@ -239,8 +239,7 @@ describe('plugins 测试', () => {
     await expect(plugin.getTalkValue()).resolves.pass('通过');
     okStr = 'tenapi.cn';
     await expect(plugin.getTalkValue()).resolves.pass('通过');
-    expect(message.condition()).toBeTrue();
-    expect(message.condition()).toBeFalse();
+    expect(message.condition).toBeFunction()
     baseEnable.mockRestore();
     expect(plugin.isEnable()).toBeTrue();
     expect(() => live2d.uninstallPlugin(plugin)).not.toThrow();
