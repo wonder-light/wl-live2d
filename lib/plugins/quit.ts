@@ -16,13 +16,13 @@ export class FQuitPlugin extends FBasePlugin {
    * @default 'quit'
    * @override
    */
-  protected override _name = 'quit';
+  public override readonly name: string = 'quit';
 
   /**
    * @default 0
    * @override
    */
-  protected override _priority = 0;
+  protected override _priority: number = 0;
 
   /**
    * 用于关闭看板娘的元素

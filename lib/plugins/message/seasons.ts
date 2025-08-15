@@ -44,23 +44,23 @@ export class FSeasonsMessagePlugin extends FNullMessagePlugin<DSeasonsMessage> {
    * @default 'seasonsMessage'
    * @override
    */
-  protected override _name = 'seasonsMessage';
+  public override readonly name: string = 'seasonsMessage';
 
   /**
    * @default 'seasons'
    * @override
    */
-  protected override _type = 'seasons';
+  protected override _type: string | null = 'seasons';
 
   /**
    * @default 16
    * @override
    */
-  protected override _priority = 16;
+  protected override _priority: number = 16;
 
   /**
    * @override
-   * @this {DMessage & DSeasonsMessage}
+   * @this {DSeasonsMessage}
    */
   public override condition(): boolean {
     const _this = this as unknown as DSeasonsMessage;

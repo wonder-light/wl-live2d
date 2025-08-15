@@ -24,13 +24,13 @@ export class FTalkMessagePlugin extends FBasePlugin {
    * @default 'sentenceMessage'
    * @override
    */
-  protected override _name = 'sentenceMessage';
+  public override readonly name: string = 'sentenceMessage';
 
   /**
    * @default 20
    * @override
    */
-  protected override _priority = 20;
+  protected override _priority: number = 20;
 
   /**
    * 消息数据对应的类型

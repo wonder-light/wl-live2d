@@ -12,6 +12,14 @@ import { FHelp } from '../utils';
  */
 export class FBasePlugin {
   /**
+   * 插件名称必须是唯一的, 如果有重复的名称, 则后面的插件将不会安装
+   * @summary 插件名称
+   * @readonly
+   * @type {string}
+   * @default ''
+   */
+  public readonly name: string = '';
+  /**
    * true: 启用插件, false: 不启用插件
    * @summary 启用插件
    * @protected
@@ -47,25 +55,6 @@ export class FBasePlugin {
   }
 
   /**
-   * 插件名称必须是唯一的, 如果有重复的名称, 则后面的插件将不会安装
-   * @summary 插件名称
-   * @protected
-   * @type {string}
-   * @default ''
-   */
-  protected _name: string = '';
-
-  /**
-   * 插件名称必须是唯一的, 如果有重复的名称, 则后面的插件将不会安装
-   * @summary 插件名称
-   * @type {string}
-   * @readonly
-   */
-  public get name(): string {
-    return this._name;
-  }
-
-  /**
    * 在安装插件时需要调用的函数, 一般用于初始化以及事件绑定等等
    * @summary 安装插件
    * @abstract
@@ -93,6 +82,6 @@ export class FBasePlugin {
    */
   public isEnable(): boolean {
     const { data } = this._live2d;
-    return !FHelp.is(Array, data.menus) || data.menus == null || data.menus.some(t => t === this._name);
+    return !FHelp.is(Array, data.menus) || data.menus == null || data.menus.some(t => t === this.name);
   }
 }

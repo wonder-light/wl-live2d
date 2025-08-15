@@ -16,13 +16,13 @@ export class FMotionMessagePlugin extends FBasePlugin {
    * @default 'motionMessage'
    * @override
    */
-  protected override _name = 'motionMessage';
+  public override readonly name: string = 'motionMessage';
 
   /**
    * @default 22
    * @override
    */
-  protected override _priority = 22;
+  protected override _priority: number = 22;
 
   /**
    * @override

@@ -15,7 +15,7 @@ export class FTipsDragPlugin extends FDragPlugin {
    * @default 'tipsDrag'
    * @override
    */
-  protected override _name = 'tipsDrag';
+  public override readonly name: string = 'tipsDrag';
 
   /**
    * @override
@@ -47,6 +47,13 @@ export class FTipsDragPlugin extends FDragPlugin {
   /**
    * @override
    */
+  public override getDragElement(): HTMLElement {
+    return this._live2d.stage.tips;
+  }
+
+  /**
+   * @override
+   */
   protected override _start(event: MouseEvent & TouchEvent): void {
     // 阻止事件冒泡
     event.stopPropagation();
@@ -69,12 +76,5 @@ export class FTipsDragPlugin extends FDragPlugin {
     const style = this._element!.style;
     style.top = `${ top }px`;
     style.left = `${ left }px`;
-  }
-
-  /**
-   * @override
-   */
-  public override getDragElement(): HTMLElement {
-    return this._live2d.stage.tips;
   }
 }

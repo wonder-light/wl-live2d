@@ -1,18 +1,18 @@
 :root {
   --tips-bg: #58b0fc;
-  --tips-color: #ffffff;
-  --tips-shadow: #999999;
-  --tips-border-color: #ffffff;
+  --tips-color: #fff;
+  --tips-shadow: #999;
+  --tips-border-color: #fff;
   --tips-offset-x: 0px;
   --tips-offset-y: 0px;
   --tips-translate: translate(-50%, -100%);
   --tips-translate-to: translate(-50%, -105%);
-  --menu-item: #aaaaaa;
+  --menu-item: #aaa;
   --menu-item-hover: #43b1ee;
   --live2d-duration: 500ms;
   --live2d-anim-duration: 1000ms;
   --live2d-tips-duration: calc(2 * var(--live2d-duration));
-  --toggle-bg: #ffaa00;
+  --toggle-bg: #fa0;
   --toggle-pos-start: -35px;
   --toggle-pos-end: -20px;
   --tips-anim-shake: live2d-shake;

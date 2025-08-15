@@ -15,13 +15,13 @@ export class FHomePlugin extends FBasePlugin {
    * @default 'quit'
    * @override
    */
-  protected override _name = 'home';
+  public override readonly name: string = 'home';
 
   /**
    * @default 0
    * @override
    */
-  protected override _priority = 24;
+  protected override _priority: number = 24;
 
   /**
    * 返回首页的按钮元素

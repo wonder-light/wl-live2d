@@ -15,13 +15,13 @@ export class FSwitchModulePlugin extends FBaseSwitchPlugin {
    * @default 'switchModule'
    * @override
    */
-  protected override _name = 'switchModule';
+  public override readonly name: string = 'switchModule';
 
   /**
    * @default 12
    * @override
    */
-  protected override _priority = 12;
+  protected override _priority: number = 12;
 
   /**
    * @override

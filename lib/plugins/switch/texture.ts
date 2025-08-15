@@ -15,13 +15,13 @@ export class FSwitchTexturePlugin extends FBaseSwitchPlugin {
    * @default 'switchTexture'
    * @override
    */
-  protected override _name = 'switchTexture';
+  public override readonly name: string = 'switchTexture';
 
   /**
    * @default 16
    * @override
    */
-  protected override _priority = 16;
+  protected override _priority: number = 16;
 
   /**
    * @override

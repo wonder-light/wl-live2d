@@ -19,7 +19,7 @@ export class FBaseSwitchPlugin extends FBasePlugin {
    * @type {string}
    * @default 'switch'
    */
-  protected override _name: string = 'switch';
+  public override readonly name: string = 'switch';
 
   /**
    * 用于切换的按钮元素

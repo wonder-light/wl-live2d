@@ -17,6 +17,8 @@ import HelloWorld from './components/HelloWorld.vue';
 
 class Plugin extends FBasePlugin {
 
+  name = 'testPlugin';
+  
   install(live2d) {
     console.log('vue app install plugin');
   }
@@ -30,6 +32,7 @@ export default {
   },
   mounted() {
     const live2d = wlLive2d({
+      sayHello: false,
       selector: '#live2d-id',
       plugins: [
         new Plugin()

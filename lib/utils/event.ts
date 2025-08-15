@@ -99,6 +99,7 @@ export class EEvent {
    */
   static readonly motionFinish: symbol = Symbol('motion-finish');
 }
+
 /**
  * 控制器初始化事件
  * @summary 初始化

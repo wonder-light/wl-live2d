@@ -20,7 +20,7 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
    * @type {string}
    * @default 'nullMessage'
    */
-  protected override _name: string = 'nullMessage';
+  public override readonly name: string = 'nullMessage';
 
   /**
    * 消息数据对应的类型

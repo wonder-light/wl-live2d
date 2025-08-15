@@ -14,6 +14,14 @@ import { FBasePlugin } from '../base';
  */
 export class FDragPlugin extends FBasePlugin {
   /**
+   * 插件名称必须是唯一的, 如果有重复的名称, 则后面的插件将不会安装
+   * @summary 插件名称
+   * @protected
+   * @type {string}
+   * @default 'drag'
+   */
+  public override readonly name: string = 'drag';
+  /**
    * 当前窗口显示区域的宽高
    * @summary 窗口宽高
    * @type {TRect}
@@ -28,18 +36,9 @@ export class FDragPlugin extends FBasePlugin {
    * @protected
    */
   protected _isLeft: boolean = true;
-
   protected _startFun!: (event: any) => void;
   protected _runFun!: (event: any) => void;
   protected _endFun!: () => void;
-  /**
-   * 插件名称必须是唯一的, 如果有重复的名称, 则后面的插件将不会安装
-   * @summary 插件名称
-   * @protected
-   * @type {string}
-   * @default 'drag'
-   */
-  protected override _name: string = 'drag';
   /**
    * 需要进行拖拽的元素 - stage.wrapper
    * @summary 拖拽的元素

@@ -16,7 +16,7 @@ export class FCapturePlugin extends FBasePlugin {
    * @default 'capture'
    * @override
    */
-  protected override _name = 'capture';
+  public override readonly name = 'capture';
 
   /**
    * @default 8

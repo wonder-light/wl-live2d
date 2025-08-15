@@ -10,7 +10,7 @@ import { FNullMessagePlugin } from './null.js';
  * @alias DHourMessage
  * @mixin
  */
-export class DHourMessage extends DMessage{
+export class DHourMessage extends DMessage {
   /**
    * 指定的小时时间段,
    * 例: 2-4, 4,
@@ -44,7 +44,7 @@ export class FHourMessagePlugin extends FNullMessagePlugin<DHourMessage> {
    * @default 'hourMessage'
    * @override
    */
-  protected override _name: string = 'hourMessage';
+  public override readonly name: string = 'hourMessage';
 
   /**
    * @default 'hour'

@@ -12,6 +12,11 @@ import { FEventMessagePlugin } from './event.js';
  */
 export class FConsoleMessagePlugin extends FEventMessagePlugin {
   /**
+   * @default 'consoleEventMessage'
+   * @override
+   */
+  public override readonly name: string = 'consoleEventMessage';
+  /**
    * query控制台是否打开打开, true: 已打开, false: 没有打开
    * @summary 控制台打开
    * @type {boolean}
@@ -19,11 +24,6 @@ export class FConsoleMessagePlugin extends FEventMessagePlugin {
    * @protected
    */
   protected _open: boolean = false;
-  /**
-   * @default 'consoleEventMessage'
-   * @override
-   */
-  protected override _name: string = 'consoleEventMessage';
   /**
    * @default 'copy'
    * @override

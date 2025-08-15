@@ -39,7 +39,7 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
    * @type {string}
    * @default 'eventMessage'
    */
-  protected override _name: string = 'eventMessage';
+  public override readonly name: string = 'eventMessage';
 
   /**
    * @default 'event'

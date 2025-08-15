@@ -30,7 +30,7 @@ export class DStage {
    * @type {HTMLCanvasElement}
    * @default canvas
    */
-  public  canvas: HTMLCanvasElement;
+  public canvas: HTMLCanvasElement;
 
   /**
    * 消息提示需要使用的元素
