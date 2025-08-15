@@ -19,7 +19,7 @@ export class UStageController extends UBaseController {
    * @protected
    * @type {DStage}
    */
-  protected _data: DStage;
+  protected _data: DStage | null;
 
   /**
    * 创建 live2d stage 控制器
@@ -67,7 +67,7 @@ export class UStageController extends UBaseController {
    * @readonly
    */
   public get wrapper(): HTMLElement {
-    return this._data.wrapper;
+    return this._data!.wrapper;
   }
 
   /**
@@ -77,7 +77,7 @@ export class UStageController extends UBaseController {
    * @readonly
    */
   public get canvas(): HTMLCanvasElement {
-    return this._data.canvas;
+    return this._data!.canvas;
   }
 
   /**
@@ -87,7 +87,7 @@ export class UStageController extends UBaseController {
    * @readonly
    */
   public get tips(): HTMLDivElement {
-    return this._data.tips;
+    return this._data!.tips;
   }
 
   /**
@@ -97,7 +97,7 @@ export class UStageController extends UBaseController {
    * @readonly
    */
   public get menus(): HTMLElement {
-    return this._data.menus;
+    return this._data!.menus;
   }
 
   /**
@@ -107,7 +107,7 @@ export class UStageController extends UBaseController {
    * @readonly
    */
   public get other(): HTMLElement {
-    return this._data.other;
+    return this._data!.other;
   }
 
   /**
@@ -117,7 +117,7 @@ export class UStageController extends UBaseController {
    * @readonly
    */
   public get parent(): HTMLElement {
-    return this._data.parent;
+    return this._data!.parent;
   }
 
   /**
@@ -168,7 +168,7 @@ export class UStageController extends UBaseController {
   public override destroy(): void {
     super.destroy();
     this.event.removeListener(EEvent.modelLoad, this._onModelLoad, this);
-    for (const item of this._menuItems) {
+    for (const item of this.menuItems) {
       this.removeMenu(item.element);
     }
     const ref = this.ref['_showAndHiddenMenus'];
@@ -176,6 +176,7 @@ export class UStageController extends UBaseController {
     this.wrapper.removeEventListener('mouseleave', ref);
     document.removeEventListener('touchstart', ref);
     this.wrapper.remove();
+    this._data = null;
   }
 
   /**
@@ -277,12 +278,12 @@ export class UStageController extends UBaseController {
    */
   public addMenu(element: HTMLElement, priority: number = 2): UStageController {
     if (FHelp.is(HTMLElement, element)) {
-      this._menuItems.push({ element, priority });
+      this.menuItems.push({ element, priority });
       // 按优先级排序 - 从大到小
-      this._menuItems.sort((a, b) => b.priority - a.priority);
+      this.menuItems.sort((a, b) => b.priority - a.priority);
       // 更新节点
       this.menus.innerHTML = '';
-      this.menus.append(...this._menuItems.map(item => item.element));
+      this.menus.append(...this.menuItems.map(item => item.element));
     }
     return this;
   }
@@ -294,9 +295,9 @@ export class UStageController extends UBaseController {
    * @return {UStageController} 自身引用
    */
   public removeMenu(element: HTMLElement): UStageController {
-    const index = this._menuItems.findIndex(item => element === item.element);
+    const index = this.menuItems.findIndex(item => element === item.element);
     if (index >= 0) {
-      this._menuItems.splice(index, 1);
+      this.menuItems.splice(index, 1);
       // 移除节点
       element.remove();
     }
