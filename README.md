@@ -35,7 +35,7 @@ wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 mo
   <title>wlLive2d</title>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/wl-live2d/dist/es/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wl-live2d/dist/es/text.ts"></script>
   <script>
     wlLive2d({
       models: [

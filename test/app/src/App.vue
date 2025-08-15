@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { FBasePlugin, wlLive2d } from '../../../lib/index.js';
+import { FBasePlugin, wlLive2d } from '../../../lib';
 import HelloWorld from './components/HelloWorld.vue';
 
 class Plugin extends FBasePlugin {
@@ -53,5 +53,12 @@ export default {
 
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+</style>
+
+<style>
+#live2d-id > .live2d-wrapper {
+  left: auto;
+  right: 0;
 }
 </style>
