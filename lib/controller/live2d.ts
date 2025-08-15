@@ -7,7 +7,7 @@ import { EEvent, FHelp } from '../utils';
 import { UModelController } from './model';
 import { UStageController } from './stage';
 import { UTipsController } from './tips';
-// TODO: 测试面板不显示的原因
+
 /**
  * @class
  * @summary live2d 控制器
@@ -216,7 +216,7 @@ export class ULive2dController {
       return names;
     }, {});
     // 筛选出有效插件，并且按照优先级从高到低排列及执行, 如果插件的名称已经存在则跳过, 该插件将由用户自己实现
-    plugins = plugins.filter(plugin => FHelp.is(FBasePlugin, plugin) && !names[plugin.name])
+    plugins = plugins.filter(p => FHelp.is(FBasePlugin, p) && !names[p.name])
                      .sort((prev, next) => next.priority - prev.priority);
     this.plugins.push(...plugins);
     // 按照优先级从高到低排列及执行
@@ -252,7 +252,7 @@ export class ULive2dController {
     let plugins = this.plugins.splice(0, this.plugins.length);
     plugins.push(...Object.values(pluginSet).map(T => new T()));
     // @ts-ignore
-    this.installPlugin(plugins);
+    this.installPlugin(...plugins);
     // say hello
     this._data.sayHello && FHelp.sayHello();
     // init 事件通知
