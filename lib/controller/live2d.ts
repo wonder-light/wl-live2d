@@ -32,9 +32,7 @@ export class ULive2dController {
     this._tips = new UTipsController(this, options.tips);
     this._plugins = options.plugins?.filter(p => FHelp.is(FBasePlugin, p)) ?? [];
     // 创建 app 实例
-    if (FHelp.isNotValid(window.PIXI?.Application)) {
-      throw Error('PIXI is not import');
-    }
+    if (FHelp.isNotValid(window.PIXI?.Application)) throw Error('PIXI is not import');
     /** @type {TApplication} */
     this._app = new window.PIXI.Application({
       view: this._stage.canvas,
@@ -44,8 +42,9 @@ export class ULive2dController {
       autoStart: true,
       autoDensity: true,
       resizeTo: this._stage.wrapper,
-      hello: false,
-    });
+      hello: false
+    }) as unknown as TApplication;
+    console.log('controller/live2d: ', this.app);
     this.init();
   }
 

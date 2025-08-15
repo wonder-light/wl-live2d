@@ -1,4 +1,4 @@
-import type { Application } from 'pixi.js';
+import type { Application } from '@pixi/app';
 import type { Live2DModel } from 'pixi-live2d-display-advanced';
 import type { ULive2dController } from '../controller';
 import type { DLive2dOptions, DModel } from '../models';

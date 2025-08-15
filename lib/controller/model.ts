@@ -214,8 +214,8 @@ export class UModelController extends UBaseController {
     // 移除上一个模型
     this._model = null;
     stage.removeChildren(0, stage.children.length);
-    /** @type {TLive2DModel | any} */
-    const model: TLive2DModel | any = await window.ILive2DModel.from(url, {
+    /** @type {TLive2DModel} */
+    const model: TLive2DModel = await window.ILive2DModel.from(url, {
       onError: (e) => {
         event.emit(EEvent.modelError, e);
       }
@@ -230,7 +230,7 @@ export class UModelController extends UBaseController {
     model.y = current.position?.y ?? 0;
     model.scale.set(0.15 * (current.scale ?? 1));
     // 添加到舞台
-    stage.addChild(model);
+    stage.addChild(model as any);
     // 如果模型数据中有定义宽高, 则直接设置模型的宽高, 否则使用模型加载后自己的宽高
     current.width && (model.width = current.width);
     current.height && (model.height = current.height);
