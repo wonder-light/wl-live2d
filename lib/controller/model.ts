@@ -1,4 +1,5 @@
 import type { EventEmitter } from 'eventemitter3';
+import { Ticker } from 'pixi.js';
 import { DModel } from '../models';
 import type { TLive2DModel, TModelItem, TModels } from '../types';
 import { EEvent, FHelp } from '../utils';
@@ -211,17 +212,17 @@ export class UModelController extends UBaseController {
     if (FHelp.isNotValid(url)) {
       url = 'https://fastly.jsdelivr.net/gh/Eikanya/Live2d-model/%E5%B0%91%E5%A5%B3%E5%89%8D%E7%BA%BF%20girls%20Frontline/live2dold/old/kp31/normal/model.json';
     }
-    // 移除上一个模型
-    this._model = null;
-    stage.removeChildren(0, stage.children.length);
     /** @type {TLive2DModel} */
     const model: TLive2DModel = await window.ILive2DModel.from(url, {
-      onError: (e) => {
-        event.emit(EEvent.modelError, e);
-      }
+      // @ts-ignore
+      ticker: Ticker.shared,
+      crossOrigin: 'anonymous',
+      onError: (e) => event.emit(EEvent.modelError, e)
     });
+    // 设置模型模型
     this._model = model;
-
+    // 移除上一个模型
+    stage.removeChildren(0, stage.children.length);
     // 加载完成后更新索引
     this.modelId = modelId;
     this.textureId = textureId;

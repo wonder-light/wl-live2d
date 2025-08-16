@@ -202,74 +202,6 @@ export class UStageController extends UBaseController {
   }
 
   /**
-   * 对指定元素应用淡入或者淡出动画
-   * @summary 元素淡入淡出
-   * @param {HTMLElement | null} element 需要执行动画的元素, 默认是包装器元素
-   * @param {'fadeIn' | 'fadeOut'} proceed 需要进行的动画名称
-   * @param {'fadeIn' | 'fadeOut'} exit 需要退出的动画名称
-   * @return {Promise<void>}
-   * @fires EEvent#fadeStart 淡入淡出开始时间
-   * @fires EEvent#fadeEnd 淡入淡出结束事件
-   * @fires EEvent#fadeCancel 淡入淡出取消事件
-   * @protected
-   * @async
-   */
-  public async _fade(element: HTMLElement | null, proceed: 'fadeIn' | 'fadeOut', exit: 'fadeIn' | 'fadeOut'): Promise<void> {
-    const state: Record<string, any> = {};
-    const el: HTMLElement & Record<string, any> = element ??= this.wrapper;
-    // 取消之前的淡入淡出
-    el[exit]?.();
-    el[proceed]?.();
-    el[proceed] = (end = false) => {
-      for (const key in state) {
-        state[key]?.();
-      }
-      el[proceed] = null;
-      this.event.emit(end ? EEvent.fadeEnd : EEvent.fadeCancel);
-    };
-    this.event.emit(EEvent.fadeStart);
-    let time = this.getTransitionDuration(element);
-    // 添加过度类
-    !element.classList.contains('live2d-transition-all') && element.classList.add('live2d-transition-all');
-    // 执行分支
-    if (proceed.search(/fadeIn/) !== -1) {
-      element.classList.remove('live2d-hidden');
-      // 响应时间
-      await setTime(20, 'wait');
-      element.classList.remove('live2d-opacity-0');
-      element.classList.add('live2d-opacity-1');
-      await setTime(time - 20, 'cancel');
-    } else {
-      element.classList.remove('live2d-opacity-1');
-      element.classList.add('live2d-opacity-0');
-      await setTime(time, 'cancel');
-      element.classList.add('live2d-hidden');
-    }
-    // 清除回调, 通知 fadeEnd
-    el[proceed]?.(true);
-
-    /**
-     * 设置定时事时间
-     * @param {number} time
-     * @param {string} key
-     * @return {Promise<void>}
-     * @async
-     */
-    async function setTime(time: number, key: string): Promise<void> {
-      await new Promise<void>((resolve, reject) => {
-        const handler = setTimeout(() => {
-          state[key] = null;
-          resolve();
-        }, time);
-        state[key] = () => {
-          clearTimeout(handler);
-          reject();
-        };
-      });
-    }
-  }
-
-  /**
    * 将菜单元素及优先级作为一个对象添加到 menuItems
    * @summary 添加菜单元素
    * @param {HTMLElement} element 文档元素
@@ -392,5 +324,73 @@ export class UStageController extends UBaseController {
     this.canvas.classList.add('live2d-transition-all');
     // 舞台淡入
     this.fadeIn().finally(() => {});
+  }
+
+  /**
+   * 对指定元素应用淡入或者淡出动画
+   * @summary 元素淡入淡出
+   * @param {HTMLElement | null} element 需要执行动画的元素, 默认是包装器元素
+   * @param {'fadeIn' | 'fadeOut'} proceed 需要进行的动画名称
+   * @param {'fadeIn' | 'fadeOut'} exit 需要退出的动画名称
+   * @return {Promise<void>}
+   * @fires EEvent#fadeStart 淡入淡出开始时间
+   * @fires EEvent#fadeEnd 淡入淡出结束事件
+   * @fires EEvent#fadeCancel 淡入淡出取消事件
+   * @protected
+   * @async
+   */
+  protected async _fade(element: HTMLElement | null, proceed: 'fadeIn' | 'fadeOut', exit: 'fadeIn' | 'fadeOut'): Promise<void> {
+    const state: Record<string, any> = {};
+    const el: HTMLElement & Record<string, any> = element ??= this.wrapper;
+    // 取消之前的淡入淡出
+    el[exit]?.();
+    el[proceed]?.();
+    el[proceed] = (end = false) => {
+      for (const key in state) {
+        state[key]?.();
+      }
+      el[proceed] = null;
+      this.event.emit(end ? EEvent.fadeEnd : EEvent.fadeCancel);
+    };
+    this.event.emit(EEvent.fadeStart);
+    let time = this.getTransitionDuration(element);
+    // 添加过度类
+    !element.classList.contains('live2d-transition-all') && element.classList.add('live2d-transition-all');
+    // 执行分支
+    if (proceed.includes('fadeIn')) {
+      element.classList.remove('live2d-hidden');
+      // 响应时间
+      await setTime(20, 'wait');
+      element.classList.remove('live2d-opacity-0');
+      element.classList.add('live2d-opacity-1');
+      await setTime(time - 20, 'cancel');
+    } else {
+      element.classList.remove('live2d-opacity-1');
+      element.classList.add('live2d-opacity-0');
+      await setTime(time, 'cancel');
+      element.classList.add('live2d-hidden');
+    }
+    // 清除回调, 通知 fadeEnd
+    el[proceed]?.(true);
+
+    /**
+     * 设置定时事时间
+     * @param {number} time
+     * @param {string} key
+     * @return {Promise<void>}
+     * @async
+     */
+    async function setTime(time: number, key: string): Promise<void> {
+      await new Promise<void>((resolve, reject) => {
+        const handler = setTimeout(() => {
+          state[key] = null;
+          resolve();
+        }, time);
+        state[key] = () => {
+          clearTimeout(handler);
+          reject();
+        };
+      });
+    }
   }
 }

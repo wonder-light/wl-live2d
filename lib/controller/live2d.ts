@@ -1,4 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
+import { Application } from 'pixi.js';
 import defaultOptions from '../config/options.json';
 import { DLive2dOptions } from '../models';
 import { FBasePlugin, plugins as pluginSet } from '../plugins';
@@ -32,9 +33,8 @@ export class ULive2dController {
     this._tips = new UTipsController(this, options.tips);
     this._plugins = options.plugins?.filter(p => FHelp.is(FBasePlugin, p)) ?? [];
     // 创建 app 实例
-    if (FHelp.isNotValid(window.PIXI?.Application)) throw Error('PIXI is not import');
     /** @type {TApplication} */
-    this._app = new window.PIXI.Application({
+    this._app = new Application({
       view: this._stage.canvas,
       backgroundAlpha: 0,
       backgroundColor: 0x000000,
@@ -44,7 +44,6 @@ export class ULive2dController {
       resizeTo: this._stage.wrapper,
       hello: false
     }) as unknown as TApplication;
-    console.log('controller/live2d: ', this.app);
     this.init();
   }
 
