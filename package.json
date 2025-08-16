@@ -21,10 +21,10 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "default": "./dist/cjs/index.js",
+      "types": "./dist/index.d.ts",
       "require": "./dist/cjs/index.js",
       "import": "./dist/es/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/cjs/index.js"
     },
     "./es": "./dist/es/index.js",
     "./cjs": "./dist/cjs/index.js",
@@ -80,6 +80,7 @@
     "rollup-plugin-polyfill-node": "^0.13.0",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "^5.7.2",
+    "vitepress": "^2.0.0-alpha.11"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.9.5"
