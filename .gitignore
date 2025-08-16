@@ -180,6 +180,8 @@ test/*
 # 因为没有忽略掉test文件夹自身，所以才能对vite-app文件夹实施不忽略
 !test/app/
 !test/jest/
+!test/es/
+!test/zzz/
 
 ### Example user template template
 ### Example user template
