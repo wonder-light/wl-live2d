@@ -1,4 +1,4 @@
-import { HitAreaFrames } from 'pixi-live2d-display-advanced/extra';
+import { HitAreaFrames } from 'pixi-live2d-display/extra';
 import type { ULive2dController } from '../controller';
 import { FBasePlugin } from './base.js';
 
