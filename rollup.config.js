@@ -6,36 +6,83 @@ import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
+import path from 'path';
 import nested from 'postcss-nested';
 import copy from 'rollup-plugin-copy';
 import dts from 'rollup-plugin-dts';
 import polyfill from 'rollup-plugin-polyfill-node';
 import postcss from 'rollup-plugin-postcss';
+import { fileURLToPath } from 'url';
+
+/** 当前文件的路径 */
+const currentFilePath = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * 替换代码
+ * @param options 选项
+ * @return {any}
+ */
+function replace(options = {}) {
+  const { values, include = [] } = options;
+  let regs = include?.map(t => new RegExp(t)) ?? [];
+  return {
+    //插件名
+    name: 'placeholder-replace',
+    transform(code, id) {
+      // 将代码转换为 UTF-8 编码
+      code = code.toString('utf-8');
+      // 获取文件名
+      const fileName = path.relative(currentFilePath, id);
+      // 是否匹配
+      if (regs.length === 0 || !regs.find(reg => reg.test(fileName))) return null;
+      // 遍历每个占位符
+      code = Object.keys(values).reduce((modifiedCode, key) => {
+        // 构建占位符的正则表达式
+        const regExp = new RegExp(`${ key }`, 'g');
+        return modifiedCode
+          .split('\n')
+          .map((line, row) => {
+            return regExp.test(line) ? line.replace(regExp, values[key]) : line;
+          })
+          .join('\n');
+      }, code);
+      return code;
+    },
+    buildEnd() {}
+  };
+}
 
 /**
  * 构建文件
- * @param input
+ * @param {string} input 文件路径
+ * @param {string} filename 文件名
+ * @param {number} live2or4  < 0 为 live2, > 0 为 live4
  * @return {import('rollup').RollupOptions}
  */
-const config = (input) => {
+const config = (input, filename, live2or4 = 0) => {
+  let repla = {};
+  if (live2or4 !== 0) {
+    repla[`import.*live2dcubism${ live2or4 > 0 ? 2 : 4 }core.min.js.*;`] = '';
+    repla['pixi-live2d-display'] = `pixi-live2d-display/cubism${ live2or4 > 0 ? 4 : 2 }`;
+  }
   return {
     input: input,
     output: [
       {
-        dir: 'dist/es',
-        format: 'esm',
+        file: `dist/es/${ filename }.js`,
+        format: 'esm', // ES6 格式
         preserveModules: false // 保留模块结构
       },
       {
-        dir: 'dist/cjs',
-        format: 'cjs',
-        //exports: 'named'
+        file: `dist/cjs/${ filename }.js`,
+        format: 'cjs', // 只能在NodeJS上运行
+        exports: 'named'
       },
       {
-        dir: 'dist/umd',
-        format: 'umd',
+        file: `dist/umd/${ filename }.js`,
+        format: 'umd', // 同时兼容 CJS 和 AMD
         name: 'wl-live2d',
-        //exports: 'named'
+        exports: 'named'
       }
     ],
     context: 'windows',
@@ -49,6 +96,7 @@ const config = (input) => {
           { src: 'packages', dest: 'dist' }
         ]
       }),
+      replace({ include: ['lib[\\\\/]index.ts'], values: repla }),
       typescript({ tsconfig: 'tsconfig.build.json' }),
       babel({
         babelHelpers: 'bundled'
@@ -86,9 +134,9 @@ const declare = (input) => {
 };
 
 export default [
-  config('lib/index.ts'),
-  //config('lib/index.cubism2.ts'),
-  //config('lib/index.cubism4.ts'),
+  config('lib/index.ts', 'index'),
+  config('lib/index.ts', 'cubism4', 1),
+  config('lib/index.ts', 'cubism2', -1),
   declare('lib/index.types.ts')
 ];
 
