@@ -147,6 +147,6 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
     } else {
       text = message.text;
     }
-    await this._live2d.tips.notify(text);
+    await this.live2d.tips.notify(text);
   }
 }

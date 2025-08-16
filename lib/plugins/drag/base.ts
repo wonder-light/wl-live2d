@@ -93,7 +93,7 @@ export class FDragPlugin extends FBasePlugin {
    * @return {boolean} true: 启用
    */
   public override isEnable(): boolean {
-    return this._live2d.data.drag ?? true;
+    return this.live2d.data.drag ?? true;
   }
 
   /**
@@ -102,7 +102,7 @@ export class FDragPlugin extends FBasePlugin {
    * @return {HTMLElement}
    */
   public getDragElement(): HTMLElement {
-    return this._live2d.stage.wrapper;
+    return this.live2d.stage.wrapper;
   }
 
   /**

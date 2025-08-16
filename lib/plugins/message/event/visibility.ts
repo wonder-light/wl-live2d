@@ -42,7 +42,7 @@ export class FVisibilityMessagePlugin extends FEventMessagePlugin {
     // 需要代理的方法
     const name = 'add';
     // 代理目标
-    const target = this._live2d.stage.wrapper.classList;
+    const target = this.live2d.stage.wrapper.classList;
     // 对象上的方法描述
     const desc = Object.getOwnPropertyDescriptor((target as any).__proto__, name);
     this._ref['desc'] = desc;
@@ -76,7 +76,7 @@ export class FVisibilityMessagePlugin extends FEventMessagePlugin {
    */
   public override removeListener(): void {
     const name = 'add';
-    const target = this._live2d.stage.wrapper.classList;
+    const target = this.live2d.stage.wrapper.classList;
     Object.defineProperty(target, name, this._ref['desc']);
   }
 }

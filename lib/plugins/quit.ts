@@ -60,11 +60,11 @@ export class FQuitPlugin extends FBasePlugin {
     this._show.className = `live2d-fixed live2d-toggle live2d-transition-all live2d-opacity-0 live2d-hidden`;
     this._show.innerHTML = '看板娘';
     // 添加事件监听
-    const ref1 = this._live2d.ref['hiddenLive2d'] = this.hiddenLive2d.bind(this);
-    const ref2 = this._live2d.ref['showLive2d'] = this.showLive2d.bind(this);
+    const ref1 = this.live2d.ref['hiddenLive2d'] = this.hiddenLive2d.bind(this);
+    const ref2 = this.live2d.ref['showLive2d'] = this.showLive2d.bind(this);
     this._quit.addEventListener('click', ref1);
     this._show.addEventListener('click', ref2);
-    this._live2d.stage.addMenu(this._quit, this._priority);
+    this.live2d.stage.addMenu(this._quit, this._priority);
     document.body.appendChild(this._show);
   }
 
@@ -75,11 +75,11 @@ export class FQuitPlugin extends FBasePlugin {
     if (!this._enable) {
       return;
     }
-    const ref1 = this._live2d.ref['hiddenLive2d'];
-    const ref2 = this._live2d.ref['showLive2d'];
+    const ref1 = this.live2d.ref['hiddenLive2d'];
+    const ref2 = this.live2d.ref['showLive2d'];
     this._quit?.removeEventListener('click', ref1);
     this._show?.removeEventListener('click', ref2);
-    this._live2d.stage.removeMenu(this._quit!);
+    this.live2d.stage.removeMenu(this._quit!);
     this._show?.remove();
     // 移除引用
     this._quit = null;
@@ -94,9 +94,9 @@ export class FQuitPlugin extends FBasePlugin {
     // 设置提示的左右分布
     this.isRight() && !this._show!.classList.contains('live2d-right') && this._show!.classList.add('live2d-right');
     // 淡出包装器元素
-    this._live2d.stage.fadeOut(null).catch(FHelp.F);
+    this.live2d.stage.fadeOut(null).catch(FHelp.F);
     // 淡入按钮元素
-    this._live2d.stage.fadeIn(this._show!).catch(FHelp.F);
+    this.live2d.stage.fadeIn(this._show!).catch(FHelp.F);
   }
 
   /**
@@ -105,7 +105,7 @@ export class FQuitPlugin extends FBasePlugin {
    */
   public showLive2d(): void {
     // 淡入包装器元素
-    const { stage, model } = this._live2d;
+    const { stage, model } = this.live2d;
     // wrapper 为 display:none 时, 没有宽高数据, canvas 渲染会出错
     stage.wrapper.classList.remove('live2d-hidden');
     model.resetModel().then(() => {
@@ -120,6 +120,6 @@ export class FQuitPlugin extends FBasePlugin {
    * @return {boolean} true 和 false
    */
   public isRight(): boolean {
-    return this._live2d.stage.isRight();
+    return this.live2d.stage.isRight();
   }
 }

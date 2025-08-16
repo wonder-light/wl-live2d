@@ -94,7 +94,7 @@ export class FTalkMessagePlugin extends FBasePlugin {
       }
     ];
     // 经过一定时间 `interval` 才开始
-    const { talkInterval, talkApis } = this._live2d.tips.data;
+    const { talkInterval, talkApis } = this.live2d.tips.data;
     if (talkApis && talkApis.length <= 0) {
       talkApis.push(...this._talkApis);
     }
@@ -110,10 +110,10 @@ export class FTalkMessagePlugin extends FBasePlugin {
     }
     this._handler && clearInterval(this._handler);
     this._handler = null;
-    this._message && this._live2d.tips.removeMessage(this._message);
+    this._message && this.live2d.tips.removeMessage(this._message);
     this._message = null;
     // 删除默认的 talk api 对象
-    const { talkApis } = this._live2d.tips.data;
+    const { talkApis } = this.live2d.tips.data;
     for (const talkApi of this._talkApis) {
       let index = talkApis?.indexOf(talkApi) ?? -1;
       if (index >= 0) talkApis?.splice(index, 1);
@@ -124,7 +124,7 @@ export class FTalkMessagePlugin extends FBasePlugin {
    * @override
    */
   public override isEnable(): boolean {
-    return this._live2d.tips.data.talk ?? true;
+    return this.live2d.tips.data.talk ?? true;
   }
 
   /**
@@ -147,7 +147,7 @@ export class FTalkMessagePlugin extends FBasePlugin {
    * @async
    */
   public async getTalkValue(): Promise<void> {
-    const { talkApis } = this._live2d.tips.data;
+    const { talkApis } = this.live2d.tips.data;
     try {
       for (const api of talkApis ?? []) {
         try {
@@ -155,8 +155,8 @@ export class FTalkMessagePlugin extends FBasePlugin {
           if (!response.ok) continue;
           this._message!.text = await api.handle(response);
           // 获取文本后才设置 condition 返回true
-          this._message!.condition = this.condition.bind(this._message, this._live2d.tips);
-          this._live2d.tips.addMessage(this._message!);
+          this._message!.condition = this.condition.bind(this._message, this.live2d.tips);
+          this.live2d.tips.addMessage(this._message!);
           return;
         } catch (_) {}
       }

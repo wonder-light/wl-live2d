@@ -42,13 +42,13 @@ export class FSwitchModulePlugin extends FBaseSwitchPlugin {
    * @override
    */
   public override async switch(): Promise<void> {
-    await this._live2d.model.nextModel();
+    await this.live2d.model.nextModel();
   }
 
   /**
    * @override
    */
   public override showLoading(): boolean {
-    return this._live2d.model.data.length > 1;
+    return this.live2d.model.data.length > 1;
   }
 }

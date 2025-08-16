@@ -33,7 +33,17 @@ export class FBasePlugin {
    * @protected
    * @type {ULive2dController}
    */
-  protected _live2d!: ULive2dController;
+  protected _live2d: ULive2dController | null = null;
+
+  /**
+   * 插件 live2d 上下文, 用于获取对应的数据
+   * @summary live2d 上下文
+   * @protected
+   * @type {ULive2dController}
+   */
+  public get live2d(): ULive2dController {
+    return this._live2d!;
+  }
 
   /**
    * 插件优先级, 在安装插件是会按照优先级依次执行
@@ -81,7 +91,7 @@ export class FBasePlugin {
    * @return {boolean} true: 启用
    */
   public isEnable(): boolean {
-    const { data } = this._live2d;
+    const { data } = this.live2d;
     return !FHelp.is(Array, data.menus) || data.menus == null || data.menus.some(t => t === this.name);
   }
 }

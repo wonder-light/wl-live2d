@@ -33,7 +33,7 @@ export class FMotionMessagePlugin extends FBasePlugin {
     if (!this._enable) {
       return;
     }
-    this._live2d.event.on(EEvent.motionStart, this.motion, this);
+    this.live2d.event.on(EEvent.motionStart, this.motion, this);
   }
 
   /**
@@ -43,14 +43,14 @@ export class FMotionMessagePlugin extends FBasePlugin {
     if (!this._enable) {
       return;
     }
-    this._live2d.event.off(EEvent.motionStart, this.motion, this);
+    this.live2d.event.off(EEvent.motionStart, this.motion, this);
   }
 
   /**
    * @override
    */
   public override isEnable(): boolean {
-    return this._live2d.tips.data.motionMessage ?? true;
+    return this.live2d.tips.data.motionMessage ?? true;
   }
 
 
@@ -65,7 +65,7 @@ export class FMotionMessagePlugin extends FBasePlugin {
   public async motion(group: string, index: number, audio: HTMLAudioElement | null): Promise<void> {
     // 不包括 idle
     if (/idle/.test(group)) return;
-    const { tips, model } = this._live2d;
+    const { tips, model } = this.live2d;
     /** @type {ModelJSON} */
     const json: any = model.model.internalModel.settings.json;
     const motions = json?.motions || json?.FileReferences?.Motions;

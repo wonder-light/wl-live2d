@@ -41,14 +41,14 @@ export class FTipsDragPlugin extends FDragPlugin {
    * @override
    */
   public override isEnable(): boolean {
-    return this._live2d.tips.data.drag ?? true;
+    return this.live2d.tips.data.drag ?? true;
   }
 
   /**
    * @override
    */
   public override getDragElement(): HTMLElement {
-    return this._live2d.stage.tips;
+    return this.live2d.stage.tips;
   }
 
   /**

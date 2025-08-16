@@ -42,13 +42,13 @@ export class FSwitchTexturePlugin extends FBaseSwitchPlugin {
    * @override
    */
   public override async switch(): Promise<void> {
-    await this._live2d.model.nextTexture();
+    await this.live2d.model.nextTexture();
   }
 
   /**
    * @override
    */
   public override showLoading(): boolean {
-    return this._live2d.model.hasOutfit();
+    return this.live2d.model.hasOutfit();
   }
 }

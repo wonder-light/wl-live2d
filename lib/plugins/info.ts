@@ -46,7 +46,7 @@ export class FInfoPlugin extends FBasePlugin {
     `;
     // 添加事件监听
     this._button.addEventListener('click', this.openDocs);
-    this._live2d.stage.addMenu(this._button, this._priority);
+    this.live2d.stage.addMenu(this._button, this._priority);
   }
 
   /**
@@ -57,7 +57,7 @@ export class FInfoPlugin extends FBasePlugin {
       return;
     }
     this._button?.removeEventListener('click', this.openDocs);
-    this._live2d.stage.removeMenu(this._button!);
+    this.live2d.stage.removeMenu(this._button!);
     // 移除引用
     this._button = null;
   }

@@ -54,9 +54,9 @@ export class FBaseSwitchPlugin extends FBasePlugin {
     this._loading.className = `live2d-fixed live2d-toggle live2d-transition-all live2d-opacity-0 live2d-hidden`;
     this._loading.innerHTML = '加载中';
     // 添加事件监听
-    const ref = this._live2d.ref['startSwitch'] = this.startSwitch.bind(this);
+    const ref = this.live2d.ref['startSwitch'] = this.startSwitch.bind(this);
     this._button.addEventListener('click', ref);
-    this._live2d.stage.addMenu(this._button, this._priority);
+    this.live2d.stage.addMenu(this._button, this._priority);
   }
 
   /**
@@ -69,9 +69,9 @@ export class FBaseSwitchPlugin extends FBasePlugin {
     if (!this._enable) {
       return;
     }
-    const ref = this._live2d.ref['startSwitch'];
+    const ref = this.live2d.ref['startSwitch'];
     this._button?.removeEventListener('click', ref);
-    this._live2d.stage.removeMenu(this._button!);
+    this.live2d.stage.removeMenu(this._button!);
     // 移除引用
     this._button = null;
     this._loading = null;
@@ -88,7 +88,7 @@ export class FBaseSwitchPlugin extends FBasePlugin {
     if (!this.showLoading()) {
       return await this.switch();
     }
-    const stage = this._live2d.stage;
+    const stage = this.live2d.stage;
     // 设置提示的左右分布
     stage.isRight() ? this._loading!.classList.add('live2d-right') : this._loading!.classList.remove('live2d-right');
     stage.other.appendChild(this._loading!);

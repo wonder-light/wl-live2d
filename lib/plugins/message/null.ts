@@ -61,7 +61,7 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
       return;
     }
     //this.mixin();
-    this._messages = this._live2d.tips.messages as T[];
+    this._messages = this.live2d.tips.messages as T[];
     this._messages = this._messages.filter(this.isType.bind(this));
     // 找到对应类型的消息, 并替换 condition 与 priority
     for (const message of this._messages) {
