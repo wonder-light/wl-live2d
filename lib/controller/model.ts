@@ -1,5 +1,4 @@
 import type { EventEmitter } from 'eventemitter3';
-import { Ticker } from 'pixi.js';
 import { DModel } from '../models';
 import type { TLive2DModel, TModelItem, TModels } from '../types';
 import { EEvent, FHelp } from '../utils';
@@ -214,8 +213,6 @@ export class UModelController extends UBaseController {
     }
     /** @type {TLive2DModel} */
     const model: TLive2DModel = await window.ILive2DModel.from(url, {
-      // @ts-ignore
-      ticker: Ticker.shared,
       crossOrigin: 'anonymous',
       onError: (e) => event.emit(EEvent.modelError, e)
     });

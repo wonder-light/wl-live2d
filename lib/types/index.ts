@@ -1,5 +1,5 @@
-import type { Application } from '@pixi/app';
-import type { Live2DModel } from 'pixi-live2d-display-advanced';
+import type { Application } from 'pixi.js';
+import type { Live2DModel } from 'pixi-live2d-display';
 import type { ULive2dController } from '../controller';
 import type { DLive2dOptions, DModel } from '../models';
 
@@ -44,9 +44,9 @@ export declare type TBoolCallback = () => boolean;
 
 
 /**
- * pixi-live2d-display-advanced 的 Live2DModel 类型
+ * pixi-live2d-display 的 Live2DModel 类型
  * @summary Live2D 模型
- * @see 更多请参考 [Live2DModel](https://guansss.github.io/pixi-live2d-display-advanced/api/classes/index.Live2DModel.html)
+ * @see 更多请参考 [Live2DModel](https://guansss.github.io/pixi-live2d-display/api/classes/index.Live2DModel.html)
  */
 export declare type TLive2DModel = Live2DModel;
 

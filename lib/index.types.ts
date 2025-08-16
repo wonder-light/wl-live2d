@@ -1,4 +1,4 @@
-import { Live2DModel } from 'pixi-live2d-display-advanced';
+import { Live2DModel } from 'pixi-live2d-display';
 import { ULive2dController } from './controller';
 import type { TLive2dCreate } from './types';
 

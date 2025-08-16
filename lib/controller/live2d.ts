@@ -41,8 +41,7 @@ export class ULive2dController {
       resolution: 2,
       autoStart: true,
       autoDensity: true,
-      resizeTo: this._stage.wrapper,
-      hello: false
+      resizeTo: this._stage.wrapper
     }) as unknown as TApplication;
     this.init();
   }
