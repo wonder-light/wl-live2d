@@ -189,13 +189,13 @@ export class UTipsController extends UBaseController {
    */
   public async fadeIn(inherit: boolean = false): Promise<void> {
     // 已经停止则返回
-    if (this._stop) return;
+    if (this.stop) return;
     // 需要检测且句柄有效则返回
     if (inherit && this._showId != null && this._showId > 0) return;
     // 清除之前的定时
     this._clearTime();
     // 检测消息数量
-    if (this._messages.length <= 0) {
+    if (this.messages.length <= 0 || (this._text = this.getRandomMessage()).trim().length <= 0) {
       // 循环等待
       this._showId = setTimeout(() => {
         // 清除句柄
@@ -205,7 +205,7 @@ export class UTipsController extends UBaseController {
       return;
     }
     // 设置显示的文本
-    this._tips.innerText = this._text = this.getRandomMessage();
+    this._tips.innerHTML = this._text;
     await this.live2d.stage.fadeIn(this._tips);
     // 淡入完成后计时
     this._showId = setTimeout(() => {
@@ -282,7 +282,7 @@ export class UTipsController extends UBaseController {
    * @return {UTipsController} 自身引用
    */
   public addMessage(...messages: DMessage[]): UTipsController {
-    this._messages.push(...messages.filter(mes => FHelp.is(DMessage, mes)));
+    this.messages.push(...messages.filter(mes => FHelp.is(DMessage, mes)));
     return this;
   }
 
@@ -294,9 +294,9 @@ export class UTipsController extends UBaseController {
    */
   public removeMessage(...message: DMessage[]): UTipsController {
     for (const mes of message) {
-      const index = this._messages.indexOf(mes);
+      const index = this.messages.indexOf(mes);
       if (index >= 0) {
-        this._messages.splice(index, 1);
+        this.messages.splice(index, 1);
       }
     }
     return this;
@@ -309,7 +309,7 @@ export class UTipsController extends UBaseController {
    */
   public getRandomMessage(): string {
     // 通过 condition 筛选出一部分, 并以优先级精选分组
-    const list = this._messages.filter(m => m.condition == null || m.condition());
+    const list = this.messages.filter(m => m.condition == null || m.condition());
     /** @type {Partial<Record<string, DMessage[]>>} */
     const group = FHelp.groupBy((m) => m.priority!.toString(), list);
     // 获取数量占比的函数, 以优先级为主, 数量其次
