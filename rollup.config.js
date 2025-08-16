@@ -97,7 +97,7 @@ const config = (input, filename, live2or4 = 0) => {
         ]
       }),
       replace({ include: ['lib[\\\\/]index.ts'], values: repla }),
-      typescript({ tsconfig: 'tsconfig.build.json' }),
+      typescript({ tsconfig: 'tsconfig.json' }),
       babel({
         babelHelpers: 'bundled'
       }),

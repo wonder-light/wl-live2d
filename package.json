@@ -48,9 +48,9 @@
   "scripts": {
     "dev": "npm --prefix test/app run dev || pnpm -F test/app run dev",
     "build": "rimraf dist && rollup -c rollup.config.js",
-    "docs:dev": "rspress dev",
-    "docs:build": "rspress build",
-    "docs:preview": "rspress preview"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1",
@@ -79,8 +79,7 @@
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-polyfill-node": "^0.13.0",
     "rollup-plugin-postcss": "^4.0.2",
-    "rspress": "^1.45.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.9.5"

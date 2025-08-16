@@ -6,27 +6,13 @@
       "ES2020"
     ],
     "module": "ESNext",
-    "jsx": "react-jsx",
-    "noEmit": true,
-    "strict": true,
-    "skipLibCheck": false,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
-    "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true
+    "allowSyntheticDefaultImports": true
   },
-  "exclude": [
-    "node_modules"
-  ],
   "include": [
     "lib/**/*.ts",
     "lib/**/*.d.ts",
-    "docs",
-    "theme",
-    "rspress.config.ts"
   ],
-  "mdx": {
-    "checkMdx": true
-  }
 }
