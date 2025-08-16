@@ -36,6 +36,16 @@ export default {
       selector: '#live2d-id',
       plugins: [
         new Plugin()
+      ],
+      models: [
+        {
+          "path": "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/haru/haru_greeter_t03.model3.json",
+          "scale": 0.6
+        },
+        {
+          "path": "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/shizuku/shizuku.model.json",
+          "scale": 2
+        },
       ]
     });
   }
