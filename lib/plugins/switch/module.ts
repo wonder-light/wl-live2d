@@ -21,7 +21,7 @@ export class FSwitchModulePlugin extends FBaseSwitchPlugin {
    * @default 12
    * @override
    */
-  protected override _priority: number = 12;
+  protected override _priority: number = 40;
 
   /**
    * @override

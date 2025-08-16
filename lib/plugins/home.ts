@@ -21,7 +21,7 @@ export class FHomePlugin extends FBasePlugin {
    * @default 0
    * @override
    */
-  protected override _priority: number = 24;
+  protected override _priority: number = 48;
 
   /**
    * 返回首页的按钮元素

@@ -21,7 +21,7 @@ export class FSwitchTexturePlugin extends FBaseSwitchPlugin {
    * @default 16
    * @override
    */
-  protected override _priority: number = 16;
+  protected override _priority: number = 32;
 
   /**
    * @override

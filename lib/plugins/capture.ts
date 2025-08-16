@@ -22,7 +22,7 @@ export class FCapturePlugin extends FBasePlugin {
    * @default 8
    * @override
    */
-  protected override _priority = 8;
+  protected override _priority = 24;
 
   /**
    * 图片捕获的按钮元素

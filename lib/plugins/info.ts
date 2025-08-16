@@ -20,7 +20,7 @@ export class FInfoPlugin extends FBasePlugin {
    * @default 4
    * @override
    */
-  protected override _priority: number = 4;
+  protected override _priority: number = 16;
   /**
    * 信息按钮元素, 用于跳转网页
    * @summary 元素
