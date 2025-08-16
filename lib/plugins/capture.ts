@@ -74,17 +74,17 @@ export class FCapturePlugin extends FBasePlugin {
   public async downloadImage(): Promise<void> {
     const { app } = this.live2d;
     /** @type {HTMLImageElement} */
-    const img = app.renderer.plugins.extract.image(app.stage);
+    const img: HTMLImageElement = app.renderer.plugins.extract.image(app.stage);
     // 使用 canvas 的 toDataURL
     // app.view.toDataURL();
-    const url = img.getAttribute('src');
+    const url = img.getAttribute('src')!;
     // 通过fetch将数据转为blob, 然后在下载图片
     await fetch(url)
       .then(response => response.blob())
       .then(blob => {
         const a = document.createElement('a');
         // 下载的文件名
-        a.download = url.split('/').pop()?.slice(0, 40);
+        a.download = url.split('/').pop()?.slice(0, 40) as string;
         a.href = URL.createObjectURL(blob);
         document.body.appendChild(a);
         a.click();

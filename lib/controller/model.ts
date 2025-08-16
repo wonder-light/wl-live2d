@@ -196,7 +196,7 @@ export class UModelController extends UBaseController {
    * @async
    */
   public async loadModel(modelId: number, textureId: number = 0): Promise<void> {
-    let current = this._data[modelId];
+    let current = this.data[modelId];
     const stage = this.app.stage;
     const event = this.event;
     current = FHelp.is(Array, current) ? current[textureId] : current;
@@ -209,7 +209,7 @@ export class UModelController extends UBaseController {
     // 获取URL
     let url = current.path;
     if (FHelp.isNotValid(url)) {
-      url = 'https://fastly.jsdelivr.net/gh/Eikanya/Live2d-model/%E5%B0%91%E5%A5%B3%E5%89%8D%E7%BA%BF%20girls%20Frontline/live2dold/old/kp31/normal/model.json';
+      url = 'https://fastly.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/shizuku/shizuku.model.json';
     }
     /** @type {TLive2DModel} */
     const model: TLive2DModel = await window.ILive2DModel.from(url, {
@@ -228,12 +228,12 @@ export class UModelController extends UBaseController {
     model.y = current.position?.y ?? 0;
     model.scale.set(0.15 * (current.scale ?? 1));
     // 添加到舞台
-    stage.addChild(model as any);
+    stage.addChild(model);
     // 如果模型数据中有定义宽高, 则直接设置模型的宽高, 否则使用模型加载后自己的宽高
     current.width && (model.width = current.width);
     current.height && (model.height = current.height);
     // 绑定动作
-    this.motion();
+    this.motion(model);
     // 发出事件
     event.emit(EEvent.modelLoad, { width: model.width, height: model.height });
   }
@@ -299,16 +299,20 @@ export class UModelController extends UBaseController {
   /**
    * 在模型加载完成后绑定模型的 `hit` 事件, 并在点击时触发对应的 motion, 同时绑定 motionStart 与 motionFinish
    * @summary 绑定 motion
+   * @param model {TLive2DModel} 模型
    * @return {UModelController} 自身引用
    * @fires EEvent#motionStart 模型运动开始事件
    * @fires EEvent#motionFinish 模型运动完成事件
    */
-  public motion(): UModelController {
-    this.model.on('hit', /**@param {string[]} hitAreas*/async (hitAreas: string[]) => {
+  public motion(model: TLive2DModel): UModelController {
+    model.on('hit', async (hitAreas: string[]) => {//TODO: 添加自定义函数
       // 无法自动加载 motion, 不知是什么原因
-      await this.model.motion(`tap_${ hitAreas[0] }`) || await this.model.motion(hitAreas[0]);
+      await model.motion(`tap_${ hitAreas[0] }`) || await model.motion(hitAreas[0]);
+      if (hitAreas.includes('head')) {
+        await model.expression();
+      }
     });
-    const motionManager = this.model.internalModel.motionManager as unknown as EventEmitter;
+    const motionManager = model.internalModel.motionManager as unknown as EventEmitter;
     motionManager.on('motionStart', (group, index, audio) => {
       // 设置音量
       let m = this.modelData;
