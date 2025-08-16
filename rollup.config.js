@@ -88,7 +88,7 @@ const config = (input, filename, live2or4 = 0) => {
     context: 'windows',
     moduleContext: 'windows',
     external: [
-      /packages/
+      /*/packages/*/ // 要么将 packages 里的一起导进去, 要么就在外部文件动态导入
     ],
     plugins: [
       copy({
