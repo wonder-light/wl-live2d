@@ -151,6 +151,14 @@ export class DLive2dOptions {
   public homePath: string | null;
 
   /**
+   * 启用命中区域帧检测
+   * @summary 帧检测
+   * @type {?boolean}
+   * @default false
+   */
+  public hitFrame: boolean | null;
+
+  /**
    * 创建 live2d 数据实例
    * @summary Live2d 数据构造
    * @hideconstructor
@@ -162,11 +170,12 @@ export class DLive2dOptions {
     this.transitionTime = data?.transitionTime ?? 500;
     this.models = data?.models ?? [];
     this.tips = data?.tips ?? null;
-    this.menus = data?.menus ?? ['home', 'switchTexture', 'switchModule', 'capture', 'info', 'quit', 'testFrame'];
+    this.menus = data?.menus ?? ['home', 'switchModule', 'switchTexture', 'capture', 'info', 'quit'];
     this.selector = data?.selector ?? '';
     this.fixed = data?.fixed ?? true;
     this.plugins = data?.plugins ?? [];
     this.drag = data?.drag ?? true;
     this.homePath = data?.homePath ?? '';
+    this.hitFrame = data?.hitFrame ?? false;
   }
 }
