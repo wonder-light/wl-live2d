@@ -162,7 +162,7 @@ export class DLive2dOptions {
     this.transitionTime = data?.transitionTime ?? 500;
     this.models = data?.models ?? [];
     this.tips = data?.tips ?? null;
-    this.menus = data?.menus ?? ['home', 'switchTexture', 'switchModule', 'capture', 'info', 'quit'];
+    this.menus = data?.menus ?? ['home', 'switchTexture', 'switchModule', 'capture', 'info', 'quit', 'testFrame'];
     this.selector = data?.selector ?? '';
     this.fixed = data?.fixed ?? true;
     this.plugins = data?.plugins ?? [];
