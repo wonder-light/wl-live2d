@@ -1,0 +1,20 @@
+:root {
+  /* 标题 */
+  --vp-home-hero-name-color: transparent;
+  /* 渐变色 */
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    #76c4fd 10%,
+    #f16fff 100%
+  );
+
+  --vp-c-indigo-1: #409eff;
+  --vp-c-indigo-2: #79bbff;
+  --vp-c-indigo-3: #a0cfff;
+}
+
+.dark {
+  --vp-c-indigo-1: #a8b1ff;
+  --vp-c-indigo-2: #5c73e7;
+  --vp-c-indigo-3: #3e63dd;
+}

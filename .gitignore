@@ -3,6 +3,7 @@
 .cache/*
 */.vitepress/cache/*
 dist/*
+*/.vitepress/dist/*
 build/*
 coverage/*
 node_modules/*
