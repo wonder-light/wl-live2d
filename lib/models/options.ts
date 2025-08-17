@@ -20,7 +20,7 @@ export class DLive2dOptions {
   public sayHello: boolean | null;
 
   /**
-   * 模型入场和离开的过渡动画时长,单位 ms
+   * 元素入场和离开的过渡动画时长,单位 ms
    * @summary 过渡动画时长
    * @type {?number}
    * @default 500
@@ -139,7 +139,7 @@ export class DLive2dOptions {
   /**
    * {@link FHomePlugin} 所使用的 URL 地址, 点击后将会跳转到该地址
    *
-   * `homePath` 是一个 `url` 路径, 将完整的拼接在 `URL.origin` 后面
+   * 如果已 `http://` 开头, 则会跳转对应地址, 否则将会追加至 `window.location.origin` 后跳转到对应地址
    * @summary url 路径
    * @type {?string}
    * @default ''

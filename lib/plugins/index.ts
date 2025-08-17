@@ -18,7 +18,7 @@ import { FTalkMessagePlugin } from './message/talk';
 import { FQuitPlugin } from './quit';
 import { FSwitchModulePlugin } from './switch/module';
 import { FSwitchTexturePlugin } from './switch/texture';
-import { FHitFramesPlugin } from './frame.ts';
+import { FHitFramesPlugin } from './frame';
 
 export const plugins = {
   FHomePlugin,

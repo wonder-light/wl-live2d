@@ -1,4 +1,5 @@
 import type { ULive2dController } from '../controller';
+import type { TFunc } from '../types';
 import { FHelp } from '../utils';
 import { FBasePlugin } from './base.js';
 
@@ -41,6 +42,19 @@ export class FQuitPlugin extends FBasePlugin {
   protected _show: HTMLElement | null = null;
 
   /**
+   * 监听事件函数
+   * @type {TFunc<any>}
+   * @private
+   */
+  private _hiddenFun?: TFunc<any> = undefined;
+  /**
+   * 监听事件函数
+   * @type {TFunc<any>}
+   * @private
+   */
+  private _showFun?: TFunc<any> = undefined;
+
+  /**
    * @override
    */
   public override install(live2d: ULive2dController): void {
@@ -60,10 +74,10 @@ export class FQuitPlugin extends FBasePlugin {
     this._show.className = `live2d-fixed live2d-toggle live2d-transition-all live2d-opacity-0 live2d-hidden`;
     this._show.innerHTML = '看板娘';
     // 添加事件监听
-    const ref1 = this.live2d.ref['hiddenLive2d'] = this.hiddenLive2d.bind(this);
-    const ref2 = this.live2d.ref['showLive2d'] = this.showLive2d.bind(this);
-    this._quit.addEventListener('click', ref1);
-    this._show.addEventListener('click', ref2);
+    this._hiddenFun = this.hiddenLive2d.bind(this);
+    this._showFun = this.showLive2d.bind(this);
+    this._quit.addEventListener('click', this._hiddenFun);
+    this._show.addEventListener('click', this._showFun);
     this.live2d.stage.addMenu(this._quit, this._priority);
     document.body.appendChild(this._show);
   }
@@ -75,10 +89,8 @@ export class FQuitPlugin extends FBasePlugin {
     if (!this._enable) {
       return;
     }
-    const ref1 = this.live2d.ref['hiddenLive2d'];
-    const ref2 = this.live2d.ref['showLive2d'];
-    this._quit?.removeEventListener('click', ref1);
-    this._show?.removeEventListener('click', ref2);
+    this._quit?.removeEventListener('click', this._hiddenFun);
+    this._show?.removeEventListener('click', this._showFun);
     this.live2d.stage.removeMenu(this._quit!);
     this._show?.remove();
     // 移除引用

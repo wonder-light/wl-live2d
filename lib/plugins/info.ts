@@ -65,9 +65,9 @@ export class FInfoPlugin extends FBasePlugin {
   /**
    * 在外部网页打开开发文档
    * @summary 打开文档
-   * @see 详情请查看 [wlLive2d](https://wonder-light.github.io/wl-live2d/)
+   * @see 详情请查看 [wlLive2d](https://live2d.doc.nianian.cn/)
    */
   public openDocs(): void {
-    window.open('https://wonder-light.github.io/wl-live2d/');
+    window.open('https://live2d.doc.nianian.cn/');
   }
 }

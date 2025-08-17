@@ -14,6 +14,16 @@ export declare type TConstructor<T = any> = new (...args: any) => T;
 export declare type TInstanceType<T = any> = InstanceType<TConstructor<T>>;
 
 /**
+ * 单个参数的函数类型
+ * @summary 单参函数
+ * @template T 参数类型
+ * @template K 返回值类型
+ * @param {T} param 参数
+ * @return {K} 返回值
+ */
+export declare type TFunc<T, K = void> = (param: T) => K;
+
+/**
  * 分组函数, 根据参数 param 返回一个对应的关键值
  * @summary 有参回调
  * @template T 参数类型
@@ -21,7 +31,7 @@ export declare type TInstanceType<T = any> = InstanceType<TConstructor<T>>;
  * @param {T} param 参数
  * @return {K} 返回值
  */
-export declare type TGroupFun<T, K extends keyof any> = (param: T) => K;
+export declare type TGroupFun<T, K extends keyof any> = TFunc<T, K>;
 
 /**
  * 没有参数且返回值为 void 的无参回调
@@ -72,9 +82,9 @@ export declare type TLive2dCreate = (options: DLive2dOptions | null) => ULive2dC
 /**
  * 模型数据项目可以为 DModel 或者 DModel[]
  *
- * DModel 指模型, 用于切换模型按钮
+ * TModelItem 为对象时则为模型
  *
- * DModel[] 指同一模型的不同服饰, 用于切换服装按钮
+ * TModelItem 为数组时指该模型有一系列皮肤
  * @summary 模型项目
  * @example
  * new DModel || [new DModel]

@@ -5,10 +5,10 @@
 ![](https://forthebadge.com/images/badges/contains-cat-gifs.svg)
 ![](https://forthebadge.com/images/badges/powered-by-electricity.svg)
 
-wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 model2 与 model4 版本的 Live2D 模型，开箱即用且可定制化。  
+wlLive2d 是一个应用于浏览器环境且开箱即用的 Live2D 看板组件, 支持从 cubism42 与 cubism44 版本的 Live2D 模型，开箱即用且可定制化。  
 如果你想为你的个人网站增加一个看板娘，那么请看看这个！🥳
 
-[查阅文档](https://wonder-light.github.io/wl-live2d/) 以了解更多详细的使用教程 🎉。
+[查阅文档](https://live2d.doc.nianian.cn/) 以了解更多详细的使用教程 🎉
 
 ## ✨ 特点：
 
@@ -24,8 +24,6 @@ wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 mo
 
 通过 CDN 方式导入的示例如下。
 
-相关配置选项的详细内容请查看: [配置选项](https://wonder-light.github.io/wl-live2d/DLive2dOptions.html)
-
 在 `<body>` 标签中加入以下内容:
 
 ```html
@@ -35,25 +33,12 @@ wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 mo
   <title>wlLive2d</title>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/wl-live2d/dist/es/text.ts"></script>
-  <script>
+  <script src="https://fastly.jsdelivr.net/npm/wl-live2d/dist/es/index.js" type="module"></script>
+  <script type="module">
     wlLive2d({
       models: [
         {
-          path: 'https://cdn.jsdelivr.net/gh/Eikanya/Live2d-model/Live2D/Senko_Normals/senko.model3.json',
-          scale: 0.12,
-          position: [-50, 50],
-          stageStyle: {
-            width: 320
-          }
-        },
-        {
-          path: 'https://cdn.jsdelivr.net/gh/Eikanya/Live2d-model/galgame%20live2d/Fox%20Hime%20Zero/mori_miko/mori_miko.model3.json',
-          position: [50, 100],
-          stageStyle: {
-            width: 300,
-            height: 450
-          }
+          path: 'https://fastly.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/shizuku/shizuku.model.json',
         }
       ]
     });
@@ -74,34 +59,19 @@ wlLive2d 是一个运行在浏览器环境的 Live2D 看板组件，支持从 mo
 
 ### ESM 使用示例
 
-相关配置选项的详细内容请查看: [配置选项](https://wonder-light.github.io/wl-live2d/DLive2dOptions.html)
-
 ```js
-import { WlLive2d } from 'wl-live2d';
+import { wlLive2d } from 'wl-live2d';
 
-WlLive2d({
+wlLive2d({
   models: [
     {
-      path: 'https://cdn.jsdelivr.net/gh/Eikanya/Live2d-model/Live2D/Senko_Normals/senko.model3.json',
-      scale: 0.12,
-      position: [-50, 50],
-      stageStyle: {
-        width: 320
-      }
-    },
-    {
-      path: 'https://cdn.jsdelivr.net/gh/Eikanya/Live2d-model/galgame%20live2d/Fox%20Hime%20Zero/mori_miko/mori_miko.model3.json',
-      position: [50, 100],
-      stageStyle: {
-        width: 300,
-        height: 450
-      }
+      path: 'https://fastly.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/shizuku/shizuku.model.json',
     }
   ]
 });
 ```
 
-如果您想更换自己的模型或对其进行自定义，请[查阅文档](https://wonder-light.github.io/wl-live2d/)的相关内容
+如果您想更换自己的模型或对其进行自定义，请[查阅文档](https://live2d.doc.nianian.cn/guide/)的相关内容
 
 ## 💕 鸣谢
 
