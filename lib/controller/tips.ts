@@ -5,20 +5,13 @@ import type { ULive2dController } from './live2d';
 
 /**
  * @class
- * @summary tips 控制器类
- * @classdesc 用于控制 tips 相关的的控制器, 例如控制提示框淡入淡出, 以及消息的显示等等
+ * @summary live2d tips 属性
+ * @classdesc 分离出来的 UTipsController 的属性
  * @extends UBaseController
  * @memberof module:controller
- * @alias UTipsController
+ * @alias UTipsProperty
  */
-export class UTipsController extends UBaseController {
-  /**
-   * stage 中的消息提示框元素
-   * @summary 提示框元素
-   * @protected
-   * @type {HTMLElement}
-   */
-  protected _tips: HTMLElement;
+abstract class UTipsProperty extends UBaseController {
   /**
    * 在提示框显示期间的定时器 id
    * @summary 显示定时器 id
@@ -27,6 +20,7 @@ export class UTipsController extends UBaseController {
    * @default null
    */
   protected _showId?: number;
+
   /**
    * 在提示框隐藏期间的定时器 id
    * @summary 隐藏定时器 id
@@ -35,31 +29,6 @@ export class UTipsController extends UBaseController {
    * @default null
    */
   protected _hiddenId?: number;
-
-  /**
-   * 创建 live2d tips 控制器
-   * @summary tips 控制器构造
-   * @constructor
-   * @param {ULive2dController} live2d live2d 上下文
-   * @param {DTips | null} [data=null] tips 数据
-   */
-  public constructor(live2d: ULive2dController, data: DTips | null = null) {
-    super(live2d);
-    this._data = FHelp.mergeAll(new DTips(), data ?? {});
-    this._messages = this._data.message?.map((t: any) => new DMessage(t)) ?? [];
-    this._tips = this.live2d.stage.tips;
-    this._stop = false;
-    this._text = '';
-    this._showId = undefined;
-    this._hiddenId = undefined;
-    // 提示框
-    const tips = this.live2d.stage.tips;
-    const { minWidth, minHeight, offsetX, offsetY } = this.data;
-    tips.style.minWidth = `${ minWidth }px`;
-    tips.style.minHeight = `${ minHeight }px`;
-    tips.style.setProperty('--tips-offset-x', `${ offsetX }px`);
-    tips.style.setProperty('--tips-offset-y', `${ offsetY }px`);
-  }
 
   /**
    * 提示数据集合, 用于存储提示数据, 以及消息数据
@@ -143,7 +112,16 @@ export class UTipsController extends UBaseController {
    * @readonly
    */
   public get duration(): number {
-    return this._data.duration!;
+    return this.data.duration!;
+  }
+
+  /**
+   * setter: 设置提示框显示时的持续时间, 单位 ms
+   * @summary 设置显示时的持续时间
+   * @param {number} value
+   */
+  public set duration(value: number) {
+    this.data.duration = value ?? 3000;
   }
 
   /**
@@ -153,7 +131,50 @@ export class UTipsController extends UBaseController {
    * @readonly
    */
   public get interval(): number {
-    return this._data.interval!;
+    return this.data.interval!;
+  }
+
+  /**
+   * setter: 设置提示框隐藏时的持续时间, 单位 ms
+   * @summary 隐藏时的持续时间
+   * @param {number} value
+   */
+  public set interval(value: number) {
+    this.data.interval = value ?? 5000;
+  }
+}
+
+/**
+ * @class
+ * @summary tips 控制器类
+ * @classdesc 用于控制 tips 相关的的控制器, 例如控制提示框淡入淡出, 以及消息的显示等等
+ * @extends UTipsProperty
+ * @memberof module:controller
+ * @alias UTipsController
+ */
+export class UTipsController extends UTipsProperty {
+  /**
+   * 创建 live2d tips 控制器
+   * @summary tips 控制器构造
+   * @constructor
+   * @param {ULive2dController} live2d live2d 上下文
+   * @param {DTips | null} [data=null] tips 数据
+   */
+  public constructor(live2d: ULive2dController, data: DTips | null = null) {
+    super(live2d);
+    this._data = FHelp.mergeAll(new DTips(), data ?? {});
+    this._messages = this._data.message?.map((t: any) => new DMessage(t)) ?? [];
+    this._stop = false;
+    this._text = '';
+    this._showId = undefined;
+    this._hiddenId = undefined;
+    // 提示框
+    const tips = this.live2d.stage.tips;
+    const { minWidth, minHeight, offsetX, offsetY } = this.data;
+    tips.style.minWidth = `${ minWidth }px`;
+    tips.style.minHeight = `${ minHeight }px`;
+    tips.style.setProperty('--tips-offset-x', `${ offsetX }px`);
+    tips.style.setProperty('--tips-offset-y', `${ offsetY }px`);
   }
 
   /**
@@ -205,8 +226,9 @@ export class UTipsController extends UBaseController {
       return;
     }
     // 设置显示的文本
-    this._tips.innerHTML = this._text;
-    await this.live2d.stage.fadeIn(this._tips);
+    let tips = this.live2d.stage.tips;
+    tips.innerHTML = this._text;
+    await this.live2d.stage.fadeIn(tips);
     // 淡入完成后计时
     this._showId = setTimeout(() => {
       // 清除句柄
@@ -230,7 +252,7 @@ export class UTipsController extends UBaseController {
     if (inherit && this._hiddenId != null && this._hiddenId > 0) return;
     // 清除之前的定时
     this._clearTime();
-    await this.live2d.stage.fadeOut(this._tips);
+    await this.live2d.stage.fadeOut(this.live2d.stage.tips);
     // 淡出完成后计时
     this._hiddenId = setTimeout(() => {
       // 清除句柄
@@ -295,9 +317,7 @@ export class UTipsController extends UBaseController {
   public removeMessage(...message: DMessage[]): UTipsController {
     for (const mes of message) {
       const index = this.messages.indexOf(mes);
-      if (index >= 0) {
-        this.messages.splice(index, 1);
-      }
+      if (index >= 0) this.messages.splice(index, 1);
     }
     return this;
   }
@@ -326,7 +346,7 @@ export class UTipsController extends UBaseController {
                            .flat();
     if (priority.length <= 0) {
       // 没有消息则返回 text
-      return this._text;
+      return this.text;
     }
     // 从优先级列表随机选取一个值
     const key = priority[FHelp.random(0, priority.length, 'floor')];
