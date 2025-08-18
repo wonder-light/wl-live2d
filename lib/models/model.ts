@@ -92,7 +92,7 @@ export class DModel {
    * 创建模型数据实例
    * @summary 模型数据构造
    * @hideconstructor
-   * @param {DModel | null} [data=null] 模型数据
+   * @param {?DModel} [data=null] 模型数据
    */
   public constructor(data: DModel | null = null) {
     FHelp.mixinProperty(this, data);
@@ -104,6 +104,6 @@ export class DModel {
     this.backgroundColor = data?.backgroundColor ?? 'transparent';
     this.width = data?.width ?? null;
     this.height = data?.height ?? null;
-    this.motionPreload = data?.motionPreload ?? TMotionPreload.ALL;
+    this.motionPreload = data?.motionPreload ?? TMotionPreload.NONE;
   }
 }

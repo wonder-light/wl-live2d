@@ -8,7 +8,7 @@ import type { ULive2dController } from './live2d';
  * @summary 淡入模式
  * @enum
  */
-declare enum TFadeMode {
+enum TFadeMode {
   /** 淡入 */
   fadeIn = 'fadeIn',
   /** 淡出 */
@@ -244,7 +244,7 @@ export class UStageController extends UBaseController {
    * @param {HTMLElement} element 文档元素
    * @return {UStageController} 自身引用
    */
-  public removeMenu(element: HTMLElement): UStageController {
+  public removeMenu(element: HTMLElement | null): UStageController {
     const index = this.menuItems.findIndex(item => element === item.element);
     if (index >= 0) {
       this.menuItems.splice(index, 1);
