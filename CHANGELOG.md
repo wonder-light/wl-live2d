@@ -2,6 +2,29 @@
 
 本项目所有显著变化都将记录在这个文件中。有关提交规范，请参阅 [约定式提交](https://www.conventionalcommits.org/zh-hans/v1.0.0/)
 
+## 1.0.8
+
+### ✨ 功能
+
++ 更改为 ts, 并在 dist 中生成声明文件
++ 将 tips.innerText 更改为 tips.innerHTML 支持 HTMl 格式文本
++ 添加测试帧 testFrame 插件
+
+### 🐛 修复
+
++ 添加插件失效, 更新一言 API 接口
++ 修复插件添加失效的问题
++ 解决脚本导入时, cubism2 未定义的问题, 将 packages 里的都打包进一个文件中就不会有这个问题了
+
+### 📌 测试
+
++ test 的 models 更新
++ 添加 es, umd, zzz 文件夹
+
+### 📑 文档
+
++ 添加 vitepress 文档
+
 ## 1.0.7-rc.1
 
 ### 🐛 修复
