@@ -85,7 +85,7 @@ export class FQuitPlugin extends FBasePlugin {
   public override uninstall(): void {
     this._quit?.removeEventListener('click', this._hiddenFun);
     this._show?.removeEventListener('click', this._showFun);
-    this.live2d.stage.removeMenu(this._quit!);
+    this.live2d.stage.removeMenu(this._quit);
     this._show?.remove();
     // 移除引用
     this._quit = null;

@@ -61,7 +61,7 @@ export class FHomePlugin extends FBasePlugin {
    */
   public override uninstall(): void {
     this._back?.removeEventListener('click', this._func);
-    this.live2d.stage.removeMenu(this._back!);
+    this.live2d.stage.removeMenu(this._back);
     // 移除引用
     this._back = null;
   }

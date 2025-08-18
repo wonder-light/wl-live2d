@@ -24,7 +24,7 @@ export class FCopyMessagePlugin extends FEventMessagePlugin {
   protected override _event: string = 'copy';
 
   /**
-   * 监听复制事件函数
+   * 监听事件函数
    * @type {TFunc<any>}
    * @private
    */

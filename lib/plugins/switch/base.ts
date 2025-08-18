@@ -1,3 +1,4 @@
+import type { TFunc } from '../../types';
 import { FBasePlugin } from '../base';
 
 /**
@@ -37,6 +38,13 @@ export class FBaseSwitchPlugin extends FBasePlugin {
   protected _loading: HTMLElement | null = null;
 
   /**
+   * 监听事件函数
+   * @type {TFunc<any>}
+   * @private
+   */
+  private _func?: TFunc<any> = undefined;
+
+  /**
    * 在安装插件时需要调用的函数, 一般用于初始化以及事件绑定等等
    * @summary 安装插件
    * @return {void}
@@ -48,8 +56,8 @@ export class FBaseSwitchPlugin extends FBasePlugin {
     this._loading.className = `live2d-fixed live2d-toggle live2d-transition-all live2d-opacity-0 live2d-hidden`;
     this._loading.innerHTML = '加载中';
     // 添加事件监听
-    const ref = this.live2d.ref['startSwitch'] = this.startSwitch.bind(this);
-    this._button.addEventListener('click', ref);
+    this._func = this.startSwitch.bind(this);
+    this._button.addEventListener('click', this._func);
     this.live2d.stage.addMenu(this._button, this.priority);
   }
 
@@ -59,9 +67,8 @@ export class FBaseSwitchPlugin extends FBasePlugin {
    * @return {void}
    */
   public override uninstall(): void {
-    const ref = this.live2d.ref['startSwitch'];
-    this._button?.removeEventListener('click', ref);
-    this.live2d.stage.removeMenu(this._button!);
+    this._button?.removeEventListener('click', this._func);
+    this.live2d.stage.removeMenu(this._button);
     // 移除引用
     this._button = null;
     this._loading = null;

@@ -1,3 +1,4 @@
+import type { TFunc } from '../../../types';
 import { FEventMessagePlugin } from './event.js';
 
 /**
@@ -31,21 +32,28 @@ export class FConsoleMessagePlugin extends FEventMessagePlugin {
   protected override _event: string = 'console';
 
   /**
+   * 监听事件函数
+   * @type {TFunc<any>}
+   * @private
+   */
+  private _func?: TFunc<any> = undefined;
+
+  /**
    * @override
    */
   public override addListener(): void {
-    this._ref['listener'] = this.notify.bind(this);
+    this._func = this.notify.bind(this);
     // 监听窗口大小变化
-    window.addEventListener('resize', this._ref['listener']);
+    window.addEventListener('resize', this._func);
     // 需要先调用一次哦
-    this._ref['listener']();
+    this._func?.(null);
   }
 
   /**
    * @override
    */
   public override removeListener(): void {
-    window.removeEventListener('resize', this._ref['listener']);
+    window.removeEventListener('resize', this._func);
   }
 
   /**

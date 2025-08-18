@@ -51,7 +51,7 @@ export class FInfoPlugin extends FBasePlugin {
    */
   public override uninstall(): void {
     this._button?.removeEventListener('click', this.openDocs);
-    this.live2d.stage.removeMenu(this._button!);
+    this.live2d.stage.removeMenu(this._button);
     // 移除引用
     this._button = null;
   }

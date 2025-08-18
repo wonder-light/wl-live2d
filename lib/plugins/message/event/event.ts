@@ -39,16 +39,19 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
    * @default 'eventMessage'
    */
   public override readonly name: string = 'eventMessage';
+  
   /**
    * @default 18
    * @override
    */
   public override priority: number = 18;
+
   /**
    * @default 'event'
    * @override
    */
   protected override _type: string = 'event';
+
   /**
    * 消息数据的事件对应的类型
    * @summary 事件类型
@@ -57,15 +60,6 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
    * @protected
    */
   protected _event: string | null = null;
-
-  /**
-   * 以键值对进行记录的对象引用
-   * @summary 对象引用
-   * @type {Record<string, any>}
-   * @default {}
-   * @protected
-   */
-  protected _ref: Record<string, any> = {};
 
   /**
    * @override

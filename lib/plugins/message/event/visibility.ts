@@ -33,6 +33,13 @@ export class FVisibilityMessagePlugin extends FEventMessagePlugin {
   protected _show: boolean = true;
 
   /**
+   * 记录的属性
+   * @type {any}
+   * @private
+   */
+  private _prop: any = null;
+
+  /**
    * @override
    */
   public override addListener(): void {
@@ -45,7 +52,7 @@ export class FVisibilityMessagePlugin extends FEventMessagePlugin {
     const target = this.live2d.stage.wrapper.classList;
     // 对象上的方法描述
     const desc = Object.getOwnPropertyDescriptor((target as any).__proto__, name);
-    this._ref['desc'] = desc;
+    this._prop = desc;
     const _this = this;
     // 新建描述
     const newDesc = {
@@ -77,6 +84,6 @@ export class FVisibilityMessagePlugin extends FEventMessagePlugin {
   public override removeListener(): void {
     const name = 'add';
     const target = this.live2d.stage.wrapper.classList;
-    Object.defineProperty(target, name, this._ref['desc']);
+    Object.defineProperty(target, name, this._prop);
   }
 }

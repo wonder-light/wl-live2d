@@ -71,6 +71,8 @@ export class FTalkMessagePlugin extends FBasePlugin {
    * @override
    */
   public override install(): void {
+    const { talk, talkInterval, talkApis } = this.live2d.tips.data;
+    if (!talk) return;
     this._message = new DMessage();
     this._message.condition = FHelp.F;
     this._message.priority = this.priority * 2;
@@ -90,7 +92,6 @@ export class FTalkMessagePlugin extends FBasePlugin {
       }
     ];
     // 经过一定时间 `interval` 才开始
-    const { talkInterval, talkApis } = this.live2d.tips.data;
     if (talkApis && talkApis.length <= 0) {
       talkApis.push(...this._talkApis);
     }
@@ -101,12 +102,12 @@ export class FTalkMessagePlugin extends FBasePlugin {
    * @override
    */
   public override uninstall(): void {
+    const { talkApis } = this.live2d.tips.data;
     this._handler && clearInterval(this._handler);
     this._handler = null;
     this._message && this.live2d.tips.removeMessage(this._message);
     this._message = null;
     // 删除默认的 talk api 对象
-    const { talkApis } = this.live2d.tips.data;
     for (const talkApi of this._talkApis) {
       let index = talkApis?.indexOf(talkApi) ?? -1;
       if (index >= 0) talkApis?.splice(index, 1);
