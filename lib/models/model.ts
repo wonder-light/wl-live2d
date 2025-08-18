@@ -1,4 +1,4 @@
-import type { TPosition } from '../types';
+import { TMotionPreload, TPosition } from '../types';
 import { FHelp } from '../utils';
 
 /**
@@ -41,6 +41,14 @@ export class DModel {
   public scale: number | null;
 
   /**
+   * 模型的旋转角度
+   * @summary 模型旋转
+   * @type {?number}
+   * @default 0
+   */
+  public rotate: number | null;
+
+  /**
    * 模型在舞台中的位置. x: 横坐标, y: 纵坐标
    * @summary 模型位置
    * @type {?TPosition}
@@ -73,6 +81,14 @@ export class DModel {
   public height: number | null;
 
   /**
+   * 指示如何预加载动作
+   * @summary motion 预加载
+   * @type {?TMotionPreload}
+   * @default TMotionPreload.NONE
+   */
+  public motionPreload: TMotionPreload | null;
+
+  /**
    * 创建模型数据实例
    * @summary 模型数据构造
    * @hideconstructor
@@ -83,9 +99,11 @@ export class DModel {
     this.path = data?.path ?? '';
     this.volume = data?.volume ?? 0.5;
     this.scale = data?.scale ?? 1;
+    this.rotate = data?.rotate ?? 0;
     this.position = data?.position ?? { x: 0, y: 0 };
     this.backgroundColor = data?.backgroundColor ?? 'transparent';
     this.width = data?.width ?? null;
     this.height = data?.height ?? null;
+    this.motionPreload = data?.motionPreload ?? TMotionPreload.ALL;
   }
 }

@@ -159,6 +159,14 @@ export class DLive2dOptions {
   public hitFrame: boolean | null;
 
   /**
+   * 组件停靠位置, 当您希望组件靠右展示时这个属性会非常有用
+   * @summary 右边停靠
+   * @type {?boolean}
+   * @default false
+   */
+  public dockedRight: boolean | null;
+
+  /**
    * 创建 live2d 数据实例
    * @summary Live2d 数据构造
    * @hideconstructor
@@ -177,5 +185,6 @@ export class DLive2dOptions {
     this.drag = data?.drag ?? true;
     this.homePath = data?.homePath ?? '';
     this.hitFrame = data?.hitFrame ?? false;
+    this.dockedRight = data?.dockedRight ?? true;
   }
 }
