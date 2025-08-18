@@ -60,13 +60,13 @@ abstract class UModelProperty extends UBaseController {
   /**
    * @param {number} index 模型索引
    */
-  public set modelId(index: number) {
+  protected set modelId(index: number) {
     this._modelId = FHelp.clamp(0, this._data.length - 1, index);
     localStorage.setItem('model-id', `${ this._modelId }`);
   }
 
   /**
-   * 当前模型贴图在模型集中的位置索引
+   * 当前模型贴图在模型集 `data[modelId]` 中的二维位置索引
    * @summary 贴图索引
    * @protected
    * @type {number}
@@ -74,7 +74,7 @@ abstract class UModelProperty extends UBaseController {
   protected _textureId: number = 0;
 
   /**
-   * 当前模型贴图在模型集中的位置索引
+   * 当前模型贴图在模型集 `data[modelId]` 中的位置索引
    * @summary 贴图索引
    * @type {number}
    */
@@ -85,13 +85,13 @@ abstract class UModelProperty extends UBaseController {
   /**
    * @param {number} index 贴图索引
    */
-  public set textureId(index: number) {
+  protected set textureId(index: number) {
     this._textureId = FHelp.clamp(0, this.textureMaxIndex, index);
     localStorage.setItem('texture-id', `${ this._textureId }`);
   }
 
   /**
-   * 当前模型的最大贴图索引
+   * 当前模型集 `data[modelId]` 的最大贴图索引
    * @return {number}
    */
   public get textureMaxIndex(): number {
@@ -290,7 +290,7 @@ export class UModelController extends UModelProperty {
   }
 
   /**
-   * 喀什切换模型数据集中的下一个模型
+   * 切换模型数据集中的下一个模型, 循环切换
    * @summary 下一个模型
    * @return {Promise<void>}
    * @async
@@ -306,7 +306,7 @@ export class UModelController extends UModelProperty {
   }
 
   /**
-   * 开始切换模型的下一个服装
+   * 开始切换模型的下一个服装, 循环切换
    * @summary 下一个服装
    * @return {Promise<void>}
    * @async

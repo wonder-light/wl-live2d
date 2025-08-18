@@ -23,7 +23,7 @@ class Plugin extends FBasePlugin {
     console.log('vue app install plugin');
   }
 
-  uninstall(live2d) {}
+  uninstall() {}
 }
 
 export default {
@@ -70,8 +70,4 @@ export default {
 </style>
 
 <style>
-#live2d-id > .live2d-wrapper {
-  left: auto;
-  right: 0;
-}
 </style>

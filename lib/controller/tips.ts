@@ -96,7 +96,7 @@ abstract class UTipsProperty extends UBaseController {
   protected _stop: boolean;
 
   /**
-   * getter: 是否停止 tips 的淡入淡出循环, 如果需要停止的话则需要等待淡出之后才会生效
+   * getter: 指示当前是否已经停止 tips 的淡入淡出循环, 如果需要停止的话则需要等待淡出之后才会生效
    * @summary 停止提示框循环
    * @type {boolean}
    * @readonly
@@ -323,7 +323,7 @@ export class UTipsController extends UTipsProperty {
   }
 
   /**
-   * 从消息列表中安装一定概率随机获取消息
+   * 从消息列表中按照一定概率随机获取消息
    * @summary 随机获取消息
    * @return {string} 消息文本
    */

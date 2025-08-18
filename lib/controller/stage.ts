@@ -89,7 +89,7 @@ export class UStageController extends UBaseController {
   }
 
   /**
-   * getter: 画布元素
+   * getter: live2d 模型使用的画布元素
    * @summary 画布元素
    * @type {HTMLCanvasElement}
    * @readonly
@@ -99,7 +99,7 @@ export class UStageController extends UBaseController {
   }
 
   /**
-   * getter: 消息提示元素
+   * getter: 消息提示框元素
    * @summary 提示元素
    * @type {HTMLElement}
    * @readonly
@@ -220,7 +220,7 @@ export class UStageController extends UBaseController {
   }
 
   /**
-   * 将菜单元素及优先级作为一个对象添加到 menuItems
+   * 将菜单元素及优先级作为一个对象添加到 menuItems, 菜单按照 `priority` 从从大到小排序
    * @summary 添加菜单元素
    * @param {HTMLElement} element 文档元素
    * @param {number} [priority=2] 优先级
