@@ -3,7 +3,7 @@ import { Application } from 'pixi.js';
 import defaultOptions from '../config/options.json';
 import { DLive2dOptions } from '../models';
 import { FBasePlugin, plugins as pluginSet } from '../plugins';
-import type { TApplication, TInstanceType } from '../types';
+import type { TAnyFunc, TApplication, TFunc, TInstanceType, TLive2DModel } from '../types';
 import { EEvent, FHelp } from '../utils';
 import { UModelController } from './model';
 import { UStageController } from './stage';
@@ -11,41 +11,12 @@ import { UTipsController } from './tips';
 
 /**
  * @class
- * @summary live2d 控制器
- * @classdesc 用于整合 stage, model 等其他控制器, 并否则插件的安装与卸载等等
+ * @summary live2d 属性
+ * @classdesc 分离出来的 ULive2dController 的属性
  * @memberof module:controller
- * @alias ULive2dController
+ * @alias ULive2dProperty
  */
-export class ULive2dController {
-  /**
-   * 创建 live2d 控制器
-   * @summary live2d 控制器构造
-   * @param {DLive2dOptions| null} options Live2d 数据
-   * @throws {Error} PIXI.Application is null
-   */
-  protected constructor(options: DLive2dOptions | null) {
-    this._data = options = new DLive2dOptions(FHelp.mergeAll(defaultOptions, options));
-    this._event = new EventEmitter();
-    this._ref = {};
-    // 控制器
-    this._stage = new UStageController(this, options.selector);
-    this._model = new UModelController(this, options.models);
-    this._tips = new UTipsController(this, options.tips);
-    this._plugins = options.plugins?.filter(p => FHelp.is(FBasePlugin, p)) ?? [];
-    // 创建 app 实例
-    /** @type {TApplication} */
-    this._app = new Application({
-      view: this._stage.canvas,
-      backgroundAlpha: 0,
-      backgroundColor: 0x000000,
-      resolution: 2,
-      autoStart: true,
-      autoDensity: true,
-      resizeTo: this._stage.wrapper
-    }) as unknown as TApplication;
-    this.init();
-  }
-
+abstract class ULive2dProperty {
   /**
    * PIXI.Application 实例
    * @summary app 实例
@@ -176,9 +147,9 @@ export class ULive2dController {
    * 以键值对进行记录的对象引用
    * @summary 对象引用
    * @protected
-   * @type {Record<string, any>}
+   * @type {Record<any, any>}
    */
-  protected _ref: Record<string, any>;
+  protected _ref: Record<any, any>;
 
   /**
    * getter: 以键值对进行记录的对象引用
@@ -186,8 +157,160 @@ export class ULive2dController {
    * @type {Record<string, any>}
    * @readonly
    */
-  public get ref(): Record<string, any> {
+  public get ref(): Record<any, any> {
     return this._ref;
+  }
+}
+
+/**
+ * @class
+ * @summary live2d 事件方法
+ * @classdesc 分离出来的 ULive2dController 的事件方法
+ * @memberof module:controller
+ * @alias ULive2dEvent
+ */
+abstract class ULive2dEvent extends ULive2dProperty {
+  /**
+   * 模型开始加载前的事件
+   * @param {TFunc} func 加载前的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#modelStart 模型开始加载事件
+   */
+  public onModelStart(func: TFunc, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.modelStart, func, context, once);
+  }
+
+  /**
+   * 模型加载完成时的事件
+   * @param {TFunc<TLive2DModel>} func 加载结束的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#modelLoaded 模型加载成功事件
+   */
+  public onModelLoaded(func: TFunc<TLive2DModel>, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.modelLoaded, func, context, once);
+  }
+
+  /**
+   * 模型加载失败时的事件
+   * @param {TFunc<Error>} func 加载失败的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#modelError 模型加载失败事件
+   */
+  public onModelError(func: TFunc<Error>, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.modelError, func, context, once);
+  }
+
+  /**
+   * 淡入淡出开始时的事件
+   * @param {TFunc} func 淡入淡出开始的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#fadeStart 淡入淡出开始事件
+   */
+  public onFadeStart(func: TFunc, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.fadeStart, func, context, once);
+  }
+
+  /**
+   * 淡入淡出结束时的事件
+   * @param {TFunc} func 淡入淡出结束的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#fadeEnd 淡入淡出结束事件
+   */
+  public onFadeEnd(func: TFunc, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.fadeEnd, func, context, once);
+  }
+
+  /**
+   * 淡入淡出取消时的事件
+   * @param {TFunc} func 淡入淡出取消的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#fadeCancel 淡入淡出取消事件
+   */
+  public onFadeCancel(func: TFunc, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.fadeCancel, func, context, once);
+  }
+
+  /**
+   * 模型 motion 开始时的事件
+   * @param {TAnyFunc} func motion 开始的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#motionStart 模型 motion 开始事件
+   */
+  public onMotionStart(func: TAnyFunc, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.motionStart, func, context, once);
+  }
+
+  /**
+   * 模型 motion 完成时的事件
+   * @param {TFunc} func motion 完成的回调
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   * @listens EEvent#motionFinish 模型 motion 完成事件
+   */
+  public onMotionFinish(func: TFunc, context?: any, once: boolean = false): void {
+    this._onAddEvent(EEvent.motionFinish, func, context, once);
+  }
+
+  /**
+   * 绑定事件
+   * @param {symbol} event 事件
+   * @param {TAnyFunc} func 回调
+   * @param context this
+   * @param {boolean} once 一次
+   * @private
+   */
+  private _onAddEvent(event: symbol, func: TAnyFunc, context?: any, once: boolean = false): void {
+    if (once) {
+      this.event.once(event, func, context);
+    } else {
+      this.event.on(event, func, context);
+    }
+  }
+}
+
+/**
+ * @class
+ * @summary live2d 控制器
+ * @classdesc 用于整合 stage, model 等其他控制器, 并否则插件的安装与卸载等等
+ * @memberof module:controller
+ * @alias ULive2dController
+ */
+export class ULive2dController extends ULive2dEvent {
+  /**
+   * 创建 live2d 控制器
+   * @summary live2d 控制器构造
+   * @param {DLive2dOptions| null} options Live2d 数据
+   * @throws {Error} PIXI.Application is null
+   */
+  protected constructor(options: DLive2dOptions | null) {
+    super();
+    this._data = options = new DLive2dOptions(options);
+    this._event = new EventEmitter();
+    this._ref = {};
+    // 控制器
+    this._stage = new UStageController(this, options.selector);
+    this._model = new UModelController(this, options.models);
+    this._tips = new UTipsController(this, options.tips);
+    this._plugins = options.plugins?.filter(p => FHelp.is(FBasePlugin, p)) ?? [];
+    // 创建 app 实例
+    /** @type {TApplication} */
+    this._app = new Application({
+      view: this._stage.canvas,
+      backgroundAlpha: 0,
+      backgroundColor: 0x000000,
+      resolution: 2,
+      autoStart: true,
+      autoDensity: true,
+      resizeTo: this._stage.wrapper
+    }) as unknown as TApplication;
+    this.init();
   }
 
   /**
@@ -198,7 +321,7 @@ export class ULive2dController {
    * @static
    */
   public static create(options: DLive2dOptions | null = null): ULive2dController {
-    return new ULive2dController(options);
+    return new ULive2dController(FHelp.mergeAll(defaultOptions, options));
   }
 
   /**
@@ -264,13 +387,12 @@ export class ULive2dController {
    * 卸载插件, 销毁控制器, 销毁 app 实例
    * @summary 销毁控制器
    * @fires EEvent#destroy 控制器销毁事件
-   * @param {boolean} [removeView=false] 从 DOM 中移除 Canvas 元素
    */
-  public destroy(removeView: boolean = false): void {
+  public destroy(): void {
     const plugins = this.plugins;
     this.uninstallPlugin(...plugins);
     plugins.splice(0, plugins.length);
+    this.app.renderer.destroy(true);
     this.event.emit(EEvent.destroy);
-    this.app.renderer.destroy(removeView);
   }
 }
