@@ -62,14 +62,14 @@ export class FQuitPlugin extends FBasePlugin {
     // 关闭按钮
     this._quit = document.createElement('div');
     this._quit.className = 'live2d-menu-item live2d-flex-center';
-    this._quit.title = '关闭看板娘';
+    this._quit.title = '休息';
     this._quit.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"></path></svg>
     `;
     // 显示按钮
     this._show = document.createElement('div');
     this._show.className = `live2d-fixed live2d-toggle live2d-transition-all live2d-opacity-0 live2d-hidden`;
-    this._show.innerHTML = '看板娘';
+    this._show.innerHTML = '看板娘休息中';
     // 添加事件监听
     this._hiddenFun = this.hiddenLive2d.bind(this);
     this._showFun = this.showLive2d.bind(this);

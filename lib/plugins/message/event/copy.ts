@@ -1,3 +1,4 @@
+import type { TFunc } from '../../../types';
 import { FEventMessagePlugin } from './event.js';
 
 /**
@@ -23,17 +24,24 @@ export class FCopyMessagePlugin extends FEventMessagePlugin {
   protected override _event: string = 'copy';
 
   /**
+   * 监听复制事件函数
+   * @type {TFunc<any>}
+   * @private
+   */
+  private _func?: TFunc<any> = undefined;
+
+  /**
    * @override
    */
   public override addListener(): void {
-    this._ref['listener'] = this.notify.bind(this);
-    window.addEventListener('copy', this._ref['listener']);
+    this._func = this.notify.bind(this);
+    window.addEventListener('copy', this._func);
   }
 
   /**
    * @override
    */
   public override removeListener(): void {
-    window.removeEventListener('copy', this._ref['listener']);
+    window.removeEventListener('copy', this._func);
   }
 }

@@ -1,4 +1,4 @@
-import { clamp, defaultTo, groupBy, identical, is, isEmpty, isNil, mergeAll, mergeDeepWith } from 'ramda';
+import { defaultTo, groupBy, identical, is, isEmpty, isNil, mergeAll, mergeDeepWith } from 'ramda';
 import type { TConstructor, TGroupFun, TInstanceType } from '../types';
 
 
@@ -23,29 +23,16 @@ export class FHelp {
    * @static
    */
   public static mixin(base: TConstructor, ...classes: TConstructor[]): TConstructor {
-    if (base?.prototype == null) {
-      return base;
-    }
     for (const cls of classes) {
-      if (cls?.prototype == null) continue;
       //获取方法
-      Object.getOwnPropertyNames(cls.prototype).forEach((key) => {
-        if (!base.prototype[key]) {
-          base.prototype[key] = cls.prototype[key];
-          //克隆源对象键值对目标对象
-          //Object.defineProperty(base, key, cls.prototype[key]);
-        }
-      });
-      //获取属性
-      const ins = new cls;
-      const baseIns = new base;
-      Object.getOwnPropertyNames(ins).forEach((key) => {
-        if (!baseIns[key]) {
-          base.prototype[key] = ins[key];
-          //克隆源对象键值对目标对象
-          //Object.defineProperty(base, key, ins[key]);
-        }
-      });
+      for (const key of Object.getOwnPropertyNames(cls.prototype)) {
+        if (base.prototype.hasOwnProperty(key)) continue;
+        Object.defineProperty(
+          base.prototype,
+          key,
+          Object.getOwnPropertyDescriptor(cls.prototype, key)
+        );
+      }
     }
     return base;
   }
@@ -61,21 +48,11 @@ export class FHelp {
    * @static
    */
   public static mixinProperty(base: TInstanceType, ...property: TInstanceType[]): TInstanceType {
-    if (FHelp.isNotValid(base)) {
-      return base;
-    }
+    if (!base) return base;
     for (const ins of property) {
-      // 使用 prototype 判断
-      // class.prototype != null
-      // ({}).prototype == null
-      if (base.prototype == null && ins && ins.prototype == null) {
-        Object.getOwnPropertyNames(ins).forEach((key) => {
-          if (!base[key]) {
-            base[key] = ins[key];
-            //克隆源对象键值对目标对象
-            //Object.defineProperty(base, key, ins[key]);
-          }
-        });
+      if (!ins) continue;
+      for (const key of Object.keys(ins)) {
+        base[key] = ins[key];
       }
     }
     return base;
@@ -285,7 +262,7 @@ export class FHelp {
    */
   public static clamp(min: number, max: number, value: number): number {
     if (min > max) max = min;
-    return clamp(min, max, value);
+    return value < min ? min : value > max ? max : value;
   }
 
   /**
