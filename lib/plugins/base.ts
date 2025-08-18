@@ -18,6 +18,7 @@ export class FBasePlugin {
    * @default ''
    */
   public readonly name: string = '';
+
   /**
    * 插件优先级, 在安装插件是会按照优先级依次执行
    * @summary 优先级
