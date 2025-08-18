@@ -139,18 +139,21 @@ export class EEvent {
  * 淡入淡出开始事件
  * @summary 过渡开始
  * @event EEvent#fadeStart
+ * @param {HTMLElement} element 元素
  * @global
  */
 /**
  * 淡入淡出结束事件
  * @summary 过渡结束
  * @event EEvent#fadeEnd
+ * @param {HTMLElement} element 元素
  * @global
  */
 /**
  * 淡入淡出取消事件
  * @summary 过渡取消
  * @event EEvent#fadeCancel
+ * @param {HTMLElement} element 元素
  * @global
  */
 /**

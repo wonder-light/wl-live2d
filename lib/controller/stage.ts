@@ -368,9 +368,9 @@ export class UStageController extends UBaseController {
     el[proceed] = (end = false) => {
       for (const key in state) state[key]?.();
       el[proceed] = null;
-      this.event.emit(end ? EEvent.fadeEnd : EEvent.fadeCancel);
+      this.event.emit(end ? EEvent.fadeEnd : EEvent.fadeCancel, element);
     };
-    this.event.emit(EEvent.fadeStart);
+    this.event.emit(EEvent.fadeStart, element);
     let time = this.getTransitionDuration(element);
     // 添加过度类
     !element.classList.contains('live2d-transition-all') && element.classList.add('live2d-transition-all');

@@ -206,34 +206,34 @@ abstract class ULive2dEvent extends ULive2dProperty {
 
   /**
    * 淡入淡出开始时的事件
-   * @param {TFunc} func 淡入淡出开始的回调
+   * @param {TFunc<HTMLElement>} func 淡入淡出开始的回调
    * @param context this 指向
    * @param {boolean} once 是否只用一次
    * @listens EEvent#fadeStart 淡入淡出开始事件
    */
-  public onFadeStart(func: TFunc, context?: any, once: boolean = false): void {
+  public onFadeStart(func: TFunc<HTMLElement>, context?: any, once: boolean = false): void {
     this._onAddEvent(EEvent.fadeStart, func, context, once);
   }
 
   /**
    * 淡入淡出结束时的事件
-   * @param {TFunc} func 淡入淡出结束的回调
+   * @param {TFunc<HTMLElement>} func 淡入淡出结束的回调
    * @param context this 指向
    * @param {boolean} once 是否只用一次
    * @listens EEvent#fadeEnd 淡入淡出结束事件
    */
-  public onFadeEnd(func: TFunc, context?: any, once: boolean = false): void {
+  public onFadeEnd(func: TFunc<HTMLElement>, context?: any, once: boolean = false): void {
     this._onAddEvent(EEvent.fadeEnd, func, context, once);
   }
 
   /**
    * 淡入淡出取消时的事件
-   * @param {TFunc} func 淡入淡出取消的回调
+   * @param {TFunc<HTMLElement>} func 淡入淡出取消的回调
    * @param context this 指向
    * @param {boolean} once 是否只用一次
    * @listens EEvent#fadeCancel 淡入淡出取消事件
    */
-  public onFadeCancel(func: TFunc, context?: any, once: boolean = false): void {
+  public onFadeCancel(func: TFunc<HTMLElement>, context?: any, once: boolean = false): void {
     this._onAddEvent(EEvent.fadeCancel, func, context, once);
   }
 
@@ -279,7 +279,7 @@ abstract class ULive2dEvent extends ULive2dProperty {
 /**
  * @class
  * @summary live2d 控制器
- * @classdesc 用于整合 stage, model 等其他控制器, 并否则插件的安装与卸载等等
+ * @classdesc 用于整合 stage, model 等其他控制器, 并负责插件的安装与卸载等等
  * @memberof module:controller
  * @alias ULive2dController
  */
@@ -326,11 +326,11 @@ export class ULive2dController extends ULive2dEvent {
   }
 
   /**
-   * 如果 plugin 不是 FBasePlugin 的子类则不会进行安, 否则根据插件的优先级进行安装
+   * 如果 plugin 不是 FBasePlugin 的子类则不会进行安装, 并且根据插件的优先级进行安装
    * @summary 安装插件
    * @param {...TInstanceType<FBasePlugin>[]} plugins FBasePlugin插件的子类实例集
    */
-  public installPlugin(...plugins: TInstanceType<FBasePlugin>[]) {
+  public installPlugin(...plugins: TInstanceType<FBasePlugin>[]): void {
     // 插件名称集合
     const names = this.plugins.reduce((names: Record<string, string>, current) => {
       names[current.name] = current.name;
@@ -358,7 +358,7 @@ export class ULive2dController extends ULive2dEvent {
    * @template T FBasePlugin 的子类
    * @param {...TInstanceType<FBasePlugin>[]} plugins 插件实例集
    */
-  public uninstallPlugin(...plugins: TInstanceType<FBasePlugin>[]) {
+  public uninstallPlugin(...plugins: TInstanceType<FBasePlugin>[]): void {
     for (const plugin of plugins) {
       const index = this.plugins.indexOf(plugin);
       if (index < 0) continue;
