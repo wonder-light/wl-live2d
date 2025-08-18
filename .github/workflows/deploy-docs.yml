@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'docs/**'
 
   # 这将启用“操作”选项卡上的“运行工作流”按钮
   workflow_dispatch:

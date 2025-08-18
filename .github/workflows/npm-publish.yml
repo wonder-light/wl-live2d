@@ -4,10 +4,14 @@
 name: npm-publish
 
 on:
-# 通过推送或拉取主分支(main)事件触发工作流
+  # 通过推送或拉取主分支(main)事件触发工作流
   push:
     branches:
-    - main
+      - main
+    # 与 refs/tags 匹配的模式序列
+    tags:
+      - '*'
+    if: startsWith(github.ref, 'refs/tags')
   # 这将启用“操作”选项卡上的“运行工作流”按钮
   workflow_dispatch:
 
