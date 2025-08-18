@@ -166,6 +166,7 @@ abstract class ULive2dProperty {
  * @class
  * @summary live2d 事件方法
  * @classdesc 分离出来的 ULive2dController 的事件方法
+ * @extends ULive2dProperty
  * @memberof module:controller
  * @alias ULive2dEvent
  */
