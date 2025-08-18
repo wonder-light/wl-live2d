@@ -100,6 +100,10 @@ export class EEvent {
   static readonly motionFinish: symbol = Symbol('motion-finish');
 }
 
+// @event <className>#[event:]<eventName>
+// @fires <className>#[event:]<eventName>
+// @listens <eventName>
+
 /**
  * 控制器初始化事件
  * @summary 初始化

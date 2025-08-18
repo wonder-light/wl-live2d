@@ -95,7 +95,6 @@ export abstract class UBaseController {
    * 在 [event]{@link ULive2dController#event} 提交 [EEvent#destroy]{@link EEvent#event:destroy} 时进行调用, 用于销毁控制器
    * @summary 销毁控制器
    * @abstract
-   * @listens
    */
   public destroy(): void {
     this.event.removeListener(EEvent.init, this.destroy, this);
