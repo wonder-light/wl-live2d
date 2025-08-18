@@ -1,5 +1,4 @@
 import type { ULive2dController } from '../controller';
-import { FHelp } from '../utils';
 
 /**
  * @class
@@ -20,20 +19,21 @@ export class FBasePlugin {
    */
   public readonly name: string = '';
   /**
-   * true: 启用插件, false: 不启用插件
-   * @summary 启用插件
+   * 插件优先级, 在安装插件是会按照优先级依次执行
+   * @summary 优先级
    * @protected
-   * @type {boolean}
-   * @default true
+   * @type {number}
+   * @default 0
    */
-  protected _enable: boolean = true;
+  public readonly priority: number = 0;
+
   /**
    * 插件 live2d 上下文, 用于获取对应的数据
    * @summary live2d 上下文
    * @protected
    * @type {ULive2dController}
    */
-  protected _live2d: ULive2dController | null = null;
+  private _live2d: ULive2dController | null = null;
 
   /**
    * 插件 live2d 上下文, 用于获取对应的数据
@@ -46,52 +46,27 @@ export class FBasePlugin {
   }
 
   /**
-   * 插件优先级, 在安装插件是会按照优先级依次执行
-   * @summary 优先级
-   * @protected
-   * @type {number}
-   * @default 0
+   * 设置插排的 live2d 上下文
+   * @param {FBasePlugin} plugin 插件
+   * @param {ULive2dController | null} context live2d 上下文
    */
-  protected _priority: number = 0;
-
-  /**
-   * 插件优先级, 在安装插件是会按照优先级依次执行
-   * @summary 插件优先级
-   * @type {number}
-   * @readonly
-   */
-  public get priority(): number {
-    return this._priority;
+  public static setContext(plugin: FBasePlugin, context: ULive2dController | null): void {
+    plugin._live2d = context;
   }
 
   /**
    * 在安装插件时需要调用的函数, 一般用于初始化以及事件绑定等等
    * @summary 安装插件
    * @abstract
-   * @param {ULive2dController} live2d live2d 上下文
    * @return {void}
    */
-  public install(live2d: ULive2dController): void {
-    this._live2d = live2d;
-    this._enable = this.isEnable();
-  }
+  public install(): void {}
 
   /**
    * 在卸载插件时需要调用的函数, 一般用于销毁数据以及事件解绑等等
    * @summary 卸载插件
    * @abstract
-   * @param {ULive2dController} live2d live2d 上下文
    * @return {void}
    */
-  public uninstall(live2d: ULive2dController): void {}
-
-  /**
-   * 根据相关条件判断插件是否启用
-   * @summary 是否启用插件
-   * @return {boolean} true: 启用
-   */
-  public isEnable(): boolean {
-    const { data } = this.live2d;
-    return !FHelp.is(Array, data.menus) || data.menus == null || data.menus.some(t => t === this.name);
-  }
+  public uninstall(): void {}
 }

@@ -15,7 +15,7 @@ export class FVisibilityMessagePlugin extends FEventMessagePlugin {
    * @default 'visibilityEventMessage'
    * @override
    */
-  public override readonly name: string = 'visibilityEventMessage';
+  public override readonly name = 'visibilityEventMessage';
 
   /**
    * @default 'copy'

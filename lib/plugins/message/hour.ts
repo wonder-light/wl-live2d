@@ -44,7 +44,7 @@ export class FHourMessagePlugin extends FNullMessagePlugin<DHourMessage> {
    * @default 'hourMessage'
    * @override
    */
-  public override readonly name: string = 'hourMessage';
+  public override readonly name = 'hourMessage';
 
   /**
    * @default 'hour'
@@ -56,7 +56,7 @@ export class FHourMessagePlugin extends FNullMessagePlugin<DHourMessage> {
    * @default 8
    * @override
    */
-  protected override _priority: number = 8;
+  public override priority: number = 8;
 
   /**
    * @override
@@ -80,12 +80,5 @@ export class FHourMessagePlugin extends FNullMessagePlugin<DHourMessage> {
       return start === now;
     }
     return start <= now && now <= ent;
-  }
-
-  /**
-   * @override
-   */
-  public override mixin(): void {
-    FHelp.mixin(DMessage, DHourMessage);
   }
 }

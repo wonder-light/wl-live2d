@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../../controller';
 import { FBasePlugin } from '../base';
 
 /**
@@ -40,14 +39,9 @@ export class FBaseSwitchPlugin extends FBasePlugin {
   /**
    * 在安装插件时需要调用的函数, 一般用于初始化以及事件绑定等等
    * @summary 安装插件
-   * @param {ULive2dController} live2d live2d 上下文
    * @return {void}
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) {
-      return;
-    }
+  public override install(): void {
     this._button = document.createElement('div');
     this._button.className = 'live2d-menu-item live2d-flex-center';
     this._loading = document.createElement('div');
@@ -56,19 +50,15 @@ export class FBaseSwitchPlugin extends FBasePlugin {
     // 添加事件监听
     const ref = this.live2d.ref['startSwitch'] = this.startSwitch.bind(this);
     this._button.addEventListener('click', ref);
-    this.live2d.stage.addMenu(this._button, this._priority);
+    this.live2d.stage.addMenu(this._button, this.priority);
   }
 
   /**
    * 在卸载插件时需要调用的函数, 一般用于销毁数据以及事件解绑等等
    * @summary 卸载插件
-   * @param {ULive2dController} live2d live2d 上下文
    * @return {void}
    */
-  public override uninstall(live2d: ULive2dController): void {
-    if (!this._enable) {
-      return;
-    }
+  public override uninstall(): void {
     const ref = this.live2d.ref['startSwitch'];
     this._button?.removeEventListener('click', ref);
     this.live2d.stage.removeMenu(this._button!);

@@ -21,7 +21,17 @@ export declare type TInstanceType<T = any> = InstanceType<TConstructor<T>>;
  * @param {T} param 参数
  * @return {K} 返回值
  */
-export declare type TFunc<T, K = void> = (param: T) => K;
+export declare type TFunc<T = void, K = void> = (param: T) => K;
+
+/**
+ * 3个参数的函数类型
+ * @summary 3参函数
+ * @template T 参数的类型
+ * @template K 返回值类型
+ * @param {T} arg 参数1
+ * @return {K} 返回值
+ */
+export declare type TAnyFunc<T = any, K = void> = (...arg: T[]) => K;
 
 /**
  * 分组函数, 根据参数 param 返回一个对应的关键值

@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../../controller';
 import { DMessage } from '../../models';
 import { FHelp } from '../../utils';
 import { FBasePlugin } from '../base';
@@ -21,7 +20,14 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
    * @default 'nullMessage'
    */
   public override readonly name: string = 'nullMessage';
-
+  /**
+   * 既是消息提示的优先级, 也是插件的优先级
+   * @summary 优先级
+   * @protected
+   * @type {number}
+   * @default 2
+   */
+  public override priority: number = 2;
   /**
    * 消息数据对应的类型
    * @summary 消息类型
@@ -30,7 +36,6 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
    * @default null
    */
   protected _type: string | null = null;
-
   /**
    * 与 type 对应的消息集合
    * @summary 消息集
@@ -41,33 +46,18 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
   protected _messages: T[] = [];
 
   /**
-   * 既是消息提示的优先级, 也是插件的优先级
-   * @summary 优先级
-   * @protected
-   * @type {number}
-   * @default 2
-   */
-  protected override _priority: number = 2;
-
-  /**
    * 在安装插件时需要调用的函数, 一般用于初始化, 类型混合, 消息筛选以及事件绑定等等
    * @summary 安装插件
-   * @param {ULive2dController} live2d live2d 上下文
    * @return {void}
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) {
-      return;
-    }
-    //this.mixin();
+  public override install(): void {
     this._messages = this.live2d.tips.messages as T[];
     this._messages = this._messages.filter(this.isType.bind(this));
     // 找到对应类型的消息, 并替换 condition 与 priority
     for (const message of this._messages) {
       message.condition = this.condition.bind(message);
       if (message.priority === DMessage.priority) {
-        message.priority = this._priority;
+        message.priority = this.priority;
       }
     }
   }
@@ -75,25 +65,12 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
   /**
    * 在卸载插件时需要调用的函数, 一般用于销毁数据以及恢复消息默认值等等
    * @summary 卸载插件
-   * @param {ULive2dController} _live2d live2d 上下文
    * @return {void}
    */
-  public override uninstall(_live2d: ULive2dController): void {
-    if (!this._enable) {
-      return;
-    }
+  public override uninstall(): void {
     for (const message of this._messages) {
       this.setDefault(message);
     }
-  }
-
-  /**
-   * 根据相关条件判断插件是否启用
-   * @summary 是否启用插件
-   * @return {boolean} true: 启用
-   */
-  public override isEnable(): boolean {
-    return true;
   }
 
   /**
@@ -125,14 +102,8 @@ export abstract class FNullMessagePlugin<T extends DMessage = DMessage> extends 
    */
   public setDefault(message: T) {
     message.condition = FHelp.T;
-    if (message.priority === this._priority) {
+    if (message.priority === this.priority) {
       message.priority = DMessage.priority;
     }
   }
-
-  /**
-   * 将一个类型混合到 `DMessage` 中
-   * @summary 混合类型
-   */
-  public mixin(): void {}
 }

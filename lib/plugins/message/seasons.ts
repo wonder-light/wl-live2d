@@ -44,19 +44,17 @@ export class FSeasonsMessagePlugin extends FNullMessagePlugin<DSeasonsMessage> {
    * @default 'seasonsMessage'
    * @override
    */
-  public override readonly name: string = 'seasonsMessage';
-
+  public override readonly name = 'seasonsMessage';
+  /**
+   * @default 16
+   * @override
+   */
+  public override priority: number = 16;
   /**
    * @default 'seasons'
    * @override
    */
   protected override _type: string | null = 'seasons';
-
-  /**
-   * @default 16
-   * @override
-   */
-  protected override _priority: number = 16;
 
   /**
    * @override
@@ -76,13 +74,6 @@ export class FSeasonsMessagePlugin extends FNullMessagePlugin<DSeasonsMessage> {
     }
     const now = new Date();
     return day === now.getDate() && mon === (now.getMonth() + 1);
-  }
-
-  /**
-   * @override
-   */
-  public override mixin(): void {
-    FHelp.mixin(DMessage, DSeasonsMessage);
   }
 }
 

@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../controller';
 import type { TFunc } from '../types';
 import { FHelp } from '../utils';
 import { FBasePlugin } from './base.js';
@@ -17,13 +16,13 @@ export class FQuitPlugin extends FBasePlugin {
    * @default 'quit'
    * @override
    */
-  public override readonly name: string = 'quit';
+  public override readonly name = 'quit';
 
   /**
    * @default 0
    * @override
    */
-  protected override _priority: number = 0;
+  public override priority: number = 0;
 
   /**
    * 用于关闭看板娘的元素
@@ -57,11 +56,9 @@ export class FQuitPlugin extends FBasePlugin {
   /**
    * @override
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) {
-      return;
-    }
+  public override install(): void {
+    // 是否启用
+    if (!this.live2d.data.menus.includes(this.name)) return;
     // 关闭按钮
     this._quit = document.createElement('div');
     this._quit.className = 'live2d-menu-item live2d-flex-center';
@@ -78,17 +75,14 @@ export class FQuitPlugin extends FBasePlugin {
     this._showFun = this.showLive2d.bind(this);
     this._quit.addEventListener('click', this._hiddenFun);
     this._show.addEventListener('click', this._showFun);
-    this.live2d.stage.addMenu(this._quit, this._priority);
+    this.live2d.stage.addMenu(this._quit, this.priority);
     document.body.appendChild(this._show);
   }
 
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    if (!this._enable) {
-      return;
-    }
+  public override uninstall(): void {
     this._quit?.removeEventListener('click', this._hiddenFun);
     this._show?.removeEventListener('click', this._showFun);
     this.live2d.stage.removeMenu(this._quit!);
@@ -128,7 +122,7 @@ export class FQuitPlugin extends FBasePlugin {
 
   /**
    * 判断看板娘的显示按钮是覆盖在右边还是左边
-   * @summary 判断显示按钮的左右位置
+   * @summary 判断显示按钮的位置是在左边还是右边
    * @return {boolean} true 和 false
    */
   public isRight(): boolean {

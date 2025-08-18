@@ -15,7 +15,7 @@ export class FConsoleMessagePlugin extends FEventMessagePlugin {
    * @default 'consoleEventMessage'
    * @override
    */
-  public override readonly name: string = 'consoleEventMessage';
+  public override readonly name = 'consoleEventMessage';
   /**
    * query控制台是否打开打开, true: 已打开, false: 没有打开
    * @summary 控制台打开

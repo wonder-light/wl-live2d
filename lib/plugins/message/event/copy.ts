@@ -14,7 +14,7 @@ export class FCopyMessagePlugin extends FEventMessagePlugin {
    * @default 'copyEventMessage'
    * @override
    */
-  public override readonly name: string = 'copyEventMessage';
+  public override readonly name = 'copyEventMessage';
 
   /**
    * @default 'copy'

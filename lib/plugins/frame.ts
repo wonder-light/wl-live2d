@@ -1,5 +1,4 @@
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
-import type { ULive2dController } from '../controller';
 import type { TFunc } from '../types';
 import { FBasePlugin } from './base.js';
 
@@ -17,13 +16,13 @@ export class FHitFramesPlugin extends FBasePlugin {
    * @default 'hitFrames'
    * @override
    */
-  public override readonly name: string = 'hitFrames';
+  public override readonly name = 'hitFrames';
 
   /**
    * @default 0
    * @override
    */
-  protected override _priority: number = 8;
+  public override priority: number = 8;
 
   /**
    * 返回首页的按钮元素
@@ -56,9 +55,9 @@ export class FHitFramesPlugin extends FBasePlugin {
   /**
    * @override
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) return;
+  public override install(): void {
+    // 是否启用
+    if (!this.live2d.data.hitFrame) return;
     // 关闭按钮
     this._button = document.createElement('div');
     this._button.className = 'live2d-menu-item live2d-flex-center';
@@ -69,26 +68,18 @@ export class FHitFramesPlugin extends FBasePlugin {
     // 添加事件监听
     this._func = this.clickTestFrame.bind(this);
     this._button.addEventListener('click', this._func);
-    this.live2d.stage.addMenu(this._button, this._priority);
+    this.live2d.stage.addMenu(this._button, this.priority);
   }
 
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    if (!this._enable) return;
+  public override uninstall(): void {
     this._button?.removeEventListener('click', this._func!);
     this.live2d.stage.removeMenu(this._button!);
     // 移除引用
+    this._button?.remove();
     this._button = null;
-  }
-
-  /**
-   * @override
-   */
-  public override isEnable(): boolean {
-    const { data } = this.live2d;
-    return data.hitFrame === true;
   }
 
   /**

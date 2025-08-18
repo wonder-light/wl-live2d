@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../../controller';
 import { EEvent, FHelp } from '../../utils';
 import { FBasePlugin } from '../base';
 
@@ -16,43 +15,28 @@ export class FMotionMessagePlugin extends FBasePlugin {
    * @default 'motionMessage'
    * @override
    */
-  public override readonly name: string = 'motionMessage';
+  public override readonly name = 'motionMessage';
 
   /**
    * @default 22
    * @override
    */
-  protected override _priority: number = 22;
+  public override priority: number = 22;
 
   /**
    * @override
    * @listens EEvent#motionStart 模型运动开始事件
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) {
-      return;
-    }
+  public override install(): void {
     this.live2d.event.on(EEvent.motionStart, this.motion, this);
   }
 
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    if (!this._enable) {
-      return;
-    }
+  public override uninstall(): void {
     this.live2d.event.off(EEvent.motionStart, this.motion, this);
   }
-
-  /**
-   * @override
-   */
-  public override isEnable(): boolean {
-    return this.live2d.tips.data.motionMessage ?? true;
-  }
-
 
   /**
    * 当 motion 开始时显示对应的消息

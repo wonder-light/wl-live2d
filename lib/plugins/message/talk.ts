@@ -1,4 +1,4 @@
-import type { ULive2dController, UTipsController } from '../../controller';
+import type { UTipsController } from '../../controller';
 import { DMessage } from '../../models';
 import type { TTalkApi } from '../../types';
 import { FHelp } from '../../utils';
@@ -24,13 +24,13 @@ export class FTalkMessagePlugin extends FBasePlugin {
    * @default 'sentenceMessage'
    * @override
    */
-  public override readonly name: string = 'sentenceMessage';
+  public override readonly name = 'sentenceMessage';
 
   /**
    * @default 20
    * @override
    */
-  protected override _priority: number = 20;
+  public override priority: number = 20;
 
   /**
    * 消息数据对应的类型
@@ -70,14 +70,10 @@ export class FTalkMessagePlugin extends FBasePlugin {
   /**
    * @override
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) {
-      return;
-    }
+  public override install(): void {
     this._message = new DMessage();
     this._message.condition = FHelp.F;
-    this._message.priority = this._priority * 2;
+    this._message.priority = this.priority * 2;
     this._message.type = this._type;
     this._talkApis = [
       {
@@ -104,10 +100,7 @@ export class FTalkMessagePlugin extends FBasePlugin {
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    if (!this._enable) {
-      return;
-    }
+  public override uninstall(): void {
     this._handler && clearInterval(this._handler);
     this._handler = null;
     this._message && this.live2d.tips.removeMessage(this._message);
@@ -118,13 +111,6 @@ export class FTalkMessagePlugin extends FBasePlugin {
       let index = talkApis?.indexOf(talkApi) ?? -1;
       if (index >= 0) talkApis?.splice(index, 1);
     }
-  }
-
-  /**
-   * @override
-   */
-  public override isEnable(): boolean {
-    return this.live2d.tips.data.talk ?? true;
   }
 
   /**

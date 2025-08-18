@@ -214,12 +214,17 @@ export class ULive2dController {
     }, {});
     // 筛选出有效插件，并且按照优先级从高到低排列及执行, 如果插件的名称已经存在则跳过, 该插件将由用户自己实现
     plugins = plugins.filter(p => FHelp.is(FBasePlugin, p) && !names[p.name])
-                     .sort((prev, next) => next.priority - prev.priority);
+                     .sort(compareFn);
     this.plugins.push(...plugins);
     // 按照优先级从高到低排列及执行
-    this.plugins.sort((prev, next) => next.priority - prev.priority);
+    this.plugins.sort(compareFn);
     for (const plugin of plugins) {
-      plugin.install(this);
+      FBasePlugin.setContext(plugin, this);
+      plugin.install();
+    }
+
+    function compareFn(prev: FBasePlugin, next: FBasePlugin) {
+      return next.priority - prev.priority;
     }
   }
 
@@ -232,10 +237,10 @@ export class ULive2dController {
   public uninstallPlugin(...plugins: TInstanceType<FBasePlugin>[]) {
     for (const plugin of plugins) {
       const index = this.plugins.indexOf(plugin);
-      if (index >= 0) {
-        plugin.uninstall(this);
-        this.plugins.splice(index, 1);
-      }
+      if (index < 0) continue;
+      plugin.uninstall();
+      FBasePlugin.setContext(plugin, null);
+      this.plugins.splice(index, 1);
     }
   }
 
@@ -248,7 +253,6 @@ export class ULive2dController {
     // 安装插件
     let plugins = this.plugins.splice(0, this.plugins.length);
     plugins.push(...Object.values(pluginSet).map(T => new T()));
-    // @ts-ignore
     this.installPlugin(...plugins);
     // say hello
     this._data.sayHello && FHelp.sayHello();

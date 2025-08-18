@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../../../controller';
 import { DMessage } from '../../../models';
 import { FHelp } from '../../../utils';
 import { FNullMessagePlugin } from '../null';
@@ -40,19 +39,16 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
    * @default 'eventMessage'
    */
   public override readonly name: string = 'eventMessage';
-
+  /**
+   * @default 18
+   * @override
+   */
+  public override priority: number = 18;
   /**
    * @default 'event'
    * @override
    */
   protected override _type: string = 'event';
-
-  /**
-   * @default 18
-   * @override
-   */
-  protected override _priority: number = 18;
-
   /**
    * 消息数据的事件对应的类型
    * @summary 事件类型
@@ -74,16 +70,16 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
   /**
    * @override
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
+  public override install(): void {
+    super.install();
     this.addListener();
   }
 
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    super.uninstall(live2d);
+  public override uninstall(): void {
+    super.uninstall();
     this.removeListener();
   }
 
@@ -100,13 +96,6 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
    */
   condition() {
     return false;
-  }
-
-  /**
-   * @override
-   */
-  mixin() {
-    FHelp.mixin(DMessage, DEventMessage);
   }
 
   /**
@@ -141,7 +130,7 @@ export class FEventMessagePlugin extends FNullMessagePlugin<DEventMessage> {
     let messages = this._messages;
     if (messages.length <= 0) return;
     let message = messages[FHelp.random(0, messages.length, 'floor')];
-    let text = '';
+    let text: string;
     if (FHelp.is(Array, message.text)) {
       text = message.text[FHelp.random(0, message.text.length, 'floor')];
     } else {

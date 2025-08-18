@@ -15,13 +15,13 @@ export class FTipsDragPlugin extends FDragPlugin {
    * @default 'tipsDrag'
    * @override
    */
-  public override readonly name: string = 'tipsDrag';
+  public override readonly name = 'tipsDrag';
 
   /**
    * @override
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
+  public override install(): void {
+    super.install();
     if (this._element) {
       this._element.classList.add('live2d-cursor-default');
     }
@@ -30,18 +30,9 @@ export class FTipsDragPlugin extends FDragPlugin {
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    super.uninstall(live2d);
-    if (this._element) {
-      this._element.classList.remove('live2d-cursor-default');
-    }
-  }
-
-  /**
-   * @override
-   */
-  public override isEnable(): boolean {
-    return this.live2d.tips.data.drag ?? true;
+  public override uninstall(): void {
+    this._element?.classList.remove('live2d-cursor-default');
+    super.uninstall();
   }
 
   /**

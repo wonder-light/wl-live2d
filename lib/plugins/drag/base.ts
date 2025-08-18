@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../../controller';
 import type { TRect } from '../../types';
 import { FHelp } from '../../utils';
 import { FBasePlugin } from '../base';
@@ -57,14 +56,11 @@ export class FDragPlugin extends FBasePlugin {
   /**
    * 在安装插件时需要调用的函数, 一般用于初始化以及事件绑定等等
    * @summary 安装插件
-   * @param {ULive2dController} live2d live2d 上下文
    * @return {void}
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) {
-      return;
-    }
+  public override install(): void {
+    // 是否启用
+    if (!this.live2d.data.drag) return;
     this._element = this.getDragElement();
     this._startFun = this._start.bind(this);
     this._runFun = this._run.bind(this);
@@ -76,24 +72,12 @@ export class FDragPlugin extends FBasePlugin {
   /**
    * 在卸载插件时需要调用的函数, 一般用于销毁数据以及事件解绑等等
    * @summary 卸载插件
-   * @param {ULive2dController} _live2d live2d 上下文
    * @return {void}
    */
-  public override uninstall(_live2d: ULive2dController): void {
-    if (!this._enable) {
-      return;
-    }
+  public override uninstall(): void {
     this._element?.removeEventListener('mousedown', this._startFun);
     this._element?.removeEventListener('touchstart', this._startFun);
-  }
-
-  /**
-   * 根据相关条件判断插件是否启用
-   * @summary 是否启用插件
-   * @return {boolean} true: 启用
-   */
-  public override isEnable(): boolean {
-    return this.live2d.data.drag ?? true;
+    this._element = null;
   }
 
   /**

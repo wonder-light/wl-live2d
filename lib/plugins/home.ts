@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../controller';
 import type { TFunc } from '../types';
 import { FBasePlugin } from './base.js';
 
@@ -16,13 +15,13 @@ export class FHomePlugin extends FBasePlugin {
    * @default 'quit'
    * @override
    */
-  public override readonly name: string = 'home';
+  public override readonly name = 'home';
 
   /**
    * @default 0
    * @override
    */
-  protected override _priority: number = 48;
+  public override priority: number = 48;
 
   /**
    * 返回首页的按钮元素
@@ -41,9 +40,9 @@ export class FHomePlugin extends FBasePlugin {
   /**
    * @override
    */
-  public override install(live2d: ULive2dController): void {
-    super.install(live2d);
-    if (!this._enable) return;
+  public override install(): void {
+    // 是否启用
+    if (!this.live2d.data.menus.includes(this.name)) return;
     // 关闭按钮
     this._back = document.createElement('div');
     this._back.className = 'live2d-menu-item live2d-flex-center';
@@ -54,14 +53,13 @@ export class FHomePlugin extends FBasePlugin {
     // 添加事件监听
     this._func = this.backToHome.bind(this);
     this._back.addEventListener('click', this._func);
-    this.live2d.stage.addMenu(this._back, this._priority);
+    this.live2d.stage.addMenu(this._back, this.priority);
   }
 
   /**
    * @override
    */
-  public override uninstall(live2d: ULive2dController): void {
-    if (!this._enable) return;
+  public override uninstall(): void {
     this._back?.removeEventListener('click', this._func);
     this.live2d.stage.removeMenu(this._back!);
     // 移除引用
