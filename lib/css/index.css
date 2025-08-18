@@ -7,7 +7,7 @@
   --tips-offset-y: 0px;
   --tips-translate: translate(-50%, -100%);
   --tips-translate-to: translate(-50%, -105%);
-  --menu-item: #aaa;
+  --menu-item: pink;
   --menu-item-hover: #43b1ee;
   --live2d-duration: 500ms;
   --live2d-anim-duration: 1000ms;
@@ -75,10 +75,15 @@
 
 .live2d-wrapper {
   z-index: 5000;
-  width: auto;
+  width: min-content;
   height: auto;
   left: 0;
   bottom: 0;
+
+  &.right {
+    left: auto;
+    right: 0;
+  }
 }
 
 .live2d-canvas {

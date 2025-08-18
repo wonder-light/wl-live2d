@@ -1,8 +1,19 @@
 import { DStage } from '../models';
-import type { TLive2DModel, TStageMenuItem } from '../types';
+import type { TFunc, TLive2DModel, TStageMenuItem } from '../types';
 import { EEvent, FHelp } from '../utils';
 import { UBaseController } from './base';
 import type { ULive2dController } from './live2d';
+
+/**
+ * @summary 淡入模式
+ * @enum
+ */
+declare enum TFadeMode {
+  /** 淡入 */
+  fadeIn = 'fadeIn',
+  /** 淡出 */
+  fadeOut = 'fadeOut',
+}
 
 /**
  * @class
@@ -20,6 +31,13 @@ export class UStageController extends UBaseController {
    * @type {DStage}
    */
   protected _data: DStage | null;
+
+  /**
+   * 记录 [_showAndHiddenMenus]{@link _showAndHiddenMenus} 绑定后的函数
+   * @type {?TFunc<any>}
+   * @private
+   */
+  private _menuFunc: TFunc<any> | null = null;
 
   /**
    * 创建 live2d stage 控制器
@@ -139,10 +157,11 @@ export class UStageController extends UBaseController {
     this.wrapper.appendChild(this.tips);
     this.wrapper.appendChild(this.other);
     this.parent.appendChild(this.wrapper);
-    const { fixed, transitionTime } = this.options;
+    const { fixed, transitionTime, dockedRight } = this.options;
 
     // 添加类
-    this.wrapper.classList.add(fixed ? 'live2d-fixed' : 'live2d-relative', 'live2d-wrapper', 'live2d-transition-all', 'live2d-opacity-0');
+    let classes = [fixed ? 'live2d-fixed' : 'live2d-relative', dockedRight ? 'right' : ''];
+    this.wrapper.classList.add(...classes, 'live2d-wrapper', 'live2d-transition-all', 'live2d-opacity-0');
     // 画布
     this.canvas.classList.add('live2d-canvas', 'live2d-transition-all', 'live2d-opacity-1');
     // 消息提示
@@ -154,10 +173,10 @@ export class UStageController extends UBaseController {
     // 模型的过度时间
     this.canvas.style.setProperty('--live2d-duration', `${ transitionTime }ms`);
     // 绑定事件
-    const ref = this.ref['_showAndHiddenMenus'] = this.showAndHiddenMenus.bind(this);
-    this.wrapper.addEventListener('mouseover', ref);
-    this.wrapper.addEventListener('mouseleave', ref);
-    document.addEventListener('touchstart', ref);
+    this._menuFunc = this._showAndHiddenMenus.bind(this);
+    this.wrapper.addEventListener('mouseover', this._menuFunc);
+    this.wrapper.addEventListener('mouseleave', this._menuFunc);
+    document.addEventListener('touchstart', this._menuFunc);
   }
 
   /**
@@ -168,14 +187,13 @@ export class UStageController extends UBaseController {
   public override destroy(): void {
     super.destroy();
     this.event.removeListener(EEvent.modelLoaded, this._onModelLoad, this);
-    for (const item of this.menuItems) {
-      this.removeMenu(item.element);
-    }
-    const ref = this.ref['_showAndHiddenMenus'];
-    this.wrapper.removeEventListener('mouseover', ref);
-    this.wrapper.removeEventListener('mouseleave', ref);
-    document.removeEventListener('touchstart', ref);
+    const items = this.menuItems.splice(0, this.menuItems.length);
+    for (const item of items) item.element.remove();
+    this.wrapper.removeEventListener('mouseover', this._menuFunc);
+    this.wrapper.removeEventListener('mouseleave', this._menuFunc);
+    document.removeEventListener('touchstart', this._menuFunc);
     this.wrapper.remove();
+    this._menuFunc = null;
     this._data = null;
   }
 
@@ -187,7 +205,7 @@ export class UStageController extends UBaseController {
    * @async
    */
   public async fadeIn(element: HTMLElement | null = null): Promise<void> {
-    await this._fade(element, 'fadeIn', 'fadeOut').catch(FHelp.F);
+    await this._fade(element, TFadeMode.fadeIn, TFadeMode.fadeOut).catch(FHelp.F);
   }
 
   /**
@@ -198,7 +216,7 @@ export class UStageController extends UBaseController {
    * @async
    */
   public async fadeOut(element: HTMLElement | null = null): Promise<void> {
-    await this._fade(element, 'fadeOut', 'fadeIn').catch(FHelp.F);
+    await this._fade(element, TFadeMode.fadeOut, TFadeMode.fadeIn).catch(FHelp.F);
   }
 
   /**
@@ -237,21 +255,6 @@ export class UStageController extends UBaseController {
   }
 
   /**
-   * 当鼠标进入舞台时显示菜单, 离开时隐藏
-   *
-   * 当触摸到舞台时显示菜单, 否则隐藏菜单
-   * @summary 显示和隐藏菜单
-   * @param {MouseEvent | TouchEvent} event 鼠标事件 | 触摸事件
-   */
-  public showAndHiddenMenus(event: MouseEvent | TouchEvent): void {
-    if (event.type === 'mouseover' || (event.type === 'touchstart' && this.wrapper.contains((event as TouchEvent).touches[0].target as Node))) {
-      this.fadeIn(this.menus).catch(FHelp.F);
-    } else {
-      this.fadeOut(this.menus).catch(FHelp.F);
-    }
-  }
-
-  /**
    * 从选择器中获取父元素
    *
    * `css` 选择器规则优先, 其次是 `xpath` 规则, 当两个都找不到时, 则使用 body 为父元素
@@ -262,7 +265,7 @@ export class UStageController extends UBaseController {
   public getParentFromSelector(selector: string | null = null): HTMLElement {
     if (selector == null) return document.body;
     try {
-      let parent: HTMLElement | null = null;
+      let parent: HTMLElement | null;
       try {
         parent = document.querySelector(selector);
       } catch (_) {
@@ -275,7 +278,7 @@ export class UStageController extends UBaseController {
   }
 
   /**
-   * 获取指定元素的 transition-duration 值
+   * 获取指定元素的 transition-duration 值, 单位为 ms
    * @summary 获取过度时间
    * @param {HTMLElement} element 元素
    * @return {number} 持续时间
@@ -283,7 +286,6 @@ export class UStageController extends UBaseController {
   public getTransitionDuration(element: HTMLElement): number {
     if (!element) return 0;
     let str = getComputedStyle(element).getPropertyValue('transition-duration');
-    /s/.test(str) || (str += 's');
     return FHelp.defaultTo(0, parseFloat(str)) * (/ms/.test(str) ? 1 : 1000);
   }
 
@@ -312,8 +314,8 @@ export class UStageController extends UBaseController {
     // transition 会导致 wrapper 的宽高不固定, 从而影响到 canvas 宽高的设置
     this.wrapper.classList.remove('live2d-transition-all');
     this.canvas.classList.remove('live2d-transition-all');
-    this.canvas.style.width = this.wrapper.style.width = `${ model.width }px`;
-    this.canvas.style.height = this.wrapper.style.height = `${ model.height }px`;
+    this.canvas.style.width = this.wrapper.style.width = `${ model?.width ?? 260 }px`;
+    this.canvas.style.height = this.wrapper.style.height = `${ model?.height ?? 260 }px`;
     // 设置背景色
     this.wrapper.style.backgroundColor = this.live2d.model.backgroundColor;
     this.isRight() ? this.wrapper.classList.add('live2d-right') : this.wrapper.classList.remove('live2d-right');
@@ -324,6 +326,23 @@ export class UStageController extends UBaseController {
     this.canvas.classList.add('live2d-transition-all');
     // 舞台淡入
     this.fadeIn().finally(() => {});
+  }
+
+  /**
+   * 当鼠标进入舞台时显示菜单, 离开时隐藏
+   *
+   * 当触摸到舞台时显示菜单, 否则隐藏菜单
+   * @summary 显示和隐藏菜单
+   * @param {MouseEvent | TouchEvent} event 鼠标事件 | 触摸事件
+   * @protected
+   */
+  protected _showAndHiddenMenus(event: MouseEvent | TouchEvent): void {
+    let touchIn = event.type === 'touchstart' && this.wrapper.contains((event as TouchEvent).touches[0].target as Node);
+    if (event.type === 'mouseover' || touchIn) {
+      this.fadeIn(this.menus).catch(FHelp.F);
+    } else {
+      this.fadeOut(this.menus).catch(FHelp.F);
+    }
   }
 
   /**
@@ -339,16 +358,15 @@ export class UStageController extends UBaseController {
    * @protected
    * @async
    */
-  protected async _fade(element: HTMLElement | null, proceed: 'fadeIn' | 'fadeOut', exit: 'fadeIn' | 'fadeOut'): Promise<void> {
+  protected async _fade(element: HTMLElement | null, proceed: TFadeMode, exit: TFadeMode): Promise<void> {
     const state: Record<string, any> = {};
     const el: HTMLElement & Record<string, any> = element ??= this.wrapper;
     // 取消之前的淡入淡出
     el[exit]?.();
     el[proceed]?.();
+    // 重设结束时的回调
     el[proceed] = (end = false) => {
-      for (const key in state) {
-        state[key]?.();
-      }
+      for (const key in state) state[key]?.();
       el[proceed] = null;
       this.event.emit(end ? EEvent.fadeEnd : EEvent.fadeCancel);
     };
@@ -357,10 +375,11 @@ export class UStageController extends UBaseController {
     // 添加过度类
     !element.classList.contains('live2d-transition-all') && element.classList.add('live2d-transition-all');
     // 执行分支
-    if (proceed.includes('fadeIn')) {
+    if (proceed == TFadeMode.fadeIn) {
       element.classList.remove('live2d-hidden');
-      // 响应时间
+      // display: none 的移除需要一定的响应时间
       await setTime(20, 'wait');
+      // 更新透明度
       element.classList.remove('live2d-opacity-0');
       element.classList.add('live2d-opacity-1');
       await setTime(time - 20, 'cancel');
@@ -386,6 +405,7 @@ export class UStageController extends UBaseController {
           state[key] = null;
           resolve();
         }, time);
+        // 在外部执行, 通过调用 reject() 函数, 用于退出 _fade 函数, 会抛出错误
         state[key] = () => {
           clearTimeout(handler);
           reject();
