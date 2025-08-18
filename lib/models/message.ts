@@ -67,13 +67,9 @@ export class DMessage implements Record<string, any> {
   }
 
   /**
-   * getter: 消息的默认优先级
+   * 消息的默认优先级
    * @summary 默认优先级
-   * @type {number}
-   * @default 2
    * @readonly
    */
-  static get priority() {
-    return 2;
-  }
+  public static readonly priority = 2;
 }

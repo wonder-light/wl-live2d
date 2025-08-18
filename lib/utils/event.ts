@@ -40,10 +40,10 @@ export class EEvent {
    * @summary 加载成功
    * @type {symbol}
    * @readonly
-   * @default Symbol('model-load')
+   * @default Symbol('model-loaded')
    * @static
    */
-  static readonly modelLoad: symbol = Symbol('model-load');
+  static readonly modelLoaded: symbol = Symbol('model-loaded');
   /**
    * 模型加载失败事件
    * @summary 加载失败

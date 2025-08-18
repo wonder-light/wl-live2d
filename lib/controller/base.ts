@@ -50,7 +50,7 @@ export abstract class UBaseController {
    * @type {DLive2dOptions}
    * @readonly
    */
-  public get live2dData(): DLive2dOptions {
+  public get options(): DLive2dOptions {
     return this._live2d.data;
   }
 

@@ -235,7 +235,7 @@ export class UModelController extends UBaseController {
     // 绑定动作
     this.motion(model);
     // 发出事件
-    event.emit(EEvent.modelLoad, { width: model.width, height: model.height });
+    event.emit(EEvent.modelLoaded, model);
   }
 
   /**

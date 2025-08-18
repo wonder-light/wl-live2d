@@ -1,5 +1,5 @@
 import { DStage } from '../models';
-import type { TRect, TStageMenuItem } from '../types';
+import type { TLive2DModel, TStageMenuItem } from '../types';
 import { EEvent, FHelp } from '../utils';
 import { UBaseController } from './base';
 import type { ULive2dController } from './live2d';
@@ -28,7 +28,7 @@ export class UStageController extends UBaseController {
    * @param {ULive2dController} live2d live2d 上下文
    * @param {string | null} [selector=null] 父元素选择器
    * @param {DStage | null} [data=null] 舞台元素数据
-   * @listens EEvent#modelLoad 模型加载完成的事件
+   * @listens EEvent#modelLoaded 模型加载完成的事件
    */
   public constructor(live2d: ULive2dController, selector: string | null = null, data: DStage | null = null) {
     super(live2d);
@@ -36,7 +36,7 @@ export class UStageController extends UBaseController {
     this._data = new DStage(data);
     this._menuItems = [];
     // 监听事件
-    this.event.on(EEvent.modelLoad, this._onModelLoad, this);
+    this.event.on(EEvent.modelLoaded, this._onModelLoad, this);
     this.event.off(EEvent.init, this.init, this);
     this.init();
   }
@@ -139,7 +139,7 @@ export class UStageController extends UBaseController {
     this.wrapper.appendChild(this.tips);
     this.wrapper.appendChild(this.other);
     this.parent.appendChild(this.wrapper);
-    const { fixed, transitionTime } = this.live2dData;
+    const { fixed, transitionTime } = this.options;
 
     // 添加类
     this.wrapper.classList.add(fixed ? 'live2d-fixed' : 'live2d-relative', 'live2d-wrapper', 'live2d-transition-all', 'live2d-opacity-0');
@@ -167,7 +167,7 @@ export class UStageController extends UBaseController {
    */
   public override destroy(): void {
     super.destroy();
-    this.event.removeListener(EEvent.modelLoad, this._onModelLoad, this);
+    this.event.removeListener(EEvent.modelLoaded, this._onModelLoad, this);
     for (const item of this.menuItems) {
       this.removeMenu(item.element);
     }
@@ -304,16 +304,16 @@ export class UStageController extends UBaseController {
    * 模型加载完成后触发的事件, 负责设置包装器的宽高, 以及调整模型大小
    * @protected
    * @summary 模型加载完成后的回调事件
-   * @param {TRect} style 模型宽高
+   * @param {TLive2DModel} model 模型宽高
    * @return {void}
    */
-  public _onModelLoad(style: TRect): void {
+  public _onModelLoad(model: TLive2DModel): void {
     // 重设画布宽和高
     // transition 会导致 wrapper 的宽高不固定, 从而影响到 canvas 宽高的设置
     this.wrapper.classList.remove('live2d-transition-all');
     this.canvas.classList.remove('live2d-transition-all');
-    this.canvas.style.width = this.wrapper.style.width = `${ style.width }px`;
-    this.canvas.style.height = this.wrapper.style.height = `${ style.height }px`;
+    this.canvas.style.width = this.wrapper.style.width = `${ model.width }px`;
+    this.canvas.style.height = this.wrapper.style.height = `${ model.height }px`;
     // 设置背景色
     this.wrapper.style.backgroundColor = this.live2d.model.backgroundColor;
     this.isRight() ? this.wrapper.classList.add('live2d-right') : this.wrapper.classList.remove('live2d-right');
