@@ -1,4 +1,6 @@
-这个项目的所有显著变化都将记录在这个文件中。请参阅[约定式提交](https://www.conventionalcommits.org/zh-hans/v1.0.0/)了解提交指南。
+# 更新日志
+
+本项目所有显著变化都将记录在这个文件中。有关提交规范，请参阅 [约定式提交](https://www.conventionalcommits.org/zh-hans/v1.0.0/)
 
 ## 1.0.7-rc.1
 

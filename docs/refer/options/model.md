@@ -4,9 +4,9 @@
 
 ## 用法
 
-<!--@include: ../parts/live2d.md{1,5}-->
+<!--@include: ../../parts/live2d.md{1,5}-->
 // 在这里进行配置
-<!--@include: ../parts/live2d.md{6,12}-->
+<!--@include: ../../parts/live2d.md{6,12}-->
 
 ## TModels
 
@@ -48,6 +48,14 @@ declare type TModels = TModelItem[];
 
 模型的缩放比例
 
+## rotate
+
+> 类型 - `number`
+>
+> 默认值 - `0`
+
+模型的旋转角度, 单位:度 (0-360)
+
 ## position
 
 > 类型 - `{ x: number, y: number }`
@@ -80,15 +88,7 @@ declare type TModels = TModelItem[];
 
 模型的高度, 单位 px, 默认不设置, 将自适应使用模型本体的高度
 
-## rotate <Badge type="warning" text="待加" />
-
-> 类型 - `number`
-> 
-> 默认值 - `0`
-
-模型的旋转角度, 单位:度 (0-360)
-
-## motionPreload <Badge type="warning" text="待加" />
+## motionPreload
 
 > 类型 - `"ALL" | "IDLE" | "NONE"`
 > 
