@@ -47,6 +47,6 @@ export class FSwitchTexturePlugin extends FBaseSwitchPlugin {
    * @override
    */
   public override showLoading(): boolean {
-    return this.live2d.model.hasOutfit();
+    return this.live2d.model.textureMaxIndex > 1;
   }
 }

@@ -1,5 +1,5 @@
-import type { Application } from 'pixi.js';
 import type { Live2DModel } from 'pixi-live2d-display';
+import type { Application } from 'pixi.js';
 import type { ULive2dController } from '../controller';
 import type { DLive2dOptions, DModel } from '../models';
 
@@ -189,6 +189,9 @@ export declare interface TStageMenuItem {
   priority: number;
 }
 
+
+
+export { MotionPreloadStrategy as TMotionPreload } from 'pixi-live2d-display';
 
 // /**
 //  * 没有参数且返回值为 void 的无参回调

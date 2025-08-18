@@ -1,4 +1,3 @@
-import { HitAreaFrames } from 'pixi-live2d-display/extra';
 import type { TFunc } from '../types';
 import { FBasePlugin } from './base.js';
 
@@ -30,13 +29,6 @@ export class FHitFramesPlugin extends FBasePlugin {
    * @protected
    */
   protected _button: HTMLDivElement | null = null;
-
-  /**
-   * 测试帧
-   * @type {HitAreaFrames}
-   * @protected
-   */
-  protected _hitAreaFrames: HitAreaFrames = new HitAreaFrames();
 
   /**
    * 开启和关闭时的图标
@@ -89,14 +81,12 @@ export class FHitFramesPlugin extends FBasePlugin {
   public clickTestFrame(): void {
     if (this._button == null) return;
     let visible = /开启/.test(this._button.title);
-    this._hitAreaFrames.visible = visible;
     this._button.title = visible ? '关闭帧检测' : '开启帧检测';
     this._button.innerHTML = visible ? this._icons.open : this._icons.close;
     if (visible) {
-      //this.live2d.model.model.getChildIndex(this._hitAreaFrames);
-      this.live2d.model.model.addChild(this._hitAreaFrames);
+      this.live2d.model.showHitAreaFrames();
     } else {
-      this.live2d.model.model.removeChild(this._hitAreaFrames);
+      this.live2d.model.hiddenHitAreaFrames();
     }
   }
 }

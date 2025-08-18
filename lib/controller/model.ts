@@ -1,34 +1,26 @@
 import type { EventEmitter } from 'eventemitter3';
+import { HitAreaFrames } from 'pixi-live2d-display/extra';
 import { DModel } from '../models';
-import type { TLive2DModel, TModelItem, TModels } from '../types';
+import type { TFunc, TLive2DModel, TModelItem, TModels } from '../types';
 import { EEvent, FHelp } from '../utils';
 import { UBaseController } from './base';
 import type { ULive2dController } from './live2d';
 
 /**
  * @class
- * @summary model 控制器类
- * @classdesc 用于控制模型相关的的控制器, 例如加载模型, 切换模型等等
+ * @summary live2d model 属性
+ * @classdesc 分离出来的 UModelController 的属性
  * @extends UBaseController
  * @memberof module:controller
- * @alias UModelController
+ * @alias UModelProperty
  */
-export class UModelController extends UBaseController {
+abstract class UModelProperty extends UBaseController {
   /**
-   * 创建 live2d model 控制器
-   * @summary model 控制器构造
-   * @constructor
-   * @param {ULive2dController} live2d live2d 上下文
-   * @param {TModels} [data=[]] 模型数据集
+   * 命中区域帧
+   * @type {HitAreaFrames}
+   * @protected
    */
-  public constructor(live2d: ULive2dController, data: TModels | null = []) {
-    super(live2d);
-    const fun = (data: TModelItem): any => FHelp.is(Array, data) ? data.map(fun) : new DModel(data);
-    this._data = FHelp.is(Array, data) ? data.map(fun) : [];
-    // 设置索引
-    this.modelId = FHelp.defaultTo(0, parseInt(localStorage.getItem('model-id') ?? ''));
-    this.textureId = FHelp.defaultTo(0, parseInt(localStorage.getItem('texture-id') ?? ''));
-  }
+  protected _hitAreaFrames: HitAreaFrames | null = null;
 
   /**
    * 所有的模型数据, 用于存储对应的模型数据
@@ -69,7 +61,7 @@ export class UModelController extends UBaseController {
    * @param {number} index 模型索引
    */
   public set modelId(index: number) {
-    this._modelId = FHelp.clamp(0, Math.max(0, this._data.length - 1), index);
+    this._modelId = FHelp.clamp(0, this._data.length - 1, index);
     localStorage.setItem('model-id', `${ this._modelId }`);
   }
 
@@ -94,8 +86,17 @@ export class UModelController extends UBaseController {
    * @param {number} index 贴图索引
    */
   public set textureId(index: number) {
-    this._textureId = FHelp.clamp(0, this.getOutfitMaxIndex(), index);
+    this._textureId = FHelp.clamp(0, this.textureMaxIndex, index);
     localStorage.setItem('texture-id', `${ this._textureId }`);
+  }
+
+  /**
+   * 当前模型的最大贴图索引
+   * @return {number}
+   */
+  public get textureMaxIndex(): number {
+    let current = this.modelData;
+    return FHelp.is(Array, current) ? current.length - 1 : 0;
   }
 
   /**
@@ -113,6 +114,16 @@ export class UModelController extends UBaseController {
    */
   public get model(): TLive2DModel {
     return this._model!;
+  }
+
+  /**
+   * 当前模型索引对应的模型数据项目
+   * @summary 模型数据项目
+   * @type {TModelItem}
+   * @readonly
+   */
+  public get modelData(): TModelItem {
+    return this._data[this.modelId];
   }
 
   /**
@@ -135,16 +146,6 @@ export class UModelController extends UBaseController {
   }
 
   /**
-   * 当前模型索引对应的模型数据项目
-   * @summary 模型数据项目
-   * @type {TModelItem}
-   * @readonly
-   */
-  public get modelData(): TModelItem {
-    return this._data[this.modelId];
-  }
-
-  /**
    * 当前正在展示的模型数据中定义的背景颜色, 默认为 transparent
    * @summary 模型背景色
    * @type {string}
@@ -156,6 +157,32 @@ export class UModelController extends UBaseController {
       data = data[this.textureId];
     }
     return data?.backgroundColor ?? 'transparent';
+  }
+}
+
+/**
+ * @class
+ * @summary model 控制器类
+ * @classdesc 用于控制模型相关的的控制器, 例如加载模型, 切换模型等等
+ * @extends UModelProperty
+ * @memberof module:controller
+ * @alias UModelController
+ */
+export class UModelController extends UModelProperty {
+  /**
+   * 创建 live2d model 控制器
+   * @summary model 控制器构造
+   * @constructor
+   * @param {ULive2dController} live2d live2d 上下文
+   * @param {TModels} [data=[]] 模型数据集
+   */
+  public constructor(live2d: ULive2dController, data: TModels | null = []) {
+    super(live2d);
+    const fun = (data: TModelItem): any => FHelp.is(Array, data) ? data.map(fun) : new DModel(data);
+    this._data = FHelp.is(Array, data) ? data.map(fun) : [];
+    // 设置索引
+    this.modelId = FHelp.defaultTo(0, parseInt(localStorage.getItem('model-id') ?? ''));
+    this.textureId = FHelp.defaultTo(0, parseInt(localStorage.getItem('texture-id') ?? ''));
   }
 
   /**
@@ -196,12 +223,12 @@ export class UModelController extends UBaseController {
    * @async
    */
   public async loadModel(modelId: number, textureId: number = 0): Promise<void> {
-    let current = this.data[modelId];
     const stage = this.app.stage;
     const event = this.event;
+    let current = this.data[modelId];
     current = FHelp.is(Array, current) ? current[textureId] : current;
     if (FHelp.isNotValid(current)) {
-      event.emit(EEvent.modelError, Error('没有找到模型哦'));
+      event.emit(EEvent.modelError, new Error('没有找到模型哦'));
       return;
     }
     // 开始加载事件
@@ -212,10 +239,17 @@ export class UModelController extends UBaseController {
       url = 'https://fastly.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/shizuku/shizuku.model.json';
     }
     /** @type {TLive2DModel} */
-    const model: TLive2DModel = await window.ILive2DModel.from(url, {
-      crossOrigin: 'anonymous',
-      onError: (e) => event.emit(EEvent.modelError, e)
-    });
+    const model: TLive2DModel | Error = await window.ILive2DModel.from(url, {
+      motionPreload: current.motionPreload,
+      crossOrigin: 'anonymous'
+    }).catch(e => e as Error);
+    // 判断是否为 Error
+    if (FHelp.is(Error, model)) {
+      event.emit(EEvent.modelError, model);
+      event.emit(EEvent.modelLoaded, null);
+      await this.live2d.tips.notify(model.message);
+      return;
+    }
     // 设置模型模型
     this._model = model;
     // 移除上一个模型
@@ -227,13 +261,14 @@ export class UModelController extends UBaseController {
     model.x = current.position?.x ?? 0;
     model.y = current.position?.y ?? 0;
     model.scale.set(0.15 * (current.scale ?? 1));
-    // 添加到舞台
-    stage.addChild(model);
+    model.rotation = current.rotate ?? 0;
     // 如果模型数据中有定义宽高, 则直接设置模型的宽高, 否则使用模型加载后自己的宽高
     current.width && (model.width = current.width);
     current.height && (model.height = current.height);
     // 绑定动作
-    this.motion(model);
+    this._bindMotion(model);
+    // 添加到舞台
+    stage.addChild(model);
     // 发出事件
     event.emit(EEvent.modelLoaded, model);
   }
@@ -261,13 +296,13 @@ export class UModelController extends UBaseController {
    * @async
    */
   public async nextModel(): Promise<void> {
-    const max = this._data.length - 1;
-    if (max <= 0) {
+    const maxIndex = this._data.length - 1;
+    if (maxIndex <= 0) {
       // 通知: 没有其它模型哦
       await this.live2d.tips.notify('没有其它模型哦');
       return;
     }
-    await this.switchModel(this.modelId >= max ? 0 : this.modelId + 1, 0);
+    await this.switchModel(this.modelId >= maxIndex ? 0 : this.modelId + 1, 0);
   }
 
   /**
@@ -277,13 +312,13 @@ export class UModelController extends UBaseController {
    * @async
    */
   public async nextTexture(): Promise<void> {
-    const max = this.getOutfitMaxIndex();
-    if (max <= 0) {
+    const maxIndex = this.textureMaxIndex;
+    if (maxIndex <= 0) {
       // 通知: 没有其它服装哦
       await this.live2d.tips.notify('没有其它服装哦');
       return;
     }
-    await this.switchModel(this.modelId, this.textureId >= max ? 0 : this.textureId + 1);
+    await this.switchModel(this.modelId, this.textureId >= maxIndex ? 0 : this.textureId + 1);
   }
 
   /**
@@ -297,6 +332,45 @@ export class UModelController extends UBaseController {
   }
 
   /**
+   * 显示模型的可点击区域
+   * @summary 显示可点击区域
+   */
+  public showHitAreaFrames(): void {
+    if (this._model == null) return;
+    if (this._hitAreaFrames == null) {
+      this._hitAreaFrames = new HitAreaFrames();
+      //this._hitAreaFrames.activeColor = 0;
+    }
+    this._hitAreaFrames.visible = true;
+    this.model.addChild(this._hitAreaFrames);
+  }
+
+  /**
+   * 隐藏模型的可点击区域
+   * @summary 隐藏可点击区域
+   */
+  public hiddenHitAreaFrames(): void {
+    if (this._hitAreaFrames == null) return;
+    this._hitAreaFrames.visible = false;
+    this.model?.removeChild(this._hitAreaFrames);
+  }
+
+  /**
+   * 模型触发 hit 时的事件
+   * @summary hit 事件
+   * @param {TFunc<string[]>} func 回调函数, 参数为 hitAreas
+   * @param context this 指向
+   * @param {boolean} once 是否只用一次
+   */
+  public onModelHit(func: TFunc<string[]>, context?: any, once: boolean = false): void {
+    if (once) {
+      this.model?.once('hit', func, context);
+    } else {
+      this.model?.on('hit', func, context);
+    }
+  }
+
+  /**
    * 在模型加载完成后绑定模型的 `hit` 事件, 并在点击时触发对应的 motion, 同时绑定 motionStart 与 motionFinish
    * @summary 绑定 motion
    * @param model {TLive2DModel} 模型
@@ -304,11 +378,11 @@ export class UModelController extends UBaseController {
    * @fires EEvent#motionStart 模型运动开始事件
    * @fires EEvent#motionFinish 模型运动完成事件
    */
-  public motion(model: TLive2DModel): UModelController {
-    model.on('hit', async (hitAreas: string[]) => {//TODO: 添加自定义函数
-      // 无法自动加载 motion, 不知是什么原因
-      await model.motion(`tap_${ hitAreas[0] }`) || await model.motion(hitAreas[0]);
-      if (hitAreas.includes('head')) {
+  protected _bindMotion(model: TLive2DModel): UModelController {
+    model.on('hit', async (hitAreas: string[]) => {
+      //model.internalModel.settings.hitAreas;
+      //await model.motion(`tap_${ hitAreas[0] }`) || await model.motion(hitAreas[0]);
+      if (hitAreas.find((area) => /head/i.test(area))) {
         await model.expression();
       }
     });
@@ -325,26 +399,5 @@ export class UModelController extends UBaseController {
       this.event.emit(EEvent.motionFinish);
     });
     return this;
-  }
-
-  /**
-   * 判断当前模型是否有其他服装
-   * @summary 是否有其他服装
-   * @return {boolean} true: 有其他服装, false: 没有其他服装
-   */
-  public hasOutfit(): boolean {
-    let current = this.modelData;
-    return FHelp.is(Array, current) && current.length > 1;
-  }
-
-  /**
-   * 获取当前模型服装的最大索引
-   * @summary 服装最大索引
-   * @return {number} 最大索引
-   * @private
-   */
-  private getOutfitMaxIndex(): number {
-    let current = this.modelData;
-    return FHelp.is(Array, current) ? Math.max(0, current.length - 1) : 0;
   }
 }
