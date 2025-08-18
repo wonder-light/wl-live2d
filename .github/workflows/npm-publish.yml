@@ -6,8 +6,6 @@ name: npm-publish
 on:
   # 通过推送或拉取主分支(main)事件触发工作流
   push:
-    branches:
-      - main
     # 与 refs/tags 匹配的模式序列
     tags:
       - '*'
