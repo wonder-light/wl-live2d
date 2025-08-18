@@ -28,6 +28,7 @@ export class FMotionMessagePlugin extends FBasePlugin {
    * @listens EEvent#motionStart 模型运动开始事件
    */
   public override install(): void {
+    if (!this.live2d.tips.data.motionMessage) return;
     this.live2d.event.on(EEvent.motionStart, this.motion, this);
   }
 
