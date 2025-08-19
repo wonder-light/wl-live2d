@@ -240,7 +240,7 @@ export class UModelController extends UModelProperty {
     }
     /** @type {TLive2DModel} */
     const model: TLive2DModel | Error = await window.ILive2DModel.from(url, {
-      motionPreload: current.motionPreload,
+      motionPreload: current.motionPreload as any,
       crossOrigin: 'anonymous'
     }).catch(e => e as Error);
     // 判断是否为 Error
