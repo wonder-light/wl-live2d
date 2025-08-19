@@ -14,17 +14,17 @@
   ],
   "homepage": "https://wonder-light.github.io/wl-live2d/",
   "type": "module",
-  "main": "./dist/cjs/index.js",
+  "main": "./dist/es/index.js",
   "module": "./dist/es/index.js",
   "unpkg": "./dist/umd/index.js",
-  "jsdelivr": "./dist/cjs/index.js",
+  "jsdelivr": "./dist/es/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "require": "./dist/cjs/index.js",
       "import": "./dist/es/index.js",
-      "default": "./dist/cjs/index.js"
+      "default": "./dist/es/index.js"
     },
     "./es": "./dist/es/index.js",
     "./cjs": "./dist/cjs/index.js",
