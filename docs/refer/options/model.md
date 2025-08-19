@@ -25,22 +25,25 @@ declare type TModelItem = DModel | DModel[];
  */
 declare type TModels = TModelItem[];
 ```
+
+## DModel
+
 `DModel` 的属性如下所示
 
-## path <Badge type="danger" text="必填" />
+### path <Badge type="danger" text="必填" />
 
 > 类型 - `string`
 
 模型的 json 文件 url 地址
 
-## volume
+### volume
 
 > 类型 - `number`
 > 默认值 - `0.5`
 
 模型音量, 用于控制播发音频时的音量大小
 
-## scale
+### scale
 
 > 类型 - `number`
 > 
@@ -48,7 +51,7 @@ declare type TModels = TModelItem[];
 
 模型的缩放比例
 
-## rotate
+### rotate
 
 > 类型 - `number`
 >
@@ -56,7 +59,7 @@ declare type TModels = TModelItem[];
 
 模型的旋转角度, 单位:度 (0-360)
 
-## position
+### position
 
 > 类型 - `{ x: number, y: number }`
 > 
@@ -64,7 +67,7 @@ declare type TModels = TModelItem[];
 
 模型在舞台中的位置. x: 横坐标, y: 纵坐标
 
-## backgroundColor
+### backgroundColor
 
 > 类型 - `string`
 > 
@@ -72,7 +75,7 @@ declare type TModels = TModelItem[];
 
 舞台的背景颜色, 取有效的颜色值, rbg 或 rgba, 默认透明未设置默认为空的
 
-## width
+### width
 
 > 类型 - `number | null`
 > 
@@ -80,7 +83,7 @@ declare type TModels = TModelItem[];
 
 模型的宽度, 单位 px, 默认不设置, 将自适应使用模型本体的宽度
 
-## height
+### height
 
 > 类型 - `number | null`
 > 
@@ -88,7 +91,7 @@ declare type TModels = TModelItem[];
 
 模型的高度, 单位 px, 默认不设置, 将自适应使用模型本体的高度
 
-## motionPreload
+### motionPreload
 
 > 类型 - `"ALL" | "IDLE" | "NONE"`
 > 

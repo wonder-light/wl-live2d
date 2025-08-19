@@ -13,7 +13,7 @@ wlLive2d({
 
 ```html
 <script type="module">
-  import { wlLive2d } from 'wl-live2d';
+  import { wlLive2d } from 'https://fastly.jsdelivr.net/npm/wl-live2d/dist/es/index.js';
   
   wlLive2d({
     models: [

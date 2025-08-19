@@ -74,3 +74,5 @@
       - `FConsoleMessagePlugin` 控制台打开事件
       - `FCopyMessagePlugin` 拷贝事件
       - `FVisibilityMessagePlugin` wrapper 可见性事件
+
+详情请在 [`Github`](https://github.com/wonder-light/wl-live2d/blob/main/lib/plugins/base.ts) 上查看具体代码

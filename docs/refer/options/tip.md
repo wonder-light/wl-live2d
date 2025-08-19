@@ -2,6 +2,8 @@
 
 配置提示框样式和消息内容
 
+`DTips` 属性如下所示
+
 ## minWidth
 
 > 类型 - `number`

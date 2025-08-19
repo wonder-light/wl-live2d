@@ -36,13 +36,17 @@ EventEmitter3 实例, 负责事件
 
 获取记录的所有插件实例的数组
 
+详情请见: [`FBasePlugin`](../plugin/)
+
 ### stage
 
 > 类型- `UStageController`
 >
 > 属性 - `get`
 
-获取 stage 控制器实例, 详情请见: [`UStageController`](./stage)
+获取 stage 控制器实例
+
+详情请见: [`UStageController`](./stage)
 
 ### model
 
@@ -50,7 +54,9 @@ EventEmitter3 实例, 负责事件
 >
 > 属性 - `get`
 
-获取 model 控制器实例, 详情请见: [`UModelController`](./model)
+获取 model 控制器实例
+
+详情请见: [`UModelController`](./model)
 
 ### tips
 
@@ -58,7 +64,9 @@ EventEmitter3 实例, 负责事件
 >
 > 属性 - `get`
 
-获取 tips 控制器实例, 详情请见: [`UModelController`](./tips)
+获取 tips 控制器实例
+
+详情请见: [`UModelController`](./tips)
 
 ### ref
 

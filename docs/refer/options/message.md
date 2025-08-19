@@ -2,7 +2,11 @@
 
 消息数据集合, 用于存储消息数据, 包括但不限于 `DMessage`
 
-## condition
+## DMessage
+
+`DMessage` 属性如下所示
+
+### condition
 
 > 类型 - `() => boolean`
 >
@@ -12,7 +16,7 @@
 
 消息从 `condition() == true` 中的集合中选取
 
-## text
+### text
 
 > 类型 - `string | string[]`
 >
@@ -22,7 +26,7 @@
 
 是数组的话将会从其中随机选取
 
-## priority
+### priority
 
 > 类型 - `number`
 >
@@ -30,7 +34,7 @@
 
 优先级, 高优先级消息将会覆盖低优先级的消息
 
-## type
+### type
 
 > 类型 - `string | null`
 >

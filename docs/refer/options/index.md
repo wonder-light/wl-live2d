@@ -28,7 +28,7 @@ wlLive2d({
 
 ## models
 
-> 类型 - [`TModels`](./model#TModels)
+> 类型 - `TModels`
 > 
 > 默认值 - `[]`
 
