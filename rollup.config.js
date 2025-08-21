@@ -129,7 +129,8 @@ const declare = (input) => {
   return {
     input: input,
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts()]
+    plugins: [dts()],
+    external: ['pixi-live2d-display/extra']
   };
 };
 
