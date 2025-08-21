@@ -1,4 +1,3 @@
-import type { ULive2dController } from '../../controller';
 import { FDragPlugin } from './base';
 
 /**

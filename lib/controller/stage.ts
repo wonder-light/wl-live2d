@@ -321,7 +321,7 @@ export class UStageController extends UBaseController {
     this.isRight() ? this.wrapper.classList.add('live2d-right') : this.wrapper.classList.remove('live2d-right');
     // 当包装器元素的宽度与高度被设置后，调整一次模型的大小
     this.app.resize();
-    // 添加过渡类
+    // 添加过渡 class
     this.wrapper.classList.add('live2d-transition-all');
     this.canvas.classList.add('live2d-transition-all');
     // 舞台淡入
