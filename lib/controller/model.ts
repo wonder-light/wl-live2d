@@ -217,9 +217,9 @@ export class UModelController extends UModelProperty {
    * @param {number} modelId 模型索引
    * @param {number} [textureId=0] 模型服装索引
    * @return {Promise<void>}
-   * @fires EEvent#modelStart 模型开始加载事件
-   * @fires EEvent#modelError 模型加载错误事件
-   * @fires EEvent#modelLoad 模型加载成功事件
+   * @fires EEvent:modelStart 模型开始加载事件
+   * @fires EEvent:modelError 模型加载错误事件
+   * @fires EEvent:modelLoaded 模型加载成功事件
    * @async
    */
   public async loadModel(modelId: number, textureId: number = 0): Promise<void> {
@@ -375,8 +375,8 @@ export class UModelController extends UModelProperty {
    * @summary 绑定 motion
    * @param model {TLive2DModel} 模型
    * @return {UModelController} 自身引用
-   * @fires EEvent#motionStart 模型运动开始事件
-   * @fires EEvent#motionFinish 模型运动完成事件
+   * @fires EEvent:motionStart 模型运动开始事件
+   * @fires EEvent:motionFinish 模型运动完成事件
    */
   protected _bindMotion(model: TLive2DModel): UModelController {
     model.on('hit', async (hitAreas: string[]) => {

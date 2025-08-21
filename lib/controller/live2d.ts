@@ -261,13 +261,13 @@ abstract class ULive2dEvent extends ULive2dProperty {
 
   /**
    * 绑定事件
-   * @param {symbol} event 事件
+   * @param {string | symbol} event 事件
    * @param {TAnyFunc} func 回调
    * @param context this
    * @param {boolean} once 一次
    * @private
    */
-  private _onAddEvent(event: symbol, func: TAnyFunc, context?: any, once: boolean = false): void {
+  private _onAddEvent(event: string | symbol, func: TAnyFunc, context?: any, once: boolean = false): void {
     if (once) {
       this.event.once(event, func, context);
     } else {
@@ -371,7 +371,7 @@ export class ULive2dController extends ULive2dEvent {
   /**
    * 开始安装插件并进行 live2d 控制器初始化
    * @summary 初始化控制器
-   * @fires EEvent#init 控制器初始化事件
+   * @fires EEvent:init 控制器初始化事件
    */
   public init(): void {
     // 安装插件
@@ -387,7 +387,7 @@ export class ULive2dController extends ULive2dEvent {
   /**
    * 卸载插件, 销毁控制器, 销毁 app 实例
    * @summary 销毁控制器
-   * @fires EEvent#destroy 控制器销毁事件
+   * @fires EEvent:destroy 控制器销毁事件
    */
   public destroy(): void {
     const plugins = this.plugins;

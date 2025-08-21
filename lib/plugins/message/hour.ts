@@ -60,7 +60,7 @@ export class FHourMessagePlugin extends FNullMessagePlugin<DHourMessage> {
 
   /**
    * @override
-   * @this {DMessage & DHourMessage}
+   * @this {DHourMessage}
    */
   public override condition(): boolean {
     const _this = this as unknown as DHourMessage;

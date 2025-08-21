@@ -85,14 +85,14 @@ export abstract class UBaseController {
   }
 
   /**
-   * 在 [event]{@link ULive2dController#event} 提交 [EEvent#init]{@link EEvent#event:init} 时进行调用, 用于控制器初始化
+   * 在 [event]{@link ULive2dController#event} 提交 [EEvent#init]{@link EEvent#init} 时进行调用, 用于控制器初始化
    * @summary 控制器初始化
    * @abstract
    */
   public init(): void {}
 
   /**
-   * 在 [event]{@link ULive2dController#event} 提交 [EEvent#destroy]{@link EEvent#event:destroy} 时进行调用, 用于销毁控制器
+   * 在 [event]{@link ULive2dController#event} 提交 [EEvent#destroy]{@link EEvent#destroy} 时进行调用, 用于销毁控制器
    * @summary 销毁控制器
    * @abstract
    */

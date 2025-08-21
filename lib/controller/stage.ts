@@ -352,9 +352,9 @@ export class UStageController extends UBaseController {
    * @param {EFadeMode} proceed 需要进行的动画名称
    * @param {EFadeMode} exit 需要退出的动画名称
    * @return {Promise<void>}
-   * @fires EEvent#fadeStart 淡入淡出开始时间
-   * @fires EEvent#fadeEnd 淡入淡出结束事件
-   * @fires EEvent#fadeCancel 淡入淡出取消事件
+   * @fires EEvent:fadeStart 淡入淡出开始时间
+   * @fires EEvent:fadeEnd 淡入淡出结束事件
+   * @fires EEvent:fadeCancel 淡入淡出取消事件
    * @protected
    * @async
    */
