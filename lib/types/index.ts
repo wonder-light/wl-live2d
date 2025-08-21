@@ -189,18 +189,6 @@ export declare interface TStageMenuItem {
   priority: number;
 }
 
-/**
- * 指示如何预加载动作
- */
-export enum TMotionPreload {
-  /** 预加载所有动作 */
-  ALL = 'ALL',
-  /** 只预加载空闲运动 */
-  IDLE = 'IDLE',
-  /** 没有预加载 */
-  NONE = 'NONE'
-}
-
 // /**
 //  * 没有参数且返回值为 void 的无参回调
 //  * @summary 无参回调

@@ -1,5 +1,17 @@
-import { TMotionPreload, TPosition } from '../types';
+import type { TPosition } from '../types';
 import { FHelp } from '../utils';
+
+/**
+ * 指示如何预加载动作
+ */
+export enum EMotion {
+  /** 预加载所有动作 */
+  ALL = 'ALL',
+  /** 只预加载空闲运动 */
+  IDLE = 'IDLE',
+  /** 没有预加载 */
+  NONE = 'NONE'
+}
 
 /**
  * @class
@@ -83,10 +95,10 @@ export class DModel {
   /**
    * 指示如何预加载动作
    * @summary motion 预加载
-   * @type {?TMotionPreload}
-   * @default TMotionPreload.NONE
+   * @type {?EMotion}
+   * @default EMotion.NONE
    */
-  public motionPreload: TMotionPreload | null;
+  public motionPreload: EMotion | null;
 
   /**
    * 创建模型数据实例
@@ -104,6 +116,6 @@ export class DModel {
     this.backgroundColor = data?.backgroundColor ?? 'transparent';
     this.width = data?.width ?? null;
     this.height = data?.height ?? null;
-    this.motionPreload = data?.motionPreload ?? TMotionPreload.NONE;
+    this.motionPreload = data?.motionPreload ?? EMotion.NONE;
   }
 }
