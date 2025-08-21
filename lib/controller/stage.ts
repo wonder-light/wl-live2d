@@ -8,7 +8,7 @@ import type { ULive2dController } from './live2d';
  * @summary 淡入模式
  * @enum
  */
-enum TFadeMode {
+enum EFadeMode {
   /** 淡入 */
   fadeIn = 'fadeIn',
   /** 淡出 */
@@ -205,7 +205,7 @@ export class UStageController extends UBaseController {
    * @async
    */
   public async fadeIn(element: HTMLElement | null = null): Promise<void> {
-    await this._fade(element, TFadeMode.fadeIn, TFadeMode.fadeOut).catch(FHelp.F);
+    await this._fade(element, EFadeMode.fadeIn, EFadeMode.fadeOut).catch(FHelp.F);
   }
 
   /**
@@ -216,7 +216,7 @@ export class UStageController extends UBaseController {
    * @async
    */
   public async fadeOut(element: HTMLElement | null = null): Promise<void> {
-    await this._fade(element, TFadeMode.fadeOut, TFadeMode.fadeIn).catch(FHelp.F);
+    await this._fade(element, EFadeMode.fadeOut, EFadeMode.fadeIn).catch(FHelp.F);
   }
 
   /**
@@ -349,8 +349,8 @@ export class UStageController extends UBaseController {
    * 对指定元素应用淡入或者淡出动画
    * @summary 元素淡入淡出
    * @param {HTMLElement | null} element 需要执行动画的元素, 默认是包装器元素
-   * @param {'fadeIn' | 'fadeOut'} proceed 需要进行的动画名称
-   * @param {'fadeIn' | 'fadeOut'} exit 需要退出的动画名称
+   * @param {EFadeMode} proceed 需要进行的动画名称
+   * @param {EFadeMode} exit 需要退出的动画名称
    * @return {Promise<void>}
    * @fires EEvent#fadeStart 淡入淡出开始时间
    * @fires EEvent#fadeEnd 淡入淡出结束事件
@@ -358,7 +358,7 @@ export class UStageController extends UBaseController {
    * @protected
    * @async
    */
-  protected async _fade(element: HTMLElement | null, proceed: TFadeMode, exit: TFadeMode): Promise<void> {
+  protected async _fade(element: HTMLElement | null, proceed: EFadeMode, exit: EFadeMode): Promise<void> {
     const state: Record<string, any> = {};
     const el: HTMLElement & Record<string, any> = element ??= this.wrapper;
     // 取消之前的淡入淡出
@@ -375,7 +375,7 @@ export class UStageController extends UBaseController {
     // 添加过度类
     !element.classList.contains('live2d-transition-all') && element.classList.add('live2d-transition-all');
     // 执行分支
-    if (proceed == TFadeMode.fadeIn) {
+    if (proceed == EFadeMode.fadeIn) {
       element.classList.remove('live2d-hidden');
       // display: none 的移除需要一定的响应时间
       await setTime(20, 'wait');
